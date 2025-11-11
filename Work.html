@@ -276,10 +276,35 @@
             display: none;
         }
 
-        /* Print mode styles */
-       @media print {
+        /* New Attachment UI Styles */
+        .upload-field-row {
+            transition: all 0.2s ease-in-out;
+        }
+        .upload-field-row:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+            transform: scale(1.01);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        .custom-name::placeholder {
+            color: #6c757d;
+            font-style: italic;
+        }
+        #addFieldBtn {
+            transition: 0.2s;
+        }
+        #addFieldBtn:hover {
+            background-color: #198754cc;
+            transform: translateY(-1px);
+        }
+
+        /* Checkbox selection styles */
+        .row-selected {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+
+@media print {
     @page {
-        size: auto;
+        size: A4;
         margin: 5mm;
     }
     
@@ -308,7 +333,7 @@
 
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #fff;
+        
         padding: 0 !important;
         color: var(--text-color);
         margin: 0;
@@ -317,6 +342,10 @@
         print-color-adjust: exact;
         font-size: 10pt;
         line-height: 1.2;
+        height: auto !important;
+        min-height: 100% !important;
+        overflow: visible !important;
+        background: #6e0a0a !important;
     }
 
     .print-container {
@@ -502,6 +531,7 @@
         display: none;
     }
 }
+
     </style>
   </head>
   <body>
@@ -910,7 +940,9 @@
                                                         <thead class="table-light" style="background: linear-gradient(to right, #0d6efd, #0b5ed7);">
                                                             <tr>
                                                                 <th width="4%" class="text-center">#</th>
-                                                                <th width="4%" class="text-center">✓</th>
+                                                                <th width="4%" class="text-center">
+                                                                    <input type="checkbox" id="selectAll" title="Select all rows">
+                                                                </th>
                                                                 <th width="20%">Item Code</th>
                                                                 <th width="30%">Description</th>
                                                                 <th width="10%">Quantity</th>
@@ -926,13 +958,15 @@
                                                 <div class="table-controls d-flex justify-content-between p-1">
                                                     <div>
                                                         <button class="btn btn-sm btn-outline-danger me-1 btn-xs" id="removeRowBtn" disabled>
-                                                            <i class="bi bi-dash-lg me-1"></i> Remove
+                                                            <i class="bi bi-dash-lg me-1"></i> Remove Selected
                                                         </button>
                                                         <button class="btn btn-sm btn-success btn-xs" id="addRowBtn">
                                                             <i class="bi bi-plus-lg me-1"></i> Add
                                                         </button>
                                                     </div>
                                                     <div class="text-muted small d-flex align-items-center">
+                                                        <span id="selectedCount">0 selected</span>
+                                                        <span class="mx-2">•</span>
                                                         <span id="rowCount">120 rows</span>
                                                     </div>
                                                 </div>
@@ -940,20 +974,117 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Attachments Tab -->
+                                    <!-- MODIFIED Attachments Tab -->
                                     <div class="tab-pane fade" id="attachments" role="tabpanel">
                                         <div class="card border-top-0">
                                             <div class="card-body p-2">
-                                                <!-- File Upload Area -->
-                                                <div class="attachment-upload-area" id="uploadArea">
-                                                    <i class="bi bi-cloud-arrow-up display-4 text-muted mb-3"></i>
-                                                    <h5 class="mb-2">Drag & Drop files here</h5>
-                                                    <p class="text-muted mb-3">or click to browse files from your device</p>
-                                                    <input type="file" id="fileUpload" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+
+                                                <!-- Upload Section -->
+                                                <div class="card card-glass p-3 mb-3" id="uploadFieldsContainer">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-paperclip text-primary me-2 fs-5"></i>
+                                                        <h6 class="mb-0 fw-semibold text-primary">File Attachments (5 files)</h6>
+                                                    </div>
+
+                                                    <!-- Five identical file upload fields -->
+                                                    <div class="upload-field-row border rounded p-2 mb-2 bg-light bg-opacity-50">
+                                                        <div class="row g-2 align-items-center">
+                                                            <div class="col-md-8">
+                                                                <input type="text" class="form-control form-control-sm custom-name" placeholder="Enter custom file name...">
+                                                            </div>
+                                                            <div class="col-md-2 position-relative">
+                                                                <button type="button" class="btn btn-primary btn-sm w-100 upload-btn">
+                                                                    <i class="bi bi-upload"></i> Upload
+                                                                </button>
+                                                                <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-outline-info btn-sm w-100 view-btn" disabled>
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-field-row border rounded p-2 mb-2 bg-light bg-opacity-50">
+                                                        <div class="row g-2 align-items-center">
+                                                            <div class="col-md-8">
+                                                                <input type="text" class="form-control form-control-sm custom-name" placeholder="Enter custom file name...">
+                                                            </div>
+                                                            <div class="col-md-2 position-relative">
+                                                                <button type="button" class="btn btn-primary btn-sm w-100 upload-btn">
+                                                                    <i class="bi bi-upload"></i> Upload
+                                                                </button>
+                                                                <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-outline-info btn-sm w-100 view-btn" disabled>
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-field-row border rounded p-2 mb-2 bg-light bg-opacity-50">
+                                                        <div class="row g-2 align-items-center">
+                                                            <div class="col-md-8">
+                                                                <input type="text" class="form-control form-control-sm custom-name" placeholder="Enter custom file name...">
+                                                            </div>
+                                                            <div class="col-md-2 position-relative">
+                                                                <button type="button" class="btn btn-primary btn-sm w-100 upload-btn">
+                                                                    <i class="bi bi-upload"></i> Upload
+                                                                </button>
+                                                                <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-outline-info btn-sm w-100 view-btn" disabled>
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-field-row border rounded p-2 mb-2 bg-light bg-opacity-50">
+                                                        <div class="row g-2 align-items-center">
+                                                            <div class="col-md-8">
+                                                                <input type="text" class="form-control form-control-sm custom-name" placeholder="Enter custom file name...">
+                                                            </div>
+                                                            <div class="col-md-2 position-relative">
+                                                                <button type="button" class="btn btn-primary btn-sm w-100 upload-btn">
+                                                                    <i class="bi bi-upload"></i> Upload
+                                                                </button>
+                                                                <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-outline-info btn-sm w-100 view-btn" disabled>
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-field-row border rounded p-2 mb-2 bg-light bg-opacity-50">
+                                                        <div class="row g-2 align-items-center">
+                                                            <div class="col-md-8">
+                                                                <input type="text" class="form-control form-control-sm custom-name" placeholder="Enter custom file name...">
+                                                            </div>
+                                                            <div class="col-md-2 position-relative">
+                                                                <button type="button" class="btn btn-primary btn-sm w-100 upload-btn">
+                                                                    <i class="bi bi-upload"></i> Upload
+                                                                </button>
+                                                                <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-outline-info btn-sm w-100 view-btn" disabled>
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- No "Add another file" button as requested -->
                                                 </div>
-                                                
-                                                <!-- File List -->
-                                                <div id="fileList"></div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -1144,55 +1275,61 @@
         let scale = 1.0;
         let currentPdfUrl = null;
 
-        // File upload functionality
-        uploadArea.addEventListener("click", () => fileUpload.click());
-        uploadArea.addEventListener("dragover", e => { 
-            e.preventDefault(); 
-            uploadArea.classList.add("dragover"); 
+        // MODIFIED: Initialize all 5 file upload fields
+        document.querySelectorAll(".upload-field-row").forEach(row => {
+            attachUploadHandlers(row);
         });
-        uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("dragover"));
-        uploadArea.addEventListener("drop", e => { 
-            e.preventDefault(); 
-            uploadArea.classList.remove("dragover"); 
-            handleFiles(e.dataTransfer.files); 
-        });
-        fileUpload.addEventListener("change", e => handleFiles(e.target.files));
 
+        function attachUploadHandlers(row) {
+            const uploadBtn = row.querySelector(".upload-btn");
+            const viewBtn = row.querySelector(".view-btn");
+            const fileInput = row.querySelector(".hidden-file");
+            const customNameInput = row.querySelector(".custom-name");
+
+            uploadBtn.addEventListener("click", () => {
+                const customName = customNameInput.value.trim();
+                if (!customName) {
+                    alert("Please enter a custom file name before uploading.");
+                    return;
+                }
+                // Trigger hidden file chooser
+                fileInput.click();
+
+                fileInput.onchange = () => {
+                    if (fileInput.files.length === 0) return;
+                    const file = fileInput.files[0];
+
+                    // Rename file before upload
+                    const renamedFile = new File([file], customName + "." + file.name.split('.').pop(), { type: file.type });
+
+                    // Use your existing upload logic
+                    handleFiles([renamedFile]);
+
+                    // Enable View button
+                    viewBtn.disabled = false;
+                    viewBtn.dataset.url = URL.createObjectURL(file);
+                };
+            });
+
+            viewBtn.addEventListener("click", () => {
+                if (viewBtn.dataset.url) {
+                    openPdf(viewBtn.dataset.url); // existing PDF viewer
+                }
+            });
+        }
+
+        // Existing file upload functionality (for drag & drop)
         function handleFiles(files) {
             for(const f of files){
                 const type = f.name.split(".").pop().toLowerCase() === "pdf" ? "pdf":"other";
                 const url = URL.createObjectURL(f);
                 attachments.push({id:Date.now(), name:f.name, type, url, file: f});
             }
-            renderAttachments();
+            updateAttachmentCount();
         }
 
-        function renderAttachments(){
+        function updateAttachmentCount(){
             attachmentCount.textContent = attachments.length;
-            fileList.innerHTML = "";
-            attachments.forEach(a=>{
-                const div=document.createElement("div");
-                div.className="attachment-item d-flex justify-content-between align-items-center";
-                div.innerHTML=`
-                    <div class="d-flex align-items-center">
-                        <div class="attachment-icon">
-                            ${a.type==="pdf"?'<i class="bi bi-file-earmark-pdf text-danger"></i>':'<i class="bi bi-file-earmark text-primary"></i>'}
-                        </div>
-                        <div>
-                            <div class="fw-bold">${a.name}</div>
-                            <div class="text-muted small">${formatFileSize(a.file.size)}</div>
-                        </div>
-                    </div>
-                    <div>
-                        ${a.type==="pdf"?`<button class="btn btn-outline-primary btn-sm view-pdf" data-url="${a.url}"><i class="bi bi-eye"></i> View</button>`:""}
-                        <button class="btn btn-outline-danger btn-sm ms-1 remove-file" data-id="${a.id}"><i class="bi bi-trash"></i></button>
-                    </div>`;
-                fileList.appendChild(div);
-            });
-            
-            // Add event listeners
-            document.querySelectorAll(".view-pdf").forEach(btn=>btn.addEventListener("click", e=>openPdf(e.target.closest("button").dataset.url)));
-            document.querySelectorAll(".remove-file").forEach(btn=>btn.addEventListener("click", e=>removeFile(e.target.closest("button").dataset.id)));
         }
 
         function formatFileSize(bytes) {
@@ -1205,7 +1342,7 @@
 
         function removeFile(id) {
             attachments = attachments.filter(a => a.id != id);
-            renderAttachments();
+            updateAttachmentCount();
         }
 
         // PDF Viewer functionality
@@ -1357,6 +1494,53 @@
 
         printPdf.addEventListener("click", printPdfAllPages);
 
+        // NEW: Checkbox selection functionality
+        let selectedRows = new Set();
+
+        // Select All functionality
+        document.getElementById('selectAll').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = e.target.checked;
+                const row = checkbox.closest('tr');
+                if (e.target.checked) {
+                    selectedRows.add(checkbox.value);
+                    row.classList.add('row-selected');
+                } else {
+                    selectedRows.delete(checkbox.value);
+                    row.classList.remove('row-selected');
+                }
+            });
+            updateSelectedCount();
+            updateRemoveButton();
+        });
+
+        // Individual checkbox selection
+        function handleRowSelection(checkbox) {
+            const row = checkbox.closest('tr');
+            if (checkbox.checked) {
+                selectedRows.add(checkbox.value);
+                row.classList.add('row-selected');
+            } else {
+                selectedRows.delete(checkbox.value);
+                row.classList.remove('row-selected');
+                // Uncheck select all if any checkbox is unchecked
+                document.getElementById('selectAll').checked = false;
+            }
+            updateSelectedCount();
+            updateRemoveButton();
+        }
+
+        function updateSelectedCount() {
+            const selectedCount = document.getElementById('selectedCount');
+            selectedCount.textContent = `${selectedRows.size} selected`;
+        }
+
+        function updateRemoveButton() {
+            const removeBtn = document.getElementById('removeRowBtn');
+            removeBtn.disabled = selectedRows.size === 0;
+        }
+
         // Existing application code
         // Initialize tooltips
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -1367,7 +1551,7 @@
         const formattedDate = currentDate.toLocaleDateString();
         document.getElementById('currentDate').value = formattedDate;
         
-        // Generate table rows with empty data
+        // Generate table rows with empty data (UPDATED with checkboxes)
         function generateEmptyTableRows(count) {
             const tableBody = document.querySelector('#itemsTable tbody');
             tableBody.innerHTML = '';
@@ -1377,7 +1561,7 @@
                 row.innerHTML = `
                     <td class="text-center">${i}</td>
                     <td class="text-center">
-                        <input class="form-check-input row-select" type="radio" name="selectedRow" value="${i}">
+                        <input class="form-check-input row-checkbox" type="checkbox" value="${i}">
                     </td>
                     <td class="editable-cell"><input type="text" value=""></td>
                     <td class="editable-cell"><input type="text" value=""></td>
@@ -1386,6 +1570,10 @@
                     <td class="editable-cell"><input type="number" value="" readonly></td>
                 `;
                 tableBody.appendChild(row);
+                
+                // Add event listener to checkbox
+                const checkbox = row.querySelector('.row-checkbox');
+                checkbox.addEventListener('change', () => handleRowSelection(checkbox));
             }
             document.getElementById('itemCount').textContent = count;
             document.getElementById('rowCount').textContent = `${count} rows`;
@@ -1465,66 +1653,64 @@
             }
         });
         
-        // Row selection
-        document.getElementById('itemsTable').addEventListener('change', (e) => {
-            if (e.target.classList.contains('row-select')) {
-                document.getElementById('removeRowBtn').disabled = false;
-                
-                // Highlight selected row
-                const rows = document.querySelectorAll('#itemsTable tbody tr');
-                rows.forEach(row => {
-                    row.classList.remove('row-highlight');
-                });
-                e.target.closest('tr').classList.add('row-highlight');
-            }
-        });
-        
-        // Add new row
-        document.getElementById('addRowBtn').addEventListener('click', () => {
-            const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
-            const tableBody = document.querySelector('#itemsTable tbody');
-            const rows = tableBody.querySelectorAll('tr');
-            
-            let insertIndex = rows.length; // Default to end
-            if (selectedRow) {
-                insertIndex = Array.from(rows).findIndex(row => 
-                    row.querySelector('input[name="selectedRow"]') === selectedRow
-                );
-            }
-            
-            const newRow = document.createElement('tr');
-            const newIndex = insertIndex + 1;
-            newRow.innerHTML = `
-                <td class="text-center">${newIndex}</td>
-                <td class="text-center">
-                    <input class="form-check-input row-select" type="radio" name="selectedRow" value="${newIndex}">
-                </td>
-                <td class="editable-cell"><input type="text" value=""></td>
-                <td class="editable-cell"><input type="text" value=""></td>
-                <td class="editable-cell"><input type="number" value=""></td>
-                <td class="editable-cell"><input type="number" value="0.00"></td>
-                <td class="editable-cell"><input type="number" value="0.00" readonly></td>
-            `;
-            
-            if (selectedRow && insertIndex < rows.length - 1) {
-                tableBody.insertBefore(newRow, rows[insertIndex].nextSibling);
-            } else {
-                tableBody.appendChild(newRow);
-            }
-            
-            // Update serial numbers
-            updateSerialNumbers();
-        });
-        
-        // Remove selected row
+        // Add new row (UPDATED with checkbox)
+        // Add new row (UPDATED to insert after selected row)
+document.getElementById('addRowBtn').addEventListener('click', () => {
+    const tableBody = document.querySelector('#itemsTable tbody');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    // Find the last selected row (highest index)
+    let insertAfterIndex = -1;
+    if (selectedRows.size > 0) {
+        const selectedIndices = Array.from(selectedRows).map(Number);
+        insertAfterIndex = Math.max(...selectedIndices) - 1; // Convert to 0-based index
+    }
+    
+    const newRow = document.createElement('tr');
+    const newIndex = rows.length + 1;
+    newRow.innerHTML = `
+        <td class="text-center">${newIndex}</td>
+        <td class="text-center">
+            <input class="form-check-input row-checkbox" type="checkbox" value="${newIndex}">
+        </td>
+        <td class="editable-cell"><input type="text" value=""></td>
+        <td class="editable-cell"><input type="text" value=""></td>
+        <td class="editable-cell"><input type="number" value=""></td>
+        <td class="editable-cell"><input type="number" value="0.00"></td>
+        <td class="editable-cell"><input type="number" value="0.00" readonly></td>
+    `;
+    
+    if (insertAfterIndex >= 0 && insertAfterIndex < rows.length - 1) {
+        // Insert after the last selected row
+        tableBody.insertBefore(newRow, rows[insertAfterIndex].nextSibling);
+    } else {
+        // If no selection or last row is selected, append to end
+        tableBody.appendChild(newRow);
+    }
+    
+    // Add event listener to new checkbox
+    const checkbox = newRow.querySelector('.row-checkbox');
+    checkbox.addEventListener('change', () => handleRowSelection(checkbox));
+    
+    // Update serial numbers
+    updateSerialNumbers();
+});
+        // Remove selected rows (UPDATED for multiple rows)
         document.getElementById('removeRowBtn').addEventListener('click', () => {
-            const selectedRow = document.querySelector('input[name="selectedRow"]:checked');
-            if (selectedRow) {
-                const row = selectedRow.closest('tr');
+            if (selectedRows.size === 0) return;
+            
+            // Convert Set to Array and sort in descending order to avoid index issues
+            const rowsToRemove = Array.from(selectedRows).sort((a, b) => b - a);
+            
+            rowsToRemove.forEach(rowIndex => {
+                const row = document.querySelector(`.row-checkbox[value="${rowIndex}"]`).closest('tr');
                 row.remove();
-                document.getElementById('removeRowBtn').disabled = true;
-                updateSerialNumbers();
-            }
+                selectedRows.delete(rowIndex);
+            });
+            
+            updateSerialNumbers();
+            updateSelectedCount();
+            updateRemoveButton();
         });
         
         // Update serial numbers in table
@@ -1533,8 +1719,18 @@
             const rowCount = rows.length;
             
             rows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
-                row.querySelector('input.row-select').value = index + 1;
+                const newIndex = index + 1;
+                row.cells[0].textContent = newIndex;
+                const checkbox = row.querySelector('.row-checkbox');
+                checkbox.value = newIndex;
+                
+                // Update selection if this row was selected
+                if (selectedRows.has(parseInt(checkbox.getAttribute('data-old-value') || '0'))) {
+                    selectedRows.delete(parseInt(checkbox.getAttribute('data-old-value')));
+                    selectedRows.add(newIndex);
+                    checkbox.checked = true;
+                }
+                checkbox.setAttribute('data-old-value', newIndex);
             });
             
             document.getElementById('itemCount').textContent = rowCount; 
