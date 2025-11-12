@@ -11,7 +11,7 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
     
@@ -303,6 +303,23 @@
         .row-selected {
             background-color: rgba(13, 110, 253, 0.1) !important;
         }
+
+        /* Table column widths for new headings */
+        .table th:nth-child(1) { width: 3%; } /* # */
+        .table th:nth-child(2) { width: 3%; } /* Checkbox */
+        .table th:nth-child(3) { width: 8%; } /* Item Code */
+        .table th:nth-child(4) { width: 8%; } /* SKU */
+        .table th:nth-child(5) { width: 12%; } /* Description */
+        .table th:nth-child(6) { width: 5%; } /* Quantity */
+        .table th:nth-child(7) { width: 5%; } /* Free Qty */
+        .table th:nth-child(8) { width: 5%; } /* Inv */
+        .table th:nth-child(9) { width: 8%; } /* Price/Unit */
+        .table th:nth-child(10) { width: 8%; } /* Purchase Price/Unit */
+        .table th:nth-child(11) { width: 8%; } /* Last Purchased */
+        .table th:nth-child(12) { width: 5%; } /* Discount */
+        .table th:nth-child(13) { width: 5%; } /* Tax */
+        .table th:nth-child(14) { width: 8%; } /* Current Date */
+        .table th:nth-child(15) { width: 8%; } /* Total */
 
 @media print {
     @page {
@@ -940,15 +957,23 @@
                                                     <table class="table table-sm table-hover mb-0" id="itemsTable">
                                                         <thead class="table-light" style="background: linear-gradient(to right, #0d6efd, #0b5ed7);">
                                                             <tr>
-                                                                <th width="4%" class="text-center">#</th>
-                                                                <th width="4%" class="text-center">
+                                                                <th class="text-center">#</th>
+                                                                <th class="text-center">
                                                                     <input type="checkbox" id="selectAll" title="Select all rows">
                                                                 </th>
-                                                                <th width="20%">Item Code</th>
-                                                                <th width="30%">Description</th>
-                                                                <th width="10%">Quantity</th>
-                                                                <th width="16%">Unit Price</th>
-                                                                <th width="16%">Total</th>
+                                                                <th>Item Code</th>
+                                                                <th>SKU</th>
+                                                                <th>Description</th>
+                                                                <th>Quantity</th>
+                                                                <th>Free Qty</th>
+                                                                <th>Inv</th>
+                                                                <th>Price/Unit</th>
+                                                                <th>Purchase Price/Unit</th>
+                                                                <th>Last Purchased</th>
+                                                                <th>Discount</th>
+                                                                <th>Tax</th>
+                                                                <th>Current Date</th>
+                                                                <th>Total</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -1248,10 +1273,9 @@
         </div>
     </div>
 
-    <script src="js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
-    <script src="dashboard.js"></script>
     
     <script>
         // PDF.js configuration
@@ -1552,10 +1576,13 @@
         const formattedDate = currentDate.toLocaleDateString();
         document.getElementById('currentDate').value = formattedDate;
         
-        // Generate table rows with empty data (UPDATED with checkboxes)
+        // Generate table rows with empty data (UPDATED with all new columns)
         function generateEmptyTableRows(count) {
             const tableBody = document.querySelector('#itemsTable tbody');
             tableBody.innerHTML = '';
+            
+            // Get current date for the current date column
+            const currentDateStr = new Date().toISOString().split('T')[0];
             
             for (let i = 1; i <= count; i++) {
                 const row = document.createElement('tr');
@@ -1566,11 +1593,33 @@
                     </td>
                     <td class="editable-cell"><input type="text" value=""></td>
                     <td class="editable-cell"><input type="text" value=""></td>
+                    <td class="editable-cell"><input type="text" value=""></td>
                     <td class="editable-cell"><input type="number" value=""></td>
+                    <td class="editable-cell"><input type="number" value="0"></td>
                     <td class="editable-cell"><input type="number" value=""></td>
-                    <td class="editable-cell"><input type="number" value="" readonly></td>
+                    <td class="editable-cell"><input type="number" value="0.00"></td>
+                    <td class="editable-cell"><input type="number" value="0.00"></td>
+                    <td class="editable-cell"><input type="date" value=""></td>
+                    <td class="editable-cell"><input type="number" value="0.00"></td>
+                    <td class="editable-cell"><input type="number" value="0.00"></td>
+                    <td class="editable-cell"><input type="date" value="${currentDateStr}" readonly></td>
+                    <td class="editable-cell"><input type="number" value="0.00" readonly></td>
                 `;
                 tableBody.appendChild(row);
+                
+                // Add event listeners to calculate total when quantity or purchase price changes
+                const quantityInput = row.querySelector('td:nth-child(6) input');
+                const purchasePriceInput = row.querySelector('td:nth-child(10) input');
+                const totalInput = row.querySelector('td:nth-child(15) input');
+                
+                const calculateTotal = () => {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const purchasePrice = parseFloat(purchasePriceInput.value) || 0;
+                    totalInput.value = (quantity * purchasePrice).toFixed(2);
+                };
+                
+                quantityInput.addEventListener('input', calculateTotal);
+                purchasePriceInput.addEventListener('input', calculateTotal);
                 
                 // Add event listener to checkbox
                 const checkbox = row.querySelector('.row-checkbox');
@@ -1654,49 +1703,73 @@
             }
         });
         
-        // Add new row (UPDATED with checkbox)
-        // Add new row (UPDATED to insert after selected row)
-document.getElementById('addRowBtn').addEventListener('click', () => {
-    const tableBody = document.querySelector('#itemsTable tbody');
-    const rows = tableBody.querySelectorAll('tr');
-    
-    // Find the last selected row (highest index)
-    let insertAfterIndex = -1;
-    if (selectedRows.size > 0) {
-        const selectedIndices = Array.from(selectedRows).map(Number);
-        insertAfterIndex = Math.max(...selectedIndices) - 1; // Convert to 0-based index
-    }
-    
-    const newRow = document.createElement('tr');
-    const newIndex = rows.length + 1;
-    newRow.innerHTML = `
-        <td class="text-center">${newIndex}</td>
-        <td class="text-center">
-            <input class="form-check-input row-checkbox" type="checkbox" value="${newIndex}">
-        </td>
-        <td class="editable-cell"><input type="text" value=""></td>
-        <td class="editable-cell"><input type="text" value=""></td>
-        <td class="editable-cell"><input type="number" value=""></td>
-        <td class="editable-cell"><input type="number" value="0.00"></td>
-        <td class="editable-cell"><input type="number" value="0.00" readonly></td>
-    `;
-    
-    if (insertAfterIndex >= 0 && insertAfterIndex < rows.length - 1) {
-        // Insert after the last selected row
-        tableBody.insertBefore(newRow, rows[insertAfterIndex].nextSibling);
-    } else {
-        // If no selection or last row is selected, append to end
-        tableBody.appendChild(newRow);
-    }
-    
-    // Add event listener to new checkbox
-    const checkbox = newRow.querySelector('.row-checkbox');
-    checkbox.addEventListener('change', () => handleRowSelection(checkbox));
-    
-    // Update serial numbers
-    updateSerialNumbers();
-});
-        // Remove selected rows (UPDATED for multiple rows)
+        // Add new row (UPDATED with all new columns)
+        document.getElementById('addRowBtn').addEventListener('click', () => {
+            const tableBody = document.querySelector('#itemsTable tbody');
+            const rows = tableBody.querySelectorAll('tr');
+            
+            // Find the last selected row (highest index)
+            let insertAfterIndex = -1;
+            if (selectedRows.size > 0) {
+                const selectedIndices = Array.from(selectedRows).map(Number);
+                insertAfterIndex = Math.max(...selectedIndices) - 1; // Convert to 0-based index
+            }
+            
+            const newRow = document.createElement('tr');
+            const newIndex = rows.length + 1;
+            const currentDateStr = new Date().toISOString().split('T')[0];
+            
+            newRow.innerHTML = `
+                <td class="text-center">${newIndex}</td>
+                <td class="text-center">
+                    <input class="form-check-input row-checkbox" type="checkbox" value="${newIndex}">
+                </td>
+                <td class="editable-cell"><input type="text" value=""></td>
+                <td class="editable-cell"><input type="text" value=""></td>
+                <td class="editable-cell"><input type="text" value=""></td>
+                <td class="editable-cell"><input type="number" value=""></td>
+                <td class="editable-cell"><input type="number" value="0"></td>
+                <td class="editable-cell"><input type="number" value=""></td>
+                <td class="editable-cell"><input type="number" value="0.00"></td>
+                <td class="editable-cell"><input type="number" value="0.00"></td>
+                <td class="editable-cell"><input type="date" value=""></td>
+                <td class="editable-cell"><input type="number" value="0.00"></td>
+                <td class="editable-cell"><input type="number" value="0.00"></td>
+                <td class="editable-cell"><input type="date" value="${currentDateStr}" readonly></td>
+                <td class="editable-cell"><input type="number" value="0.00" readonly></td>
+            `;
+            
+            if (insertAfterIndex >= 0 && insertAfterIndex < rows.length - 1) {
+                // Insert after the last selected row
+                tableBody.insertBefore(newRow, rows[insertAfterIndex].nextSibling);
+            } else {
+                // If no selection or last row is selected, append to end
+                tableBody.appendChild(newRow);
+            }
+            
+            // Add event listeners to calculate total when quantity or purchase price changes
+            const quantityInput = newRow.querySelector('td:nth-child(6) input');
+            const purchasePriceInput = newRow.querySelector('td:nth-child(10) input');
+            const totalInput = newRow.querySelector('td:nth-child(15) input');
+            
+            const calculateTotal = () => {
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const purchasePrice = parseFloat(purchasePriceInput.value) || 0;
+                totalInput.value = (quantity * purchasePrice).toFixed(2);
+            };
+            
+            quantityInput.addEventListener('input', calculateTotal);
+            purchasePriceInput.addEventListener('input', calculateTotal);
+            
+            // Add event listener to new checkbox
+            const checkbox = newRow.querySelector('.row-checkbox');
+            checkbox.addEventListener('change', () => handleRowSelection(checkbox));
+            
+            // Update serial numbers
+            updateSerialNumbers();
+        });
+        
+        // Remove selected rows
         document.getElementById('removeRowBtn').addEventListener('click', () => {
             if (selectedRows.size === 0) return;
             
@@ -1749,8 +1822,6 @@ document.getElementById('addRowBtn').addEventListener('click', () => {
                 e.preventDefault();
                 window.print();
             }
-            
-          
         });
         
         // Print functionality
