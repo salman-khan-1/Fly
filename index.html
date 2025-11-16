@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUANTUM WMS | 2090 Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --quantum-blue: #00f7ff;
+            --quantum-purple: #b300ff;
+            --quantum-pink: #ff00d4;
+            --quantum-dark: #0a0a1a;
+            --quantum-darker: #050510;
+            --quantum-surface: rgba(16, 18, 37, 0.8);
+            --quantum-glow: 0 0 20px rgba(0, 247, 255, 0.7);
+            --quantum-glow-purple: 0 0 20px rgba(179, 0, 255, 0.7);
+            --neural-network: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--quantum-darker);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(179, 0, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 247, 255, 0.1) 0%, transparent 20%),
+                linear-gradient(135deg, var(--quantum-darker) 0%, var(--quantum-dark) 100%);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            grid-template-rows: 80px 1fr;
+            grid-template-areas: 
+                "neuro header"
+                "neuro main";
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Neural Interface Header */
+        .neuro-header {
+            grid-area: header;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            background: rgba(10, 10, 26, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+            position: relative;
+            z-index: 100;
+        }
+
+        .neuro-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--quantum-blue);
+            text-shadow: var(--quantum-glow);
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--quantum-blue), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 500px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px 12px 50px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            background: rgba(16, 18, 37, 0.7);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--quantum-blue);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--quantum-blue);
+        }
+
+        .user-interface {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .neural-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--neural-network);
+        }
+
+        .neural-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--neural-network);
+            box-shadow: 0 0 10px var(--neural-network);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--quantum-blue);
+            box-shadow: var(--quantum-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--quantum-blue), var(--quantum-purple), var(--quantum-pink));
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Neural Navigation */
+        .neuro-nav {
+            grid-area: neuro;
+            background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 247, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 90;
+        }
+
+        .neuro-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--quantum-blue);
+            background: rgba(0, 247, 255, 0.1);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 17px;
+            background: linear-gradient(45deg, var(--quantum-blue), var(--quantum-purple));
+            z-index: -1;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--quantum-pink);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            box-shadow: 0 0 10px var(--quantum-pink);
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(179, 0, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 247, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .welcome-card {
+            background: rgba(16, 18, 37, 0.6);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--quantum-blue), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-text p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            font-size: 1.1rem;
+        }
+
+        .quantum-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            background: rgba(16, 18, 37, 0.7);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            font-size: 1.5rem;
+            color: var(--quantum-blue);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            color: var(--neural-network);
+        }
+
+        .metric-change.negative {
+            color: var(--quantum-pink);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .chart-container {
+            background: rgba(16, 18, 37, 0.6);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--quantum-blue);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-action-btn {
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            color: var(--quantum-blue);
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .chart-action-btn.active {
+            background: var(--quantum-blue);
+            color: var(--quantum-dark);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(16, 18, 37, 0.5);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            border-color: var(--quantum-blue);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.sales {
+            background: rgba(0, 247, 255, 0.2);
+            color: var(--quantum-blue);
+        }
+
+        .activity-icon.purchase {
+            background: rgba(179, 0, 255, 0.2);
+            color: var(--quantum-purple);
+        }
+
+        .activity-icon.quantum {
+            background: rgba(255, 0, 212, 0.2);
+            color: var(--quantum-pink);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--quantum-blue);
+            margin-top: 0.25rem;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .orders-table th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--quantum-blue);
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+
+        .orders-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+        }
+
+        .orders-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .orders-table tr:hover {
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: rgba(0, 247, 255, 0.2);
+            color: var(--quantum-blue);
+        }
+
+        .status-pending {
+            background: rgba(179, 0, 255, 0.2);
+            color: var(--quantum-purple);
+        }
+
+        .status-processing {
+            background: rgba(255, 0, 212, 0.2);
+            color: var(--quantum-pink);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem 1rem;
+            background: rgba(16, 18, 37, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--quantum-blue);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .action-icon {
+            font-size: 1.8rem;
+            color: var(--quantum-blue);
+        }
+
+        .action-text {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Holographic Elements */
+        .hologram {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.1) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .hologram-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .hologram-2 {
+            bottom: 10%;
+            right: 5%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .quantum-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main";
+            }
+            
+            .neuro-nav {
+                display: none;
+            }
+            
+            .quantum-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-container {
+                width: 200px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Holographic Background Elements -->
+    <div class="hologram hologram-1"></div>
+    <div class="hologram hologram-2"></div>
+    
+    <div class="dashboard-container">
+        <!-- Neural Interface Header -->
+        <header class="neuro-header">
+            <div class="logo">
+                <i class="fas fa-atom logo-icon"></i>
+                <div class="logo-text">QUANTUM WMS</div>
+            </div>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Neural search across quantum database...">
+            </div>
+            
+            <div class="user-interface">
+                <div class="neural-status">
+                    <div class="neural-dot"></div>
+                    <span>Neural Link Active</span>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="User" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                </div>
+            </div>
+        </header>
+        
+        <!-- Neural Navigation -->
+        <nav class="neuro-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-brain nav-icon"></i>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-bolt nav-icon"></i>
+                <span class="nav-text">Sales</span>
+                <span class="nav-badge">3</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-cube nav-icon"></i>
+                <span class="nav-text">Purchase</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-network-wired nav-icon"></i>
+                <span class="nav-text">Quantum Net</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-network nav-icon"></i>
+                <span class="nav-text">Analytics</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-robot nav-icon"></i>
+                <span class="nav-text">AI Assist</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-cogs nav-icon"></i>
+                <span class="nav-text">System</span>
+            </a>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <div class="welcome-header">
+                    <div class="welcome-text">
+                        <h1>QUANTUM SALES & PURCHASE DASHBOARD</h1>
+                        <p>Neural interface active. Quantum computing analysis complete. 12.4% sales increase detected. 3 quantum purchase orders pending approval.</p>
+                    </div>
+                    <div class="warehouse-selector">
+                        <select style="background: rgba(16, 18, 37, 0.7); color: white; border: 1px solid rgba(0, 247, 255, 0.3); padding: 10px 15px; border-radius: 10px; font-family: 'Exo 2', sans-serif;">
+                            <option>Quantum Warehouse (Primary)</option>
+                            <option>Neural Distribution Hub</option>
+                            <option>Orbital Storage Facility</option>
+                            <option>Interdimensional Logistics</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="quantum-metrics">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Quantum Sales</div>
+                            <i class="fas fa-bolt metric-icon"></i>
+                        </div>
+                        <div class="metric-value">$4.28M</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12.4% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Purchase Orders</div>
+                            <i class="fas fa-cube metric-icon"></i>
+                        </div>
+                        <div class="metric-value">142</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8.2% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Quantum Profit</div>
+                            <i class="fas fa-chart-line metric-icon"></i>
+                        </div>
+                        <div class="metric-value">$1.24M</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5.7% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Neural Efficiency</div>
+                            <i class="fas fa-brain metric-icon"></i>
+                        </div>
+                        <div class="metric-value">98.7%</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>2.1% improvement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div>
+                    <!-- Chart Container -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Quantum Sales & Purchase Analysis</div>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn active">Real-time</button>
+                                <button class="chart-action-btn">Today</button>
+                                <button class="chart-action-btn">Week</button>
+                            </div>
+                        </div>
+                        <canvas id="quantumChart" height="300"></canvas>
+                    </div>
+                    
+                    <!-- Orders Table -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Quantum Sales Orders</div>
+                            <button class="chart-action-btn">View All</button>
+                        </div>
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Quantum Status</th>
+                                    <th>Neural Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#Q-7842</td>
+                                    <td>NeuroTech Industries</td>
+                                    <td>$12,480</td>
+                                    <td><span class="status-badge status-completed">Quantum Complete</span></td>
+                                    <td>98.7%</td>
+                                </tr>
+                                <tr>
+                                    <td>#Q-7841</td>
+                                    <td>OmniCorp Global</td>
+                                    <td>$8,745</td>
+                                    <td><span class="status-badge status-processing">Quantum Processing</span></td>
+                                    <td>87.3%</td>
+                                </tr>
+                                <tr>
+                                    <td>#Q-7840</td>
+                                    <td>Stellar Dynamics</td>
+                                    <td>$23,650</td>
+                                    <td><span class="status-badge status-pending">Neural Approval</span></td>
+                                    <td>76.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>#Q-7839</td>
+                                    <td>Axiom Enterprises</td>
+                                    <td>$5,320</td>
+                                    <td><span class="status-badge status-completed">Quantum Complete</span></td>
+                                    <td>94.2%</td>
+                                </tr>
+                                <tr>
+                                    <td>#Q-7838</td>
+                                    <td>Vertex Solutions</td>
+                                    <td>$15,780</td>
+                                    <td><span class="status-badge status-processing">Quantum Processing</span></td>
+                                    <td>89.6%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <!-- Activity Feed -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Neural Activity Feed</div>
+                            <button class="chart-action-btn">Filter</button>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon sales">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Quantum Sale Completed</div>
+                                    <div class="activity-desc">Order #Q-7842 quantum processed successfully</div>
+                                    <div class="activity-time">2 minutes ago</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon purchase">
+                                    <i class="fas fa-cube"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Purchase Order Approved</div>
+                                    <div class="activity-desc">Quantum PO #7841 for neural materials approved</div>
+                                    <div class="activity-time">15 minutes ago</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon quantum">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Neural Analysis Complete</div>
+                                    <div class="activity-desc">Sales pattern analysis quantum processed</div>
+                                    <div class="activity-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon sales">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Quantum Transfer Initiated</div>
+                                    <div class="activity-desc">Interdimensional inventory transfer started</div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Quantum Actions</div>
+                        </div>
+                        <div class="quick-actions">
+                            <div class="action-btn">
+                                <i class="fas fa-plus action-icon"></i>
+                                <div class="action-text">New Quantum Sale</div>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-file-invoice action-icon"></i>
+                                <div class="action-text">Create Neural Invoice</div>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-exchange-alt action-icon"></i>
+                                <div class="action-text">Quantum Transfer</div>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-chart-bar action-icon"></i>
+                                <div class="action-text">Neural Report</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Orders Summary -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Quantum Purchase Summary</div>
+                            <button class="chart-action-btn">View All</button>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-content">
+                                    <div class="activity-title">Pending Neural Approval</div>
+                                    <div class="activity-desc">3 quantum purchase orders awaiting approval</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-content">
+                                    <div class="activity-title">This Quantum Cycle</div>
+                                    <div class="activity-desc">$284,560 in quantum purchases processed</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-content">
+                                    <div class="activity-title">Top Neural Supplier</div>
+                                    <div class="activity-desc">Quantum Materials Inc ($84,800 this cycle)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Quantum Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quantum Chart
+            const quantumCtx = document.getElementById('quantumChart').getContext('2d');
+            const quantumChart = new Chart(quantumCtx, {
+                type: 'line',
+                data: {
+                    labels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+                    datasets: [
+                        {
+                            label: 'Quantum Sales',
+                            data: [65000, 75000, 82000, 78000, 92000, 102000, 98000, 110000],
+                            borderColor: '#00f7ff',
+                            backgroundColor: 'rgba(0, 247, 255, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Neural Purchases',
+                            data: [45000, 52000, 58000, 62000, 68000, 74000, 80000, 85000],
+                            borderColor: '#b300ff',
+                            backgroundColor: 'rgba(179, 0, 255, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    family: "'Exo 2', sans-serif"
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 247, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(0, 247, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart period buttons
+            document.querySelectorAll('.chart-action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.chart-action-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+
+            // Add floating animation to metric cards
+            document.querySelectorAll('.metric-card').forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
