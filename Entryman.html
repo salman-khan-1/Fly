@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e3a8a;
+            --secondary: #059669;
+            --secondary-light: #10b981;
+            --accent: #d97706;
+            --surface: #ffffff;
+            --surface-light: #f8fafc;
+            --surface-dark: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --success: #059669;
+            --warning: #d97706;
+            --error: #dc2626;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        .dashboard-embed-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .welcome-card {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+        }
+
+        .welcome-content {
+            flex: 1;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-light);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .user-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .user-text p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 500px;
+            line-height: 1.4;
+        }
+
+        /* IMPROVED METRICS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .metric:nth-child(2)::before {
+            background: var(--secondary);
+        }
+
+        .metric:nth-child(3)::before {
+            background: var(--accent);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .metric:hover .metric-icon {
+            transform: scale(1.05);
+        }
+
+        .metric:nth-child(2) .metric-icon {
+            color: var(--secondary);
+            background: rgba(5, 150, 105, 0.08);
+        }
+
+        .metric:nth-child(3) .metric-icon {
+            color: var(--accent);
+            background: rgba(217, 119, 6, 0.08);
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+
+        .metric-description {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: auto;
+        }
+
+        .metric-description.positive {
+            color: var(--success);
+        }
+
+        .metric-description.negative {
+            color: var(--error);
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-weight: 600;
+        }
+
+        .invoice-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-light);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover .action-icon {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .action-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .action-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .card-illustration {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .illustration-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .illustration-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .illustration-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed rgba(37, 99, 235, 0.2);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* NEW: Progress indicators for metrics */
+        .metric-progress {
+            height: 3px;
+            background: var(--surface-dark);
+            border-radius: 2px;
+            margin: 0.75rem 0;
+            overflow: hidden;
+        }
+
+        .metric-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .metric:nth-child(1) .metric-progress-bar {
+            background: var(--primary);
+            width: 80%;
+        }
+
+        .metric:nth-child(2) .metric-progress-bar {
+            background: var(--secondary);
+            width: 98.7%;
+        }
+
+        .metric:nth-child(3) .metric-progress-bar {
+            background: var(--accent);
+            width: 20%;
+        }
+
+        /* UPDATED REVIEW SECTION - SINGLE ROW LAYOUT */
+        .review-section {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .section-badge {
+            background: var(--accent);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.75rem;
+        }
+
+        .invoices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .invoice-row {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
+            gap: 1.5rem;
+        }
+
+        .invoice-row:last-child {
+            border-bottom: none;
+        }
+
+        .invoice-row:hover {
+            background: var(--surface-light);
+        }
+
+        .invoice-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .invoice-id {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .invoice-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .invoice-vendor {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .invoice-date {
+            color: var(--text-light);
+        }
+
+        .invoice-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            min-width: 120px;
+            text-align: right;
+        }
+
+        .invoice-note {
+            flex: 2;
+            background: rgba(217, 119, 6, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 6px 6px 0;
+            margin: 0;
+        }
+
+        .note-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-header i {
+            color: var(--accent);
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .note-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .invoice-actions-small {
+            display: flex;
+            gap: 0.75rem;
+            min-width: 200px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--surface-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .view-all-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .view-all-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .invoice-row {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .invoice-info {
+                flex: 1 1 100%;
+            }
+            
+            .invoice-amount {
+                text-align: left;
+            }
+            
+            .invoice-note {
+                flex: 1 1 100%;
+            }
+            
+            .invoice-actions-small {
+                justify-content: flex-start;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .card-header {
+                flex-direction: column;
+            }
+            
+            .card-illustration {
+                position: relative;
+                right: auto;
+                top: auto;
+                margin: 1rem auto;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .invoice-meta {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .invoice-actions-small {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header {
+                padding: 1.5rem;
+            }
+            
+            .section-header {
+                padding: 1.25rem 1.5rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-text h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-embed-container">
+        <!-- Welcome Card Section -->
+        <div class="welcome-card">
+            <div class="card-header">
+                <div class="welcome-content">
+                    <div class="user-info">
+                        <img src="https://images.unsplash.com/photo-1551836026-d5c88ac5c93d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Accountant" class="user-avatar">
+                        <div class="user-text">
+                            <h1>Welcome back, Sarah Johnson</h1>
+                            <p>Invoice Entry Specialist • Focus on accurate data entry. Your entries are submitted for review and approval.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- IMPROVED METRICS GRID -->
+                    <div class="metrics-grid">
+                        <div class="metric" onclick="handleMetricClick('entries')">
+                            <div class="metric-header">
+                                <div class="metric-title">Today's Entries</div>
+                                <div class="metric-icon">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value">24</div>
+                            <div class="metric-progress">
+                                <div class="metric-progress-bar"></div>
+                            </div>
+                            <div class="metric-description positive">
+                                <div class="metric-trend">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>On track for daily goal</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric" onclick="handleMetricClick('accuracy')">
+                            <div class="metric-header">
+                                <div class="metric-title">Accuracy Rate</div>
+                                <div class="metric-icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value">98.7%</div>
+                            <div class="metric-progress">
+                                <div class="metric-progress-bar"></div>
+                            </div>
+                            <div class="metric-description positive">
+                                <div class="metric-trend">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>0.3% improvement</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric" onclick="handleMetricClick('corrections')">
+                            <div class="metric-header">
+                                <div class="metric-title">Corrections Needed</div>
+                                <div class="metric-icon">
+                                    <i class="fas fa-undo-alt"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value">2</div>
+                            <div class="metric-progress">
+                                <div class="metric-progress-bar"></div>
+                            </div>
+                            <div class="metric-description negative">
+                                <div class="metric-trend">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>Requires attention</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="invoice-actions">
+                        <div class="action-card" onclick="handleAction('new-invoice')">
+                            <div class="action-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="action-title">New Invoice Entry</div>
+                            <div class="action-desc">Enter a single invoice manually with detailed form and validation</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-illustration">
+                    <div class="illustration-container">
+                        <i class="fas fa-file-invoice-dollar illustration-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Section - UPDATED TO SINGLE ROW LAYOUT -->
+        <div class="review-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-search"></i>
+                    Invoices Needing Review
+                    <span class="section-badge">3 Items</span>
+                </div>
+                <a href="#" class="view-all-btn">
+                    View All
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            
+            <div class="invoices-container">
+                <!-- Invoice Row 1 -->
+                <div class="invoice-row">
+                    <div class="invoice-info">
+                        <div class="invoice-id">INV-2023-0452</div>
+                        <div class="invoice-meta">
+                            <span class="invoice-vendor">Vendor: Tech Supplies Inc.</span>
+                            <span class="invoice-date">Date: 15 Nov 2023</span>
+                        </div>
+                    </div>
+                    <div class="invoice-amount">$2,450.00</div>
+                    <div class="invoice-note">
+                        <div class="note-header">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div class="note-title">Review Note</div>
+                        </div>
+                        <div class="note-text">
+                            Invoice amount exceeds usual order value. Please verify with purchase order PO-7821 and confirm delivery receipt.
+                        </div>
+                    </div>
+                    <div class="invoice-actions-small">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                            Make Corrections
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Invoice Row 2 -->
+                <div class="invoice-row">
+                    <div class="invoice-info">
+                        <div class="invoice-id">INV-2023-0387</div>
+                        <div class="invoice-meta">
+                            <span class="invoice-vendor">Vendor: Office Solutions Ltd.</span>
+                            <span class="invoice-date">Date: 12 Nov 2023</span>
+                        </div>
+                    </div>
+                    <div class="invoice-amount">$845.75</div>
+                    <div class="invoice-note">
+                        <div class="note-header">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div class="note-title">Review Note</div>
+                        </div>
+                        <div class="note-text">
+                            Tax calculation appears incorrect. Verify tax rate applied matches our agreement with this vendor (should be 8.5% not 10%).
+                        </div>
+                    </div>
+                    <div class="invoice-actions-small">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                            Make Corrections
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Invoice Row 3 -->
+                <div class="invoice-row">
+                    <div class="invoice-info">
+                        <div class="invoice-id">INV-2023-0519</div>
+                        <div class="invoice-meta">
+                            <span class="invoice-vendor">Vendor: Global Logistics Co.</span>
+                            <span class="invoice-date">Date: 18 Nov 2023</span>
+                        </div>
+                    </div>
+                    <div class="invoice-amount">$1,280.50</div>
+                    <div class="invoice-note">
+                        <div class="note-header">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div class="note-title">Review Note</div>
+                        </div>
+                        <div class="note-text">
+                            Missing supporting documentation. Please attach delivery confirmation and service completion certificate before submission.
+                        </div>
+                    </div>
+                    <div class="invoice-actions-small">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                            Make Corrections
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.metric, .action-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Add hover effects to invoice rows
+            const rows = document.querySelectorAll('.invoice-row');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#f8fafc';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+            
+            // Animate progress bars on load
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('.metric-progress-bar');
+                progressBars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 300);
+                });
+            }, 500);
+        });
+
+        function handleAction(action) {
+            // In a real application, this would navigate to the appropriate section
+            console.log(`Opening new invoice entry form...`);
+            
+            // Add visual feedback
+            const button = event.currentTarget;
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        function handleMetricClick(metricType) {
+            // In a real application, this would show detailed information about the metric
+            console.log(`Showing details for ${metricType}`);
+            
+            // Add visual feedback
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+            }, 150);
+        }
+    </script>
+</body>
+</html>
