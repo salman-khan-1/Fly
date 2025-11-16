@@ -9,26 +9,26 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-light: #eef2ff;
-            --primary-dark: #3730a3;
-            --secondary: #10b981;
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --primary-dark: #1e40af;
+            --secondary: #059669;
             --secondary-light: #d1fae5;
-            --accent: #f59e0b;
+            --accent: #d97706;
             --accent-light: #fef3c7;
             --surface: #ffffff;
             --surface-light: #f8fafc;
             --surface-dark: #f1f5f9;
             --text-primary: #1e293b;
-            --text-secondary: #64748b;
+            --text-secondary: #475569;
             --text-light: #94a3b8;
             --border: #e2e8f0;
             --border-light: #f1f5f9;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --success: #059669;
+            --warning: #d97706;
+            --error: #dc2626;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -40,7 +40,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--surface-light);
+            background-color: #f8fafc;
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
@@ -66,7 +66,7 @@
             padding: 0 2rem;
             background: var(--surface);
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -74,24 +74,24 @@
 
         .search-container {
             position: relative;
-            width: 400px;
+            width: 450px;
         }
 
         .search-container input {
             width: 100%;
-            padding: 10px 20px 10px 45px;
+            padding: 12px 20px 12px 45px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--surface-light);
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: var(--transition);
         }
 
         .search-container input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .search-icon {
@@ -112,12 +112,19 @@
             position: relative;
             cursor: pointer;
             color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .notification-badge:hover {
+            background: var(--surface-dark);
         }
 
         .badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: 0;
+            right: 0;
             background: var(--error);
             color: white;
             border-radius: 50%;
@@ -135,7 +142,7 @@
             align-items: center;
             gap: 0.75rem;
             cursor: pointer;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 8px;
             transition: var(--transition);
         }
@@ -145,8 +152,8 @@
         }
 
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--primary-light);
@@ -188,7 +195,7 @@
         }
 
         .nav-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-light);
@@ -254,6 +261,7 @@
             grid-area: main;
             padding: 2rem;
             overflow-y: auto;
+            background: #f8fafc;
         }
 
         .welcome-card {
@@ -297,7 +305,7 @@
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -380,7 +388,7 @@
         }
 
         .metric-value {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
@@ -426,6 +434,7 @@
         .chart-title {
             font-size: 1.2rem;
             font-weight: 600;
+            color: var(--text-primary);
         }
 
         .chart-actions {
@@ -716,6 +725,83 @@
             color: var(--error);
         }
 
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            background: var(--surface-light);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background: var(--surface-light);
+        }
+
+        /* Detailed Metrics */
+        .detailed-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detailed-metric {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        .metric-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .metric-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .metric-trend.positive {
+            color: var(--success);
+        }
+
+        .metric-trend.negative {
+            color: var(--error);
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .dashboard-grid {
@@ -724,6 +810,10 @@
             
             .widgets-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .detailed-metrics {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -745,6 +835,10 @@
             
             .widgets-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                width: 300px;
             }
         }
 
@@ -769,20 +863,20 @@
         <header class="header">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Search sales, purchases, products...">
+                <input type="text" placeholder="Search products, orders, customers...">
             </div>
             
             <div class="header-actions">
                 <div class="notification-badge">
                     <i class="far fa-bell fa-lg"></i>
-                    <span class="badge">3</span>
+                    <span class="badge">5</span>
                 </div>
                 
                 <div class="user-profile">
                     <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="User" class="user-avatar">
                     <div>
                         <div class="user-name">Alex Chen</div>
-                        <div class="user-role">Sales Manager</div>
+                        <div class="user-role">Operations Manager</div>
                     </div>
                 </div>
             </div>
@@ -791,7 +885,7 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="logo">
-                <i class="fas fa-chart-line logo-icon"></i>
+                <i class="fas fa-warehouse logo-icon"></i>
                 <div class="logo-text">Nexus WMS</div>
             </div>
             
@@ -804,7 +898,7 @@
                 
                 <a href="#" class="nav-item">
                     <i class="fas fa-robot nav-icon"></i>
-                    <span class="nav-text">Sales AI Assistant</span>
+                    <span class="nav-text">AI Assistant</span>
                     <span class="nav-badge">NEW</span>
                 </a>
             </div>
@@ -906,7 +1000,7 @@
                 <div class="welcome-header">
                     <div class="welcome-text">
                         <h1>Sales & Purchase Dashboard</h1>
-                        <p>Welcome back, Alex. Your sales are up 12.4% this month. 3 purchase orders need approval.</p>
+                        <p>Welcome back, Alex. Your operations are running at 94.7% efficiency. 3 critical alerts need attention.</p>
                     </div>
                     <div class="warehouse-selector">
                         <select style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px;">
@@ -963,16 +1057,63 @@
                     
                     <div class="metric-card">
                         <div class="metric-header">
-                            <div class="metric-title">Avg. Order Value</div>
+                            <div class="metric-title">Order Fulfillment</div>
                             <div class="metric-icon">
-                                <i class="fas fa-shopping-basket"></i>
+                                <i class="fas fa-shipping-fast"></i>
                             </div>
                         </div>
-                        <div class="metric-value">$428</div>
+                        <div class="metric-value">94.7%</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
-                            <span>3.2% increase</span>
+                            <span>2.1% improvement</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Metrics -->
+            <div class="detailed-metrics">
+                <div class="detailed-metric">
+                    <div class="metric-details">
+                        <div class="metric-label">Average Order Value</div>
+                        <div class="metric-number">$428</div>
+                    </div>
+                    <div class="metric-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>3.2% increase</span>
+                    </div>
+                </div>
+                
+                <div class="detailed-metric">
+                    <div class="metric-details">
+                        <div class="metric-label">Inventory Turnover</div>
+                        <div class="metric-number">8.2</div>
+                    </div>
+                    <div class="metric-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>1.4% improvement</span>
+                    </div>
+                </div>
+                
+                <div class="detailed-metric">
+                    <div class="metric-details">
+                        <div class="metric-label">Customer Satisfaction</div>
+                        <div class="metric-number">96.3%</div>
+                    </div>
+                    <div class="metric-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>0.8% improvement</span>
+                    </div>
+                </div>
+                
+                <div class="detailed-metric">
+                    <div class="metric-details">
+                        <div class="metric-label">Return Rate</div>
+                        <div class="metric-number">2.4%</div>
+                    </div>
+                    <div class="metric-trend negative">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>0.3% increase</span>
                     </div>
                 </div>
             </div>
@@ -1088,6 +1229,62 @@
                                     <td>$15,780</td>
                                     <td>Jun 12, 2023</td>
                                     <td><span class="status-badge status-processing">Processing</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Inventory Status -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Inventory Status</div>
+                            <button class="chart-action-btn">View Details</button>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Current Stock</th>
+                                    <th>Reorder Level</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Quantum Processor X1</td>
+                                    <td>Electronics</td>
+                                    <td>142</td>
+                                    <td>50</td>
+                                    <td><span class="status-badge status-completed">In Stock</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Neural Network Module</td>
+                                    <td>Electronics</td>
+                                    <td>28</td>
+                                    <td>30</td>
+                                    <td><span class="status-badge status-pending">Low Stock</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Holographic Display</td>
+                                    <td>Electronics</td>
+                                    <td>65</td>
+                                    <td>25</td>
+                                    <td><span class="status-badge status-completed">In Stock</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Bio-Sensor Array</td>
+                                    <td>Healthcare</td>
+                                    <td>12</td>
+                                    <td>20</td>
+                                    <td><span class="status-badge status-pending">Low Stock</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Quantum Battery Pack</td>
+                                    <td>Energy</td>
+                                    <td>0</td>
+                                    <td>15</td>
+                                    <td><span class="status-badge status-processing">Out of Stock</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1256,8 +1453,8 @@
                         {
                             label: 'Sales',
                             data: [65000, 75000, 82000, 78000, 92000, 102000],
-                            borderColor: '#4361ee',
-                            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
                             borderWidth: 2,
                             tension: 0.4,
                             fill: true
@@ -1265,8 +1462,8 @@
                         {
                             label: 'Purchases',
                             data: [45000, 52000, 58000, 62000, 68000, 74000],
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
                             borderWidth: 2,
                             tension: 0.4,
                             fill: true
