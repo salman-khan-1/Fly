@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Review Hub | 2090</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-primary: #FAFCFE;
+            --surface: rgba(255, 255, 255, 0.98);
+            --primary: #4A6CF7;
+            --secondary: #6B7280;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --text-primary: #111827;
+            --border: #E5E7EB;
+            --glass-shadow: 0 8px 32px rgba(74, 108, 247, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(74, 108, 247, 0.15);
+        }
+
+        .insight-widget {
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .widget-pulse { background: linear-gradient(135deg, #f0f4ff, #ffffff); }
+        .widget-radar { background: linear-gradient(135deg, #fff0f0, #ffffff); }
+        .widget-throughput { background: linear-gradient(135deg, #f0fff4, #ffffff); }
+        .widget-forecast { background: linear-gradient(135deg, #f0f8ff, #ffffff); }
+
+        .priority-high { border-left: 4px solid var(--error); }
+        .priority-medium { border-left: 4px solid var(--warning); }
+        .priority-low { border-left: 4px solid var(--success); }
+
+        .invoice-card {
+            border: none;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .invoice-card:hover {
+            transform: translateX(4px);
+        }
+
+        .sparkline {
+            height: 20px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 70%, transparent 70%);
+            border-radius: 10px;
+            opacity: 0.6;
+        }
+
+        .confidence-dial {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) 0% 96%, var(--border) 96% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--primary);
+            border-radius: 12px;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--secondary);
+            border-radius: 12px;
+            margin: 0 2px;
+        }
+
+        .ai-insight {
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            display: inline-block;
+            margin: 0.1rem;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+
+        .futuristic-badge {
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Welcome & Insight Cortex -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row align-items-center mb-4">
+                <div class="col">
+                    <h1 class="h3 mb-1">Good Morning, Alex Chen</h1>
+                    <p class="text-muted mb-0">
+                        <span class="pulse-dot"></span>
+                        Cognitive Sync: <strong>Optimal</strong> • Your focus zone is ready
+                    </p>
+                </div>
+                <div class="col-auto">
+                    <span class="futuristic-badge bg-light text-dark">AI-Assisted Review</span>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <!-- Review Queue Pulse -->
+                <div class="col-md-3">
+                    <div class="insight-widget widget-pulse" data-filter="pending">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h2 class="display-6 fw-bold">47</h2>
+                                <p class="text-muted mb-2">Invoices Awaiting Your Decision</p>
+                                <div class="sparkline"></div>
+                                <small class="text-success">+12% from yesterday</small>
+                            </div>
+                            <i class="bi bi-activity fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Urgency Radar -->
+                <div class="col-md-3">
+                    <div class="insight-widget widget-radar" data-filter="urgent">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h2 class="display-6 fw-bold">8</h2>
+                                <p class="text-muted mb-2">High-Priority Flags</p>
+                                <div>
+                                    <span class="badge bg-danger me-1">5 Data Mismatches</span>
+                                    <span class="badge bg-warning">3 Deadline</span>
+                                </div>
+                            </div>
+                            <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Throughput -->
+                <div class="col-md-3">
+                    <div class="insight-widget widget-throughput">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h2 class="display-6 fw-bold">124</h2>
+                                <p class="text-muted mb-2">Processed This Week</p>
+                                <div class="progress mb-1" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 94%"></div>
+                                </div>
+                                <small>Avg: 4.7min (< 5.0min target)</small>
+                            </div>
+                            <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anomaly Forecast -->
+                <div class="col-md-3">
+                    <div class="insight-widget widget-forecast" data-filter="anomaly">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="confidence-dial mb-2">96%</div>
+                                <p class="text-muted mb-1">Predicted Clean Batch</p>
+                                <small class="text-info">4 need attention</small>
+                            </div>
+                            <i class="bi bi-cpu fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Stream -->
+        <div class="glass-card p-4">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="h4 mb-3">Invoice Stream</h2>
+                    
+                    <!-- Filter Bar -->
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                        <div class="flex-grow-1">
+                            <div class="input-group" style="max-width: 400px;">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" id="searchInvoices" class="form-control border-start-0" 
+                                       placeholder="Query by vendor, amount, or describe an issue...">
+                            </div>
+                        </div>
+                        
+                        <div class="nav nav-pills">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-filter="all">All Streams (47)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="urgent">Urgent (8)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-filter="mismatch">Data Mismatch (5)</a>
+                            </li>
+                        </div>
+
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-sort-down"></i> Priority Score
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item sort-option" href="#" data-sort="priority">Priority Score</a></li>
+                                <li><a class="dropdown-item sort-option" href="#" data-sort="date">Date Submitted</a></li>
+                                <li><a class="dropdown-item sort-option" href="#" data-sort="amount">Invoice Amount</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice List -->
+            <div id="invoiceList">
+                <!-- Invoices will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mock data for invoices
+        const invoices = [
+            {
+                id: "INV-2090-78245",
+                vendor: "NeuroSync Solutions",
+                amount: "₿ 0.025",
+                submitted: "08:45 AM",
+                due: "Today, 6:00 PM",
+                priority: "high",
+                insights: [
+                    { type: "success", text: "Vendor Verified" },
+                    { type: "warning", text: "PO #NS-882 Mismatch (Invoice: NS-883)" },
+                    { type: "info", text: "Project Lead: 'Approved, expedite payment.'" }
+                ]
+            },
+            {
+                id: "INV-2090-78246",
+                vendor: "Quantum Processing Inc",
+                amount: "₿ 0.018",
+                submitted: "09:15 AM",
+                due: "Tomorrow, 12:00 PM",
+                priority: "medium",
+                insights: [
+                    { type: "success", text: "Vendor Verified" },
+                    { type: "success", text: "PO Match Confirmed" }
+                ]
+            },
+            {
+                id: "INV-2090-78247",
+                vendor: "HoloDisplay Tech",
+                amount: "₿ 0.042",
+                submitted: "07:30 AM",
+                due: "Today, 3:00 PM",
+                priority: "high",
+                insights: [
+                    { type: "warning", text: "Delivery Receipt Pending" },
+                    { type: "error", text: "Amount exceeds PO limit by 15%" }
+                ]
+            },
+            {
+                id: "INV-2090-78248",
+                vendor: "Neural Interface Corp",
+                amount: "₿ 0.009",
+                submitted: "10:20 AM",
+                due: "In 3 days",
+                priority: "low",
+                insights: [
+                    { type: "success", text: "All checks passed" },
+                    { type: "info", text: "Recurring monthly service" }
+                ]
+            }
+        ];
+
+        // Function to render invoices
+        function renderInvoices(invoiceArray = invoices) {
+            const invoiceList = document.getElementById('invoiceList');
+            invoiceList.innerHTML = '';
+
+            invoiceArray.forEach(invoice => {
+                const priorityClass = `priority-${invoice.priority}`;
+                const priorityText = invoice.priority.charAt(0).toUpperCase() + invoice.priority.slice(1);
+                
+                let insightsHTML = '';
+                invoice.insights.forEach(insight => {
+                    const bgClass = insight.type === 'success' ? 'bg-success' : 
+                                  insight.type === 'warning' ? 'bg-warning' : 
+                                  insight.type === 'error' ? 'bg-danger' : 'bg-info';
+                    insightsHTML += `<span class="ai-insight ${bgClass} bg-opacity-10 text-dark">${insight.text}</span>`;
+                });
+
+                const invoiceCard = `
+                    <div class="card invoice-card ${priorityClass}" data-priority="${invoice.priority}" data-id="${invoice.id}">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge ${invoice.priority === 'high' ? 'bg-danger' : invoice.priority === 'medium' ? 'bg-warning' : 'bg-success'} me-2">${priorityText}</span>
+                                        <h5 class="card-title mb-0">${invoice.id}</h5>
+                                    </div>
+                                    <p class="card-text mb-1">
+                                        <strong>Vendor:</strong> ${invoice.vendor} • 
+                                        <strong>Amount:</strong> ${invoice.amount}
+                                    </p>
+                                    <p class="card-text text-muted small mb-2">
+                                        Submitted: ${invoice.submitted} | Due: ${invoice.due}
+                                    </p>
+                                    <div class="mb-2">
+                                        ${insightsHTML}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-secondary btn-sm" onclick="previewInvoice('${invoice.id}')">
+                                            <i class="bi bi-eye"></i> Preview
+                                        </button>
+                                        <button class="btn btn-success btn-sm" onclick="approveInvoice('${invoice.id}')">
+                                            <i class="bi bi-check-lg"></i> Approve
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="queryInvoice('${invoice.id}')">
+                                            <i class="bi bi-question-circle"></i> Query
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                invoiceList.innerHTML += invoiceCard;
+            });
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            // Insight widget filters
+            document.querySelectorAll('.insight-widget[data-filter]').forEach(widget => {
+                widget.style.cursor = 'pointer';
+                widget.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    filterInvoices(filter);
+                });
+            });
+
+            // Nav pill filters
+            document.querySelectorAll('.nav-pills .nav-link').forEach(pill => {
+                pill.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-pills .nav-link').forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    filterInvoices(filter);
+                });
+            });
+
+            // Search functionality
+            document.getElementById('searchInvoices').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                if (searchTerm.length === 0) {
+                    renderInvoices();
+                    return;
+                }
+
+                const filtered = invoices.filter(invoice => 
+                    invoice.id.toLowerCase().includes(searchTerm) ||
+                    invoice.vendor.toLowerCase().includes(searchTerm) ||
+                    invoice.amount.toLowerCase().includes(searchTerm)
+                );
+                renderInvoices(filtered);
+            });
+
+            // Sort functionality
+            document.querySelectorAll('.sort-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sortType = this.getAttribute('data-sort');
+                    sortInvoices(sortType);
+                });
+            });
+        }
+
+        function filterInvoices(filter) {
+            let filtered = [...invoices];
+            
+            switch(filter) {
+                case 'urgent':
+                    filtered = invoices.filter(inv => inv.priority === 'high');
+                    break;
+                case 'mismatch':
+                    filtered = invoices.filter(inv => 
+                        inv.insights.some(insight => insight.text.includes('Mismatch'))
+                    );
+                    break;
+                case 'anomaly':
+                    // Simulate AI-flagged invoices
+                    filtered = [invoices[0], invoices[2]];
+                    break;
+                case 'pending':
+                    // All invoices are pending in this demo
+                    break;
+            }
+            
+            renderInvoices(filtered);
+        }
+
+        function sortInvoices(sortType) {
+            const sorted = [...invoices];
+            
+            switch(sortType) {
+                case 'priority':
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    sorted.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+                    break;
+                case 'date':
+                    // Simple time-based sort for demo
+                    sorted.sort((a, b) => a.submitted.localeCompare(b.submitted));
+                    break;
+                case 'amount':
+                    sorted.sort((a, b) => parseFloat(b.amount.split(' ')[1]) - parseFloat(a.amount.split(' ')[1]));
+                    break;
+            }
+            
+            renderInvoices(sorted);
+        }
+
+        // Action functions
+        function previewInvoice(invoiceId) {
+            alert(`Previewing invoice: ${invoiceId}\n\nThis would open a detailed view with all invoice data, attached documents, and AI analysis.`);
+        }
+
+        function approveInvoice(invoiceId) {
+            if (confirm(`Approve invoice ${invoiceId}? This action will be logged and processed immediately.`)) {
+                // In a real app, this would make an API call
+                alert(`Invoice ${invoiceId} approved successfully!`);
+                // Remove from list or update status
+                const invoiceIndex = invoices.findIndex(inv => inv.id === invoiceId);
+                if (invoiceIndex > -1) {
+                    invoices.splice(invoiceIndex, 1);
+                    renderInvoices();
+                }
+            }
+        }
+
+        function queryInvoice(invoiceId) {
+            const query = prompt(`Enter your query for invoice ${invoiceId}:`, "Can you clarify the PO mismatch?");
+            if (query) {
+                alert(`Query sent for ${invoiceId}:\n"${query}"\n\nThe vendor and project lead will be notified.`);
+            }
+        }
+
+        // Voice command simulation (conceptual)
+        function setupVoiceCommands() {
+            // This is a conceptual implementation
+            console.log("Voice commands available: Try saying 'show urgent invoices' or 'search Quantum Corp'");
+            
+            // In a real implementation, this would use the Web Speech API
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === '.') {
+                    alert("Voice command interface activated! In a real implementation, this would use the Web Speech API for natural language processing.");
+                }
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            renderInvoices();
+            setupFilters();
+            setupVoiceCommands();
+            
+            // Add some futuristic console message
+            console.log(`%cInvoice Review Hub v2090.4.1 | Cognitive Interface Active`, 
+                'background: #4A6CF7; color: white; padding: 8px; border-radius: 4px; font-weight: bold;');
+        });
+    </script>
+</body>
+</html>
