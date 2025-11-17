@@ -3,46 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Dashboard</title>
+    <title>Invoice Dashboard | 2090</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1e40af;
-            --primary-light: #3b82f6;
-            --primary-dark: #1e3a8a;
-            --secondary: #059669;
-            --secondary-light: #10b981;
-            --accent: #d97706;
-            --surface: #ffffff;
-            --surface-light: #f8fafc;
-            --surface-dark: #f1f5f9;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-light: #94a3b8;
-            --border: #e2e8f0;
-            --success: #059669;
-            --warning: #d97706;
-            --error: #dc2626;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --bg-primary: #FAFCFE;
+            --surface: rgba(255, 255, 255, 0.92);
+            --primary: #4A6CF7;
+            --secondary: #6B7280;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --text-primary: #111827;
+            --border: rgba(229, 231, 235, 0.6);
+            --glass-shadow: 0 8px 32px rgba(74, 108, 247, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            
+            /* Happy right border colors */
+            
+            
+              /* Color palette - 6 colors that will repeat */
+             --happy-blue: #4A6CF7;
+             --happy-green: #10B981;
+             --happy-purple: #8B5CF6;
+             --happy-pink: #EC4899;
+             --happy-orange: #F59E0B;
+             --happy-cyan: #06B6D4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding: 1rem;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+        }
+
+        /* ===== GLASS MORPHISM COMPONENTS ===== */
+        .glass-card {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+            margin-bottom: 2.2rem;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(74, 108, 247, 0.12);
         }
 
         .dashboard-embed-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 2.2rem;
             margin: 0;
             padding: 0;
         }
 
+        /* ===== WELCOME CARD ===== */
         .welcome-card {
-            background: var(--surface);
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
             overflow: hidden;
             position: relative;
-            border: 1px solid var(--border);
         }
 
         .card-header {
@@ -51,7 +87,7 @@
             justify-content: space-between;
             align-items: flex-start;
             position: relative;
-            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(255, 255, 255, 0.7) 100%);
         }
 
         .welcome-content {
@@ -70,8 +106,8 @@
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--primary-light);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            border: 3px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.15);
         }
 
         .user-text h1 {
@@ -83,37 +119,38 @@
         }
 
         .user-text p {
-            color: var(--text-secondary);
+            color: var(--secondary);
             font-size: 0.95rem;
             max-width: 500px;
             line-height: 1.4;
         }
 
-        /* IMPROVED METRICS GRID */
+        /* ===== IMPROVED METRICS GRID ===== */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .metric {
             background: var(--surface);
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             cursor: pointer;
+            backdrop-filter: blur(12px);
         }
 
         .metric:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(74, 108, 247, 0.15);
         }
 
         .metric::before {
@@ -121,17 +158,21 @@
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary);
+            width: 6px;
+            height: 100%;
+            transition: var(--transition);
+        }
+
+        .metric:nth-child(1)::before {
+            background: linear-gradient(to bottom, var(--primary), #4A6CF7);
         }
 
         .metric:nth-child(2)::before {
-            background: var(--secondary);
+            background: linear-gradient(to bottom, var(--success), #10B981);
         }
 
         .metric:nth-child(3)::before {
-            background: var(--accent);
+            background: linear-gradient(to bottom, var(--warning), #F59E0B);
         }
 
         .metric-header {
@@ -143,7 +184,7 @@
 
         .metric-title {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: var(--secondary);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -157,9 +198,9 @@
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            background: rgba(37, 99, 235, 0.08);
+            background: rgba(74, 108, 247, 0.08);
             font-size: 1.1rem;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .metric:hover .metric-icon {
@@ -167,13 +208,13 @@
         }
 
         .metric:nth-child(2) .metric-icon {
-            color: var(--secondary);
-            background: rgba(5, 150, 105, 0.08);
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.08);
         }
 
         .metric:nth-child(3) .metric-icon {
-            color: var(--accent);
-            background: rgba(217, 119, 6, 0.08);
+            color: var(--warning);
+            background: rgba(245, 158, 11, 0.08);
         }
 
         .metric-value {
@@ -208,6 +249,7 @@
             font-weight: 600;
         }
 
+        /* ===== ACTION CARD ===== */
         .invoice-actions {
             display: flex;
             justify-content: center;
@@ -215,17 +257,18 @@
 
         .action-card {
             background: var(--surface);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
             cursor: pointer;
             text-align: center;
             position: relative;
             overflow: hidden;
             width: 100%;
             max-width: 280px;
+            backdrop-filter: blur(12px);
         }
 
         .action-card::before {
@@ -233,21 +276,15 @@
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .action-card:hover::before {
-            transform: scaleX(1);
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), #4A6CF7);
+            transition: var(--transition);
         }
 
         .action-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-light);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(74, 108, 247, 0.15);
         }
 
         .action-icon {
@@ -260,8 +297,8 @@
             margin: 0 auto 1rem;
             font-size: 1.5rem;
             color: var(--primary);
-            background: rgba(37, 99, 235, 0.08);
-            transition: all 0.3s ease;
+            background: rgba(74, 108, 247, 0.08);
+            transition: var(--transition);
         }
 
         .action-card:hover .action-icon {
@@ -279,7 +316,7 @@
 
         .action-desc {
             font-size: 0.9rem;
-            color: var(--text-secondary);
+            color: var(--secondary);
             line-height: 1.4;
         }
 
@@ -298,7 +335,7 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(74, 108, 247, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -318,7 +355,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px dashed rgba(37, 99, 235, 0.2);
+            border: 2px dashed rgba(74, 108, 247, 0.2);
             animation: rotate 30s linear infinite;
         }
 
@@ -327,48 +364,14 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* NEW: Progress indicators for metrics */
-        .metric-progress {
-            height: 3px;
-            background: var(--surface-dark);
-            border-radius: 2px;
-            margin: 0.75rem 0;
-            overflow: hidden;
-        }
-
-        .metric-progress-bar {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-
-        .metric:nth-child(1) .metric-progress-bar {
-            background: var(--primary);
-            width: 80%;
-        }
-
-        .metric:nth-child(2) .metric-progress-bar {
-            background: var(--secondary);
-            width: 98.7%;
-        }
-
-        .metric:nth-child(3) .metric-progress-bar {
-            background: var(--accent);
-            width: 20%;
-        }
-
-        /* UPDATED REVIEW SECTION - SINGLE ROW LAYOUT */
+        /* ===== REVIEW SECTION ===== */
         .review-section {
-            background: var(--surface);
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
             overflow: hidden;
-            border: 1px solid var(--border);
         }
 
         .section-header {
             padding: 1.5rem 2rem;
-            background: var(--surface-light);
+            background: rgba(255, 255, 255, 0.7);
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -385,11 +388,11 @@
         }
 
         .section-title i {
-            color: var(--accent);
+            color: var(--warning);
         }
 
         .section-badge {
-            background: var(--accent);
+            background: var(--warning);
             color: white;
             border-radius: 20px;
             padding: 4px 12px;
@@ -401,24 +404,71 @@
         .invoices-container {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 3.7rem; /* Increased spacing between invoice rows */
+            padding: 1.5rem 2rem;
         }
 
         .invoice-row {
             display: flex;
             align-items: center;
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.2s ease;
+            transition: var(--transition);
             gap: 1.5rem;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
         }
 
-        .invoice-row:last-child {
-            border-bottom: none;
+        .invoice-row::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            border-radius: 0 16px 16px 0;
+        }
+
+       /* CSS MODULO PATTERN - WORKS FOR 200+ CHILDREN */
+/* The pattern repeats every 6 items automatically */
+
+/* Every 1st, 7th, 13th, 19th... item (6n+1) */
+.invoice-row:nth-child(6n+1)::after {
+    background: linear-gradient(to bottom, var(--happy-blue), #4A6CF7);
+}
+
+/* Every 2nd, 8th, 14th, 20th... item (6n+2) */
+.invoice-row:nth-child(6n+2)::after {
+    background: linear-gradient(to bottom, var(--happy-green), #10B981);
+}
+
+        /* Every 3rd, 9th, 15th, 21st... item (6n+3) */
+        .invoice-row:nth-child(6n+3)::after {
+            background: linear-gradient(to bottom, var(--happy-purple), #8B5CF6);
+        }
+        
+        /* Every 4th, 10th, 16th, 22nd... item (6n+4) */
+        .invoice-row:nth-child(6n+4)::after {
+            background: linear-gradient(to bottom, var(--happy-pink), #EC4899);
+        }
+        
+        /* Every 5th, 11th, 17th, 23rd... item (6n+5) */
+        .invoice-row:nth-child(6n+5)::after {
+            background: linear-gradient(to bottom, var(--happy-orange), #F59E0B);
+        }
+        
+        /* Every 6th, 12th, 18th, 24th... item (6n+6) */
+        .invoice-row:nth-child(6n+6)::after {
+            background: linear-gradient(to bottom, var(--happy-cyan), #06B6D4);
         }
 
         .invoice-row:hover {
-            background: var(--surface-light);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(74, 108, 247, 0.15);
         }
 
         .invoice-info {
@@ -438,7 +488,7 @@
             display: flex;
             gap: 1.5rem;
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: var(--secondary);
         }
 
         .invoice-vendor {
@@ -447,7 +497,7 @@
         }
 
         .invoice-date {
-            color: var(--text-light);
+            color: var(--secondary);
         }
 
         .invoice-amount {
@@ -460,8 +510,8 @@
 
         .invoice-note {
             flex: 2;
-            background: rgba(217, 119, 6, 0.08);
-            border-left: 3px solid var(--accent);
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 3px solid var(--warning);
             padding: 1rem;
             border-radius: 0 6px 6px 0;
             margin: 0;
@@ -475,7 +525,7 @@
         }
 
         .note-header i {
-            color: var(--accent);
+            color: var(--warning);
         }
 
         .note-title {
@@ -498,39 +548,43 @@
         }
 
         .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
+            transition: var(--transition);
+            border: 1px solid transparent;
             display: flex;
             align-items: center;
             gap: 0.4rem;
         }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
+            background: rgba(74, 108, 247, 0.08);
+            color: var(--primary);
+            border-color: rgba(74, 108, 247, 0.2);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-outline {
             background: transparent;
-            color: var(--text-secondary);
+            color: var(--secondary);
             border: 1px solid var(--border);
         }
 
         .btn-outline:hover {
-            background: var(--surface-light);
+            background: rgba(255, 255, 255, 0.7);
             border-color: var(--primary);
             color: var(--primary);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .view-all-btn {
@@ -541,14 +595,32 @@
             font-weight: 600;
             font-size: 0.9rem;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: var(--transition);
         }
 
         .view-all-btn:hover {
-            color: var(--primary-dark);
+            color: var(--primary);
+            transform: translateX(3px);
         }
 
-        /* Responsive adjustments */
+        /* ===== PULSE DOT ===== */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+
+        /* ===== RESPONSIVE ADJUSTMENTS ===== */
         @media (max-width: 1024px) {
             .invoice-row {
                 flex-wrap: wrap;
@@ -611,6 +683,11 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .invoices-container {
+                gap: 2rem;
+                padding: 1rem;
+            }
         }
 
         @media (max-width: 576px) {
@@ -634,20 +711,24 @@
             .user-text h1 {
                 font-size: 1.3rem;
             }
+            
+            .invoices-container {
+                gap: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard-embed-container">
         <!-- Welcome Card Section -->
-        <div class="welcome-card">
+        <div class="welcome-card glass-card">
             <div class="card-header">
                 <div class="welcome-content">
                     <div class="user-info">
                         <img src="https://images.unsplash.com/photo-1551836026-d5c88ac5c93d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Accountant" class="user-avatar">
                         <div class="user-text">
                             <h1>Welcome back, Sarah Johnson</h1>
-                            <p>Invoice Entry Specialist • Focus on accurate data entry. Your entries are submitted for review and approval.</p>
+                            <p><span class="pulse-dot"></span>Invoice Entry Specialist • Focus on accurate data entry. Your entries are submitted for review and approval.</p>
                         </div>
                     </div>
                     
@@ -661,9 +742,6 @@
                                 </div>
                             </div>
                             <div class="metric-value">24</div>
-                            <div class="metric-progress">
-                                <div class="metric-progress-bar"></div>
-                            </div>
                             <div class="metric-description positive">
                                 <div class="metric-trend">
                                     <i class="fas fa-arrow-up"></i>
@@ -680,9 +758,6 @@
                                 </div>
                             </div>
                             <div class="metric-value">98.7%</div>
-                            <div class="metric-progress">
-                                <div class="metric-progress-bar"></div>
-                            </div>
                             <div class="metric-description positive">
                                 <div class="metric-trend">
                                     <i class="fas fa-arrow-up"></i>
@@ -699,9 +774,6 @@
                                 </div>
                             </div>
                             <div class="metric-value">2</div>
-                            <div class="metric-progress">
-                                <div class="metric-progress-bar"></div>
-                            </div>
                             <div class="metric-description negative">
                                 <div class="metric-trend">
                                     <i class="fas fa-exclamation-circle"></i>
@@ -731,7 +803,7 @@
         </div>
 
         <!-- Review Section - UPDATED TO SINGLE ROW LAYOUT -->
-        <div class="review-section">
+        <div class="review-section glass-card">
             <div class="section-header">
                 <div class="section-title">
                     <i class="fas fa-search"></i>
@@ -847,7 +919,7 @@
             const cards = document.querySelectorAll('.metric, .action-card');
             cards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-3px)';
+                    this.style.transform = 'translateY(-5px)';
                 });
                 card.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
@@ -858,24 +930,12 @@
             const rows = document.querySelectorAll('.invoice-row');
             rows.forEach(row => {
                 row.addEventListener('mouseenter', function() {
-                    this.style.backgroundColor = '#f8fafc';
+                    this.style.transform = 'translateY(-5px)';
                 });
                 row.addEventListener('mouseleave', function() {
-                    this.style.backgroundColor = '';
+                    this.style.transform = 'translateY(0)';
                 });
             });
-            
-            // Animate progress bars on load
-            setTimeout(() => {
-                const progressBars = document.querySelectorAll('.metric-progress-bar');
-                progressBars.forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 300);
-                });
-            }, 500);
         });
 
         function handleAction(action) {
