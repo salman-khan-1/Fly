@@ -115,19 +115,6 @@
         .insight-info { background: rgba(59, 130, 246, 0.12); color: #1e40af; }
 
         /* ===== INTERACTIVE ELEMENTS ===== */
-        .nav-pills .nav-link {
-            color: var(--secondary);
-            border-radius: 12px;
-            margin: 0 2px;
-            transition: var(--transition);
-        }
-
-        .nav-pills .nav-link.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.3);
-        }
-
         .btn-action {
             border-radius: 10px;
             padding: 0.5rem 1rem;
@@ -221,6 +208,44 @@
                 opacity: 1;
             }
         }
+
+        /* ===== IMPROVED INSIGHT WIDGETS ===== */
+        .metric-change {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        .metric-positive {
+            background: rgba(16, 185, 129, 0.15);
+            color: #065f46;
+        }
+
+        .metric-negative {
+            background: rgba(239, 68, 68, 0.15);
+            color: #991b1b;
+        }
+
+        .metric-neutral {
+            background: rgba(107, 114, 128, 0.15);
+            color: #6B7280;
+        }
+
+        .widget-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .widget-icon-primary { background: rgba(74, 108, 247, 0.15); color: var(--primary); }
+        .widget-icon-danger { background: rgba(239, 68, 68, 0.15); color: var(--error); }
+        .widget-icon-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .widget-icon-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
     </style>
 </head>
 <body>
@@ -246,34 +271,35 @@
             <div class="row g-3">
                 <!-- Review Queue Pulse -->
                 <div class="col-xl-3 col-lg-6">
-                    <div class="insight-widget widget-pulse active" data-filter="all">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h2 class="display-6 fw-bold counter" data-target="47">0</h2>
-                                <p class="text-muted mb-2">Invoices Awaiting Decision</p>
-                                <div class="progress mb-1" style="height: 6px;">
-                                    <div class="progress-bar bg-primary" style="width: 70%"></div>
-                                </div>
-                                <small class="text-success">+12% from yesterday</small>
+                    <div class="insight-widget widget-pulse">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="widget-icon widget-icon-primary">
+                                <i class="bi bi-stack"></i>
                             </div>
-                            <i class="bi bi-activity fs-4 text-primary"></i>
+                            <span class="metric-change metric-positive">+12%</span>
+                        </div>
+                        <h2 class="display-6 fw-bold counter" data-target="47">0</h2>
+                        <p class="text-muted mb-0">Pending Invoices</p>
+                        <div class="mt-2">
+                            <small class="text-muted">Last 7 days: 32 processed</small>
                         </div>
                     </div>
                 </div>
 
                 <!-- Urgency Radar -->
                 <div class="col-xl-3 col-lg-6">
-                    <div class="insight-widget widget-radar" data-filter="urgent">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h2 class="display-6 fw-bold counter" data-target="8">0</h2>
-                                <p class="text-muted mb-2">High-Priority Flags</p>
-                                <div>
-                                    <span class="badge bg-danger me-1">5 Mismatches</span>
-                                    <span class="badge bg-warning">3 Deadline</span>
-                                </div>
+                    <div class="insight-widget widget-radar">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="widget-icon widget-icon-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
                             </div>
-                            <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                            <span class="metric-change metric-negative">+3</span>
+                        </div>
+                        <h2 class="display-6 fw-bold counter" data-target="8">0</h2>
+                        <p class="text-muted mb-0">Require Attention</p>
+                        <div class="mt-2">
+                            <span class="badge bg-danger me-1">5 Mismatches</span>
+                            <span class="badge bg-warning">3 Overdue</span>
                         </div>
                     </div>
                 </div>
@@ -281,38 +307,39 @@
                 <!-- Weekly Throughput -->
                 <div class="col-xl-3 col-lg-6">
                     <div class="insight-widget widget-throughput">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h2 class="display-6 fw-bold counter" data-target="124">0</h2>
-                                <p class="text-muted mb-2">Processed This Week</p>
-                                <div class="progress mb-1" style="height: 6px;">
-                                    <div class="progress-bar bg-success" style="width: 94%"></div>
-                                </div>
-                                <small>Avg: <span class="counter" data-target="4.7" data-decimal="1">0</span>min (< 5.0min target)</small>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="widget-icon widget-icon-success">
+                                <i class="bi bi-graph-up-arrow"></i>
                             </div>
-                            <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                            <span class="metric-change metric-positive">+8%</span>
+                        </div>
+                        <h2 class="display-6 fw-bold counter" data-target="124">0</h2>
+                        <p class="text-muted mb-0">Processed This Week</p>
+                        <div class="mt-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small>Avg: <span class="counter" data-target="4.7" data-decimal="1">0</span>min</small>
+                                <small class="text-success">Target: < 5.0min</small>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Anomaly Forecast -->
                 <div class="col-xl-3 col-lg-6">
-                    <div class="insight-widget widget-forecast" data-filter="anomaly">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="position-relative me-3">
-                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                            <span class="fw-bold counter" data-target="96">0</span><small>%</small>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="text-muted mb-0">Predicted Clean</p>
-                                        <small class="text-info">4 need attention</small>
-                                    </div>
-                                </div>
+                    <div class="insight-widget widget-forecast">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="widget-icon widget-icon-warning">
+                                <i class="bi bi-cpu"></i>
                             </div>
-                            <i class="bi bi-cpu fs-4 text-primary"></i>
+                            <span class="metric-change metric-neutral">96%</span>
+                        </div>
+                        <h2 class="display-6 fw-bold">4</h2>
+                        <p class="text-muted mb-0">AI Flagged Anomalies</p>
+                        <div class="mt-2">
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 96%"></div>
+                            </div>
+                            <small class="text-muted">Confidence Score: 96%</small>
                         </div>
                     </div>
                 </div>
@@ -325,8 +352,8 @@
                 <div class="col">
                     <h2 class="h4 mb-3">Invoice Stream</h2>
                     
-                    <!-- Filter & Search Bar -->
-                    <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <!-- Search & Sort Bar -->
+                    <div class="d-flex flex-wrap align-items-center gap-3">
                         <div class="flex-grow-1">
                             <div class="input-group" style="max-width: 400px;">
                                 <span class="input-group-text bg-light border-end-0">
@@ -335,21 +362,6 @@
                                 <input type="text" id="searchInvoices" class="form-control border-start-0" 
                                        placeholder="Search by vendor, ID, amount, or description...">
                             </div>
-                        </div>
-                        
-                        <div class="nav nav-pills">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#" data-filter="all">All Streams</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-filter="urgent">Urgent</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-filter="mismatch">Mismatch</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-filter="anomaly">Anomaly</a>
-                            </li>
                         </div>
 
                         <div class="dropdown">
@@ -383,7 +395,6 @@
             filteredInvoices: [],
             filters: {
                 search: '',
-                category: 'all',
                 sort: 'priority'
             },
             compactMode: false
@@ -522,7 +533,7 @@
         function animateCounters() {
             const counters = document.querySelectorAll('.counter');
             counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'));
+                const target = parseFloat(counter.getAttribute('data-target'));
                 const hasDecimal = counter.getAttribute('data-decimal') === '1';
                 const increment = target / 50;
                 let current = 0;
@@ -573,7 +584,7 @@
                     <div class="text-center py-5">
                         <i class="bi bi-inboxes display-1 text-muted"></i>
                         <h4 class="mt-3 text-muted">No invoices found</h4>
-                        <p class="text-muted">Try adjusting your filters or search query</p>
+                        <p class="text-muted">Try adjusting your search query</p>
                     </div>
                 `;
                 return;
@@ -656,31 +667,6 @@
                 );
             }
             
-            // Apply category filter
-            if (state.filters.category !== 'all') {
-                switch(state.filters.category) {
-                    case 'urgent':
-                        filtered = filtered.filter(inv => inv.priority === 'high');
-                        break;
-                    case 'mismatch':
-                        filtered = filtered.filter(inv => 
-                            inv.insights.some(insight => 
-                                insight.text.toLowerCase().includes('mismatch')
-                            )
-                        );
-                        break;
-                    case 'anomaly':
-                        // Simulate AI-flagged invoices (high priority + warnings/errors)
-                        filtered = filtered.filter(inv => 
-                            inv.priority === 'high' && 
-                            inv.insights.some(insight => 
-                                insight.type === 'warning' || insight.type === 'error'
-                            )
-                        );
-                        break;
-                }
-            }
-            
             // Apply sorting
             switch(state.filters.sort) {
                 case 'priority':
@@ -701,54 +687,6 @@
 
         // ===== EVENT HANDLERS =====
         function setupEventListeners() {
-            // Insight widget filters
-            document.querySelectorAll('.insight-widget[data-filter]').forEach(widget => {
-                widget.addEventListener('click', function() {
-                    // Remove active class from all widgets
-                    document.querySelectorAll('.insight-widget').forEach(w => {
-                        w.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked widget
-                    this.classList.add('active');
-                    
-                    const filter = this.getAttribute('data-filter');
-                    state.filters.category = filter;
-                    filterInvoices();
-                    
-                    // Update nav pills to match
-                    document.querySelectorAll('.nav-pills .nav-link').forEach(pill => {
-                        pill.classList.remove('active');
-                        if (pill.getAttribute('data-filter') === filter) {
-                            pill.classList.add('active');
-                        }
-                    });
-                });
-            });
-
-            // Nav pill filters
-            document.querySelectorAll('.nav-pills .nav-link').forEach(pill => {
-                pill.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Update active state
-                    document.querySelectorAll('.nav-pills .nav-link').forEach(p => p.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update insight widgets
-                    document.querySelectorAll('.insight-widget').forEach(w => {
-                        w.classList.remove('active');
-                        if (w.getAttribute('data-filter') === this.getAttribute('data-filter')) {
-                            w.classList.add('active');
-                        }
-                    });
-                    
-                    const filter = this.getAttribute('data-filter');
-                    state.filters.category = filter;
-                    filterInvoices();
-                });
-            });
-
             // Search with debounce
             const searchInput = document.getElementById('searchInvoices');
             const debouncedSearch = debounce(function(e) {
@@ -787,10 +725,10 @@
 
         // ===== ACTION FUNCTIONS =====
         function previewInvoice(invoiceId) {
-            const invoice = state.invoices.find(inv => inv.id === invoiceId);
-            if (invoice) {
-                alert(`Previewing invoice: ${invoiceId}\n\nVendor: ${invoice.vendor}\nAmount: ${invoice.amount}\n\nThis would open a detailed modal with full invoice data, attached documents, and AI analysis.`);
-            }
+            // This function will be handled later for navigation to specific page
+            console.log(`Previewing invoice: ${invoiceId}`);
+            // For now, we'll show an alert
+            alert(`Preview functionality for ${invoiceId} will be implemented in the next phase.`);
         }
 
         function approveInvoice(invoiceId) {
@@ -805,6 +743,9 @@
                     
                     // Show success message
                     showToast(`Invoice ${invoiceId} approved successfully!`, 'success');
+                    
+                    // Update insight widgets
+                    updateInsightWidgets();
                 }
             }
         }
@@ -851,6 +792,17 @@
             });
         }
 
+        // ===== INSIGHT WIDGET UPDATES =====
+        function updateInsightWidgets() {
+            // Calculate updated metrics
+            const pendingCount = state.invoices.length;
+            const urgentCount = state.invoices.filter(inv => inv.priority === 'high').length;
+            const processedCount = 124; // This would normally come from an API
+            
+            // Update counters with animation
+            animateCounters();
+        }
+
         // ===== INITIALIZATION =====
         function init() {
             // Show skeleton loaders
@@ -872,7 +824,7 @@
                 animateCounters();
                 
                 // Add console message
-                console.log(`%cInvoice Review Hub v2090.4.2 | Cognitive Interface Active`, 
+                console.log(`%cInvoice Review Hub v2090.4.3 | Cognitive Interface Active`, 
                     'background: #4A6CF7; color: white; padding: 8px; border-radius: 4px; font-weight: bold;');
             }, 1200);
         }
