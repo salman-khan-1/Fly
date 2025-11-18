@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced WMS KPI Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #f0f5ff;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --accent-blue: #0099ff;
+            --accent-purple: #9966ff;
+            --accent-cyan: #00e5ff;
+            --accent-pink: #ff66cc;
+            --accent-green: #00e676;
+            --accent-orange: #ff9800;
+            --text-dark: #222233;
+            --text-light: #666699;
+            --border-light: rgba(0, 153, 255, 0.25);
+            --shadow-light: 0 4px 20px rgba(0, 153, 255, 0.1);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-dark);
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-weight: 350;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .department-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 153, 255, 0.2);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 
+                0 4px 20px rgba(0, 153, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            min-height: 140px;
+            cursor: pointer;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .kpi-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 
+                0 10px 25px rgba(0, 153, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .kpi-title {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-light);
+            line-height: 1.2;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .kpi-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .kpi-card:hover .kpi-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: linear-gradient(135deg, rgba(0, 153, 255, 0.2), rgba(153, 102, 255, 0.2));
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            word-break: break-word;
+        }
+
+        .kpi-period {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .kpi-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            background: rgba(0, 230, 118, 0.1);
+            color: #00e676;
+            align-self: flex-start;
+            margin-top: auto;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .kpi-card:hover .kpi-change {
+            transform: translateY(-2px);
+        }
+
+        .negative {
+            background: rgba(255, 64, 129, 0.1);
+            color: #ff4081;
+        }
+
+        .neutral {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .prediction-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            width: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1s ease;
+        }
+
+        .kpi-card:hover .prediction-line {
+            transform: scaleX(1);
+        }
+
+        .department-section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-table-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 20px rgba(0, 153, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+        .data-table-container:hover {
+            box-shadow: 
+                0 8px 30px rgba(0, 153, 255, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .data-table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-table-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-table-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--accent-blue);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 153, 255, 0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .data-table th {
+            background: rgba(0, 153, 255, 0.05);
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+            font-size: 0.82rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(0, 153, 255, 0.03);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .positive {
+            color: #00e676;
+        }
+
+        .negative {
+            color: #ff4081;
+        }
+
+        .neutral {
+            color: #ff9800;
+        }
+
+        .trend-indicator {
+            margin-left: 5px;
+            font-size: 0.75rem;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Column width adjustments for table */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 18%;
+        }
+
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3) {
+            width: 30%;
+        }
+
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(5),
+        .data-table td:nth-child(5) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(6),
+        .data-table td:nth-child(6) {
+            width: 16%;
+        }
+
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .kpi-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .data-table th,
+            .data-table td {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .department-filters {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .kpi-card {
+                min-height: 130px;
+                padding: 14px;
+            }
+            
+            .kpi-value {
+                font-size: 1.4rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .data-table-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .kpi-card {
+                padding: 12px;
+            }
+            
+            .kpi-value {
+                font-size: 1.3rem;
+            }
+            
+            .kpi-title {
+                font-size: 0.78rem;
+            }
+            
+            .kpi-period {
+                font-size: 0.68rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>
+                <i class="fas fa-warehouse"></i>
+                ADVANCED WMS DASHBOARD
+            </h1>
+            <div class="department-filters">
+                <button class="filter-btn active">All Departments</button>
+                <button class="filter-btn">Operations</button>
+                <button class="filter-btn">Inventory</button>
+                <button class="filter-btn">Financial</button>
+                <button class="filter-btn">Shipping</button>
+                <button class="filter-btn">Quality</button>
+            </div>
+        </div>
+        
+        <!-- Operations Department -->
+        <div class="department-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cogs"></i>
+                    Operations Department
+                </h2>
+                <div class="section-controls">
+                    <span class="status-indicator">Live Data</span>
+                </div>
+            </div>
+            
+            <div class="kpi-grid">
+                <!-- Original KPIs -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Receivable</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">$124,580</div>
+                    <div class="kpi-period">Today vs One Month Ago</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+5.2%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Payable</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">$87,420</div>
+                    <div class="kpi-period">Today vs One Month Ago</div>
+                    <div class="kpi-change negative">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>-2.8%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <!-- Additional Operations KPIs -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Order Picking Accuracy</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">99.4%</div>
+                    <div class="kpi-period">Today vs Last Week</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0.3%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">On-time Shipment</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">97.8%</div>
+                    <div class="kpi-period">This Week vs Last Week</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+1.2%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inventory Department -->
+        <div class="department-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-boxes"></i>
+                    Inventory Department
+                </h2>
+                <div class="section-controls">
+                    <span class="status-indicator">Live Data</span>
+                </div>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Inventory Turnover</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-retweet"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">8.2x</div>
+                    <div class="kpi-period">Current Month vs Previous</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0.5x</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Stockout Rate</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">1.4%</div>
+                    <div class="kpi-period">Current Week vs Last Week</div>
+                    <div class="kpi-change negative">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0.3%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Inventory Accuracy</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">98.7%</div>
+                    <div class="kpi-period">Current vs Target</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0.4%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Financial Department -->
+        <div class="department-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Financial Department
+                </h2>
+                <div class="section-controls">
+                    <span class="status-indicator">Live Data</span>
+                </div>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card pulse">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Invoices Created Today</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">142</div>
+                    <div class="kpi-period">Current</div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Invoices Created This Week</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">897</div>
+                    <div class="kpi-period">Current</div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Cost per Order</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">$8.42</div>
+                    <div class="kpi-period">This Month vs Last Month</div>
+                    <div class="kpi-change negative">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+$0.23</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Sales</div>
+                        <div class="kpi-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">$2.45M</div>
+                    <div class="kpi-period">This Month vs Same Last Quarter</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12.7%</span>
+                    </div>
+                    <div class="prediction-line"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comprehensive Data Table -->
+        <div class="data-table-container">
+            <div class="data-table-header">
+                <div class="data-table-title">
+                    <i class="fas fa-table"></i>
+                    Comprehensive Performance Metrics
+                </div>
+                <div class="data-table-controls">
+                    <button class="control-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-expand-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Indicator</th>
+                            <th>Period</th>
+                            <th>Current</th>
+                            <th>Previous</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Operations</td>
+                            <td>Receivable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$124,580</td>
+                            <td>$118,420</td>
+                            <td class="positive">
+                                <span>+5.2%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Operations</td>
+                            <td>Payable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$87,420</td>
+                            <td>$89,950</td>
+                            <td class="negative">
+                                <span>-2.8%</span>
+                                <i class="fas fa-arrow-down trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Financial</td>
+                            <td>Invoices Created Today</td>
+                            <td>Current</td>
+                            <td>142</td>
+                            <td>N/A</td>
+                            <td class="positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Financial</td>
+                            <td>Invoices Created This Week</td>
+                            <td>Current</td>
+                            <td>897</td>
+                            <td>N/A</td>
+                            <td class="positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Financial</td>
+                            <td>Sales</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>$2.45M</td>
+                            <td>$2.17M</td>
+                            <td class="positive">
+                                <span>+12.7%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Financial</td>
+                            <td>Sales (Orders)</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>3,842</td>
+                            <td>3,548</td>
+                            <td class="positive">
+                                <span>+8.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Operations</td>
+                            <td>Order Picking Accuracy</td>
+                            <td>Today vs Last Week</td>
+                            <td>99.4%</td>
+                            <td>99.1%</td>
+                            <td class="positive">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Operations</td>
+                            <td>On-time Shipment</td>
+                            <td>This Week vs Last Week</td>
+                            <td>97.8%</td>
+                            <td>96.6%</td>
+                            <td class="positive">
+                                <span>+1.2%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Inventory</td>
+                            <td>Inventory Turnover</td>
+                            <td>Current Month vs Previous</td>
+                            <td>8.2x</td>
+                            <td>7.7x</td>
+                            <td class="positive">
+                                <span>+0.5x</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Inventory</td>
+                            <td>Stockout Rate</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>1.4%</td>
+                            <td>1.1%</td>
+                            <td class="negative">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Department filtering functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const departmentSections = document.querySelectorAll('.department-section');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.textContent;
+                    
+                    // Show/hide sections based on filter
+                    departmentSections.forEach(section => {
+                        if (filter === 'All Departments') {
+                            section.style.display = 'block';
+                        } else {
+                            const sectionTitle = section.querySelector('.section-title').textContent;
+                            if (sectionTitle.includes(filter)) {
+                                section.style.display = 'block';
+                            } else {
+                                section.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Simulate real-time data updates
+            setInterval(() => {
+                const pulseCards = document.querySelectorAll('.kpi-card.pulse');
+                pulseCards.forEach(card => {
+                    card.classList.remove('pulse');
+                    setTimeout(() => {
+                        card.classList.add('pulse');
+                    }, 50);
+                });
+                
+                // Update "Invoices Created Today" with a random increase
+                const todayInvoicesCard = document.querySelector('.kpi-card.pulse');
+                if (todayInvoicesCard) {
+                    const todayInvoicesValue = todayInvoicesCard.querySelector('.kpi-value');
+                    let currentValue = parseInt(todayInvoicesValue.textContent);
+                    todayInvoicesValue.textContent = currentValue + Math.floor(Math.random() * 3);
+                }
+            }, 5000);
+            
+            // Card hover effects
+            const kpiCards = document.querySelectorAll('.kpi-card');
+            kpiCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-6px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
