@@ -1,1 +1,615 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS Performance Metrics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #f0f5ff;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --accent-blue: #0099ff;
+            --accent-purple: #9966ff;
+            --accent-cyan: #00e5ff;
+            --accent-pink: #ff66cc;
+            --accent-green: #00e676;
+            --accent-orange: #ff9800;
+            --text-dark: #222233;
+            --text-light: #666699;
+            --border-light: rgba(0, 153, 255, 0.25);
+            --shadow-light: 0 4px 20px rgba(0, 153, 255, 0.1);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-dark);
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-weight: 350;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .department-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 153, 255, 0.2);
+        }
+
+        .data-table-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 20px rgba(0, 153, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+        .data-table-container:hover {
+            box-shadow: 
+                0 8px 30px rgba(0, 153, 255, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .data-table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-table-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-table-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--accent-blue);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 153, 255, 0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .data-table th {
+            background: rgba(0, 153, 255, 0.05);
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+            font-size: 0.82rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(0, 153, 255, 0.03);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .positive {
+            color: #00e676;
+        }
+
+        .negative {
+            color: #ff4081;
+        }
+
+        .neutral {
+            color: #ff9800;
+        }
+
+        .trend-indicator {
+            margin-left: 5px;
+            font-size: 0.75rem;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Column width adjustments for table */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 18%;
+        }
+
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3) {
+            width: 30%;
+        }
+
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(5),
+        .data-table td:nth-child(5) {
+            width: 12%;
+        }
+
+        .data-table th:nth-child(6),
+        .data-table td:nth-child(6) {
+            width: 16%;
+        }
+
+        @media (max-width: 992px) {            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .data-table th,
+            .data-table td {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .department-filters {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .data-table-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>
+                <i class="fas fa-warehouse"></i>
+                WMS PERFORMANCE METRICS
+            </h1>
+            <div class="department-filters">
+                <button class="filter-btn active" data-department="all">All Departments</button>
+                <button class="filter-btn" data-department="Operations">Operations</button>
+                <button class="filter-btn" data-department="Inventory">Inventory</button>
+                <button class="filter-btn" data-department="Financial">Financial</button>
+                <button class="filter-btn" data-department="Shipping">Shipping</button>
+                <button class="filter-btn" data-department="Quality">Quality</button>
+            </div>
+        </div>
+        
+        <!-- Comprehensive Data Table -->
+        <div class="data-table-container">
+            <div class="data-table-header">
+                <div class="data-table-title">
+                    <i class="fas fa-table"></i>
+                    Comprehensive Performance Metrics
+                </div>
+                <div class="data-table-controls">
+                    <button class="control-btn" id="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="control-btn" id="expand-btn">
+                        <i class="fas fa-expand-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Indicator</th>
+                            <th>Period</th>
+                            <th>Current</th>
+                            <th>Previous</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Receivable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$124,580</td>
+                            <td>$118,420</td>
+                            <td class="positive">
+                                <span>+5.2%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Payable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$87,420</td>
+                            <td>$89,950</td>
+                            <td class="negative">
+                                <span>-2.8%</span>
+                                <i class="fas fa-arrow-down trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Invoices Created Today</td>
+                            <td>Current</td>
+                            <td>142</td>
+                            <td>N/A</td>
+                            <td class="positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Invoices Created This Week</td>
+                            <td>Current</td>
+                            <td>897</td>
+                            <td>N/A</td>
+                            <td class="positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Sales</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>$2.45M</td>
+                            <td>$2.17M</td>
+                            <td class="positive">
+                                <span>+12.7%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Sales (Orders)</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>3,842</td>
+                            <td>3,548</td>
+                            <td class="positive">
+                                <span>+8.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <!-- New Purchase and Expense indicators -->
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Purchase Orders</td>
+                            <td>This Month vs Last Month</td>
+                            <td>1,240</td>
+                            <td>1,180</td>
+                            <td class="positive">
+                                <span>+5.1%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Purchase Value</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$845,000</td>
+                            <td>$810,000</td>
+                            <td class="positive">
+                                <span>+4.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Operating Expenses</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$324,500</td>
+                            <td>$310,200</td>
+                            <td class="negative">
+                                <span>+4.6%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Payroll Expenses</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$187,300</td>
+                            <td>$182,500</td>
+                            <td class="negative">
+                                <span>+2.6%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <!-- End of new indicators -->
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Order Picking Accuracy</td>
+                            <td>Today vs Last Week</td>
+                            <td>99.4%</td>
+                            <td>99.1%</td>
+                            <td class="positive">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>On-time Shipment</td>
+                            <td>This Week vs Last Week</td>
+                            <td>97.8%</td>
+                            <td>96.6%</td>
+                            <td class="positive">
+                                <span>+1.2%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Inventory">
+                            <td>Inventory</td>
+                            <td>Inventory Turnover</td>
+                            <td>Current Month vs Previous</td>
+                            <td>8.2x</td>
+                            <td>7.7x</td>
+                            <td class="positive">
+                                <span>+0.5x</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Inventory">
+                            <td>Inventory</td>
+                            <td>Stockout Rate</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>1.4%</td>
+                            <td>1.1%</td>
+                            <td class="negative">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Shipping">
+                            <td>Shipping</td>
+                            <td>On-Time Delivery</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>95.2%</td>
+                            <td>94.8%</td>
+                            <td class="positive">
+                                <span>+0.4%</span>
+                                <i class="fas fa-arrow-up trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Shipping">
+                            <td>Shipping</td>
+                            <td>Shipping Cost per Unit</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$4.75</td>
+                            <td>$4.82</td>
+                            <td class="positive">
+                                <span>-1.5%</span>
+                                <i class="fas fa-arrow-down trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Quality">
+                            <td>Quality</td>
+                            <td>Defect Rate</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>0.8%</td>
+                            <td>0.9%</td>
+                            <td class="positive">
+                                <span>-0.1%</span>
+                                <i class="fas fa-arrow-down trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Quality">
+                            <td>Quality</td>
+                            <td>Customer Returns</td>
+                            <td>This Month vs Last Month</td>
+                            <td>1.2%</td>
+                            <td>1.4%</td>
+                            <td class="positive">
+                                <span>-0.2%</span>
+                                <i class="fas fa-arrow-down trend-indicator"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Department filtering functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const tableRows = document.querySelectorAll('#table-body tr');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const department = this.getAttribute('data-department');
+                    
+                    // Show/hide table rows based on filter
+                    tableRows.forEach(row => {
+                        const rowDepartment = row.getAttribute('data-department');
+                        
+                        if (department === 'all') {
+                            row.style.display = 'table-row';
+                        } else if (rowDepartment === department) {
+                            row.style.display = 'table-row';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Simulate real-time data updates
+            setInterval(() => {
+                // Update "Invoices Created Today" with a random increase
+                const rows = document.querySelectorAll('#table-body tr');
+                rows.forEach(row => {
+                    const indicatorCell = row.cells[1];
+                    if (indicatorCell && indicatorCell.textContent.trim() === "Invoices Created Today") {
+                        const todayInvoicesValue = row.cells[3];
+                        let currentValue = parseInt(todayInvoicesValue.textContent);
+                        if (!isNaN(currentValue)) {
+                            todayInvoicesValue.textContent = currentValue + Math.floor(Math.random() * 3);
+                        }
+                    }
+                });
+            }, 5000);
+            
+            // Control button functionality
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                this.classList.add('pulse');
+                setTimeout(() => {
+                    this.classList.remove('pulse');
+                }, 1000);
+                alert('Data refreshed successfully!');
+            });
+            
+            document.getElementById('expand-btn').addEventListener('click', function() {
+                const container = document.querySelector('.data-table-container');
+                if (container.classList.contains('expanded')) {
+                    container.classList.remove('expanded');
+                    this.innerHTML = '<i class="fas fa-expand-alt"></i>';
+                } else {
+                    container.classList.add('expanded');
+                    this.innerHTML = '<i class="fas fa-compress-alt"></i>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
