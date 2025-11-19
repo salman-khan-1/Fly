@@ -37,13 +37,13 @@
             overflow-x: hidden;
         }
 
-        .dashboard-container {
+        .wms-dashboard-container {
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
         }
 
-        .dashboard-header {
+        .wms-dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,7 +54,7 @@
             gap: 15px;
         }
 
-        h1 {
+        .wms-dashboard-title {
             font-weight: 350;
             font-size: 1.8rem;
             color: var(--text-dark);
@@ -64,13 +64,13 @@
             gap: 10px;
         }
 
-        .department-filters {
+        .wms-department-filters {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .filter-btn {
+        .wms-filter-btn {
             padding: 8px 16px;
             border-radius: 20px;
             background: rgba(0, 153, 255, 0.1);
@@ -81,17 +81,17 @@
             font-size: 0.85rem;
         }
 
-        .filter-btn.active {
+        .wms-filter-btn.active {
             background: var(--accent-blue);
             color: white;
         }
 
-        .filter-btn:hover {
+        .wms-filter-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 153, 255, 0.2);
         }
 
-        .data-table-container {
+        .wms-data-table-container {
             width: 100%;
             background: var(--card-bg);
             border-radius: 14px;
@@ -106,13 +106,13 @@
             margin-bottom: 30px;
         }
 
-        .data-table-container:hover {
+        .wms-data-table-container:hover {
             box-shadow: 
                 0 8px 30px rgba(0, 153, 255, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
 
-        .data-table-header {
+        .wms-data-table-header {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border-light);
             display: flex;
@@ -120,7 +120,7 @@
             align-items: center;
         }
 
-        .data-table-title {
+        .wms-data-table-title {
             font-size: 1.1rem;
             font-weight: 500;
             color: var(--text-dark);
@@ -129,12 +129,12 @@
             gap: 10px;
         }
 
-        .data-table-controls {
+        .wms-data-table-controls {
             display: flex;
             gap: 12px;
         }
 
-        .control-btn {
+        .wms-control-btn {
             width: 34px;
             height: 34px;
             border-radius: 8px;
@@ -148,18 +148,24 @@
             transition: var(--transition);
         }
 
-        .control-btn:hover {
+        .wms-control-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 153, 255, 0.2);
         }
 
-        .data-table {
+        .wms-data-table-wrapper {
+            max-height: 340px; /* Height for 5 rows + header */
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .wms-data-table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
         }
 
-        .data-table th {
+        .wms-data-table th {
             background: rgba(0, 153, 255, 0.05);
             padding: 14px 12px;
             text-align: left;
@@ -170,9 +176,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .data-table td {
+        .wms-data-table td {
             padding: 12px;
             border-bottom: 1px solid var(--border-light);
             transition: var(--transition);
@@ -182,97 +191,95 @@
             white-space: nowrap;
         }
 
-        .data-table tr:hover td {
+        .wms-data-table tr:hover td {
             background: rgba(0, 153, 255, 0.03);
         }
 
-        .data-table tr:last-child td {
+        .wms-data-table tr:last-child td {
             border-bottom: none;
         }
 
-        .positive {
+        .wms-positive {
             color: #00e676;
         }
 
-        .negative {
+        .wms-negative {
             color: #ff4081;
         }
 
-        .neutral {
+        .wms-neutral {
             color: #ff9800;
         }
 
-        .trend-indicator {
+        .wms-trend-indicator {
             margin-left: 5px;
             font-size: 0.75rem;
         }
 
-        .pulse {
-            animation: pulse 2s infinite;
+        .wms-pulse {
+            animation: wms-pulse 2s infinite;
         }
 
-        @keyframes pulse {
+        @keyframes wms-pulse {
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
 
-        /* Column width adjustments for table - now full width */
-        .data-table th:nth-child(1),
-        .data-table td:nth-child(1) {
+        /* Column width adjustments for table - full width */
+        .wms-data-table th:nth-child(1),
+        .wms-data-table td:nth-child(1) {
             width: 15%;
         }
 
-        .data-table th:nth-child(2),
-        .data-table td:nth-child(2) {
+        .wms-data-table th:nth-child(2),
+        .wms-data-table td:nth-child(2) {
             width: 20%;
         }
 
-        .data-table th:nth-child(3),
-        .data-table td:nth-child(3) {
+        .wms-data-table th:nth-child(3),
+        .wms-data-table td:nth-child(3) {
             width: 25%;
         }
 
-        .data-table th:nth-child(4),
-        .data-table td:nth-child(4) {
+        .wms-data-table th:nth-child(4),
+        .wms-data-table td:nth-child(4) {
             width: 15%;
         }
 
-        .data-table th:nth-child(5),
-        .data-table td:nth-child(5) {
+        .wms-data-table th:nth-child(5),
+        .wms-data-table td:nth-child(5) {
             width: 15%;
         }
 
-        .data-table th:nth-child(6),
-        .data-table td:nth-child(6) {
+        .wms-data-table th:nth-child(6),
+        .wms-data-table td:nth-child(6) {
             width: 10%;
         }
 
         @media (max-width: 992px) {            
-            .data-table {
-                display: block;
+            .wms-data-table-wrapper {
                 overflow-x: auto;
-                white-space: nowrap;
             }
             
-            .data-table th,
-            .data-table td {
+            .wms-data-table th,
+            .wms-data-table td {
                 white-space: nowrap;
             }
         }
 
         @media (max-width: 768px) {            
-            .dashboard-header {
+            .wms-dashboard-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
             
-            .department-filters {
+            .wms-department-filters {
                 width: 100%;
                 justify-content: center;
             }
             
-            .data-table-header {
+            .wms-data-table-header {
                 flex-direction: column;
                 gap: 12px;
                 align-items: flex-start;
@@ -284,47 +291,47 @@
                 padding: 12px;
             }
             
-            h1 {
+            .wms-dashboard-title {
                 font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1>
+    <div class="wms-dashboard-container">
+        <div class="wms-dashboard-header">
+            <h1 class="wms-dashboard-title">
                 <i class="fas fa-warehouse"></i>
                 WMS PERFORMANCE METRICS
             </h1>
-            <div class="department-filters">
-                <button class="filter-btn active" data-department="all">All Departments</button>
-                <button class="filter-btn" data-department="Operations">Operations</button>
-                <button class="filter-btn" data-department="Inventory">Inventory</button>
-                <button class="filter-btn" data-department="Financial">Financial</button>
-                <button class="filter-btn" data-department="Shipping">Shipping</button>
-                <button class="filter-btn" data-department="Quality">Quality</button>
+            <div class="wms-department-filters">
+                <button class="wms-filter-btn active" data-department="all">All Departments</button>
+                <button class="wms-filter-btn" data-department="Operations">Operations</button>
+                <button class="wms-filter-btn" data-department="Inventory">Inventory</button>
+                <button class="wms-filter-btn" data-department="Financial">Financial</button>
+                <button class="wms-filter-btn" data-department="Shipping">Shipping</button>
+                <button class="wms-filter-btn" data-department="Quality">Quality</button>
             </div>
         </div>
         
         <!-- Comprehensive Data Table -->
-        <div class="data-table-container">
-            <div class="data-table-header">
-                <div class="data-table-title">
+        <div class="wms-data-table-container">
+            <div class="wms-data-table-header">
+                <div class="wms-data-table-title">
                     <i class="fas fa-table"></i>
                     Comprehensive Performance Metrics
                 </div>
-                <div class="data-table-controls">
-                    <button class="control-btn" id="refresh-btn">
+                <div class="wms-data-table-controls">
+                    <button class="wms-control-btn" id="wms-refresh-btn">
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                    <button class="control-btn" id="expand-btn">
+                    <button class="wms-control-btn" id="wms-expand-btn">
                         <i class="fas fa-expand-alt"></i>
                     </button>
                 </div>
             </div>
-            <div class="data-table">
-                <table style="width: 100%">
+            <div class="wms-data-table-wrapper">
+                <table class="wms-data-table" style="width: 100%">
                     <thead>
                         <tr>
                             <th>Department</th>
@@ -335,16 +342,16 @@
                             <th>Change</th>
                         </tr>
                     </thead>
-                    <tbody id="table-body">
+                    <tbody id="wms-table-body">
                         <tr data-department="Operations">
                             <td>Operations</td>
                             <td>Receivable</td>
                             <td>Today vs One Month Ago</td>
                             <td>$124,580</td>
                             <td>$118,420</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+5.2%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Operations">
@@ -353,9 +360,9 @@
                             <td>Today vs One Month Ago</td>
                             <td>$87,420</td>
                             <td>$89,950</td>
-                            <td class="negative">
+                            <td class="wms-negative">
                                 <span>-2.8%</span>
-                                <i class="fas fa-arrow-down trend-indicator"></i>
+                                <i class="fas fa-arrow-down wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -364,9 +371,9 @@
                             <td>Current</td>
                             <td>142</td>
                             <td>N/A</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>Live</span>
-                                <i class="fas fa-bolt trend-indicator"></i>
+                                <i class="fas fa-bolt wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -375,9 +382,9 @@
                             <td>Current</td>
                             <td>897</td>
                             <td>N/A</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>Live</span>
-                                <i class="fas fa-bolt trend-indicator"></i>
+                                <i class="fas fa-bolt wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -386,9 +393,9 @@
                             <td>This Month vs Same Last Quarter to Date</td>
                             <td>$2.45M</td>
                             <td>$2.17M</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+12.7%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -397,9 +404,9 @@
                             <td>This Month vs Same Last Quarter to Date</td>
                             <td>3,842</td>
                             <td>3,548</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+8.3%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <!-- New Purchase and Expense indicators -->
@@ -409,9 +416,9 @@
                             <td>This Month vs Last Month</td>
                             <td>1,240</td>
                             <td>1,180</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+5.1%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -420,9 +427,9 @@
                             <td>This Month vs Last Month</td>
                             <td>$845,000</td>
                             <td>$810,000</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+4.3%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -431,9 +438,9 @@
                             <td>This Month vs Last Month</td>
                             <td>$324,500</td>
                             <td>$310,200</td>
-                            <td class="negative">
+                            <td class="wms-negative">
                                 <span>+4.6%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Financial">
@@ -442,9 +449,9 @@
                             <td>This Month vs Last Month</td>
                             <td>$187,300</td>
                             <td>$182,500</td>
-                            <td class="negative">
+                            <td class="wms-negative">
                                 <span>+2.6%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <!-- End of new indicators -->
@@ -454,9 +461,9 @@
                             <td>Today vs Last Week</td>
                             <td>99.4%</td>
                             <td>99.1%</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+0.3%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Operations">
@@ -465,9 +472,9 @@
                             <td>This Week vs Last Week</td>
                             <td>97.8%</td>
                             <td>96.6%</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+1.2%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Inventory">
@@ -476,9 +483,9 @@
                             <td>Current Month vs Previous</td>
                             <td>8.2x</td>
                             <td>7.7x</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+0.5x</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Inventory">
@@ -487,9 +494,9 @@
                             <td>Current Week vs Last Week</td>
                             <td>1.4%</td>
                             <td>1.1%</td>
-                            <td class="negative">
+                            <td class="wms-negative">
                                 <span>+0.3%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Shipping">
@@ -498,9 +505,9 @@
                             <td>Current Week vs Last Week</td>
                             <td>95.2%</td>
                             <td>94.8%</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>+0.4%</span>
-                                <i class="fas fa-arrow-up trend-indicator"></i>
+                                <i class="fas fa-arrow-up wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Shipping">
@@ -509,9 +516,9 @@
                             <td>This Month vs Last Month</td>
                             <td>$4.75</td>
                             <td>$4.82</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>-1.5%</span>
-                                <i class="fas fa-arrow-down trend-indicator"></i>
+                                <i class="fas fa-arrow-down wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Quality">
@@ -520,9 +527,9 @@
                             <td>Current Week vs Last Week</td>
                             <td>0.8%</td>
                             <td>0.9%</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>-0.1%</span>
-                                <i class="fas fa-arrow-down trend-indicator"></i>
+                                <i class="fas fa-arrow-down wms-trend-indicator"></i>
                             </td>
                         </tr>
                         <tr data-department="Quality">
@@ -531,9 +538,9 @@
                             <td>This Month vs Last Month</td>
                             <td>1.2%</td>
                             <td>1.4%</td>
-                            <td class="positive">
+                            <td class="wms-positive">
                                 <span>-0.2%</span>
-                                <i class="fas fa-arrow-down trend-indicator"></i>
+                                <i class="fas fa-arrow-down wms-trend-indicator"></i>
                             </td>
                         </tr>
                     </tbody>
@@ -545,8 +552,8 @@
     <script>
         // Department filtering functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const tableRows = document.querySelectorAll('#table-body tr');
+            const filterButtons = document.querySelectorAll('.wms-filter-btn');
+            const tableRows = document.querySelectorAll('#wms-table-body tr');
             
             filterButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -576,7 +583,7 @@
             // Simulate real-time data updates
             setInterval(() => {
                 // Update "Invoices Created Today" with a random increase
-                const rows = document.querySelectorAll('#table-body tr');
+                const rows = document.querySelectorAll('#wms-table-body tr');
                 rows.forEach(row => {
                     const indicatorCell = row.cells[1];
                     if (indicatorCell && indicatorCell.textContent.trim() === "Invoices Created Today") {
@@ -590,21 +597,24 @@
             }, 5000);
             
             // Control button functionality
-            document.getElementById('refresh-btn').addEventListener('click', function() {
-                this.classList.add('pulse');
+            document.getElementById('wms-refresh-btn').addEventListener('click', function() {
+                this.classList.add('wms-pulse');
                 setTimeout(() => {
-                    this.classList.remove('pulse');
+                    this.classList.remove('wms-pulse');
                 }, 1000);
                 alert('Data refreshed successfully!');
             });
             
-            document.getElementById('expand-btn').addEventListener('click', function() {
-                const container = document.querySelector('.data-table-container');
+            document.getElementById('wms-expand-btn').addEventListener('click', function() {
+                const container = document.querySelector('.wms-data-table-container');
+                const wrapper = document.querySelector('.wms-data-table-wrapper');
                 if (container.classList.contains('expanded')) {
                     container.classList.remove('expanded');
+                    wrapper.style.maxHeight = '340px';
                     this.innerHTML = '<i class="fas fa-expand-alt"></i>';
                 } else {
                     container.classList.add('expanded');
+                    wrapper.style.maxHeight = 'none';
                     this.innerHTML = '<i class="fas fa-compress-alt"></i>';
                 }
             });
