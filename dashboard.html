@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusLogix WMS | Enterprise Warehouse Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --nl-primary: #5B8CFF;
+            --nl-primary-light: #7DA6FF;
+            --nl-primary-dark: #3A6FEA;
+            --nl-secondary: #00C9B1;
+            --nl-accent: #FF6B9D;
+            --nl-success: #2ED47A;
+            --nl-warning: #FFB020;
+            --nl-error: #FF4757;
+            --nl-background: #F8FAFF;
+            --nl-surface: #FFFFFF;
+            --nl-surface-alt: #F0F5FF;
+            --nl-text-primary: #1E293B;
+            --nl-text-secondary: #64748B;
+            --nl-border: #E2E8FF;
+            --nl-shadow: 0 4px 6px -1px rgba(91, 140, 255, 0.1), 0 2px 4px -1px rgba(91, 140, 255, 0.06);
+            --nl-shadow-lg: 0 10px 15px -3px rgba(91, 140, 255, 0.1), 0 4px 6px -2px rgba(91, 140, 255, 0.05);
+            --nl-sidebar-width: 300px;
+            --nl-sidebar-collapsed: 80px;
+            --nl-header-height: 70px;
+            --nl-hover: #F0F7FF;
+            --nl-active: #E6F0FF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--nl-background);
+            color: var(--nl-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .nl-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .nl-sidebar {
+            width: var(--nl-sidebar-width);
+            background: var(--nl-surface);
+            box-shadow: var(--nl-shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            position: relative;
+        }
+        
+        .nl-sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--nl-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nl-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--nl-primary), var(--nl-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .nl-system-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--nl-text-primary);
+        }
+        
+        .nl-sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .nl-nav-section {
+            margin-bottom: 24px;
+        }
+        
+        .nl-nav-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--nl-text-secondary);
+            padding: 0 20px 10px;
+            font-weight: 600;
+        }
+        
+        .nl-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--nl-text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .nl-nav-item:hover {
+            background: var(--nl-hover);
+            color: var(--nl-primary);
+        }
+        
+        .nl-nav-item.active {
+            background: var(--nl-active);
+            color: var(--nl-primary);
+            border-right: 3px solid var(--nl-primary);
+        }
+        
+        .nl-nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .nl-nav-label {
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .nl-nav-badge {
+            background: var(--nl-accent);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .nl-nav-arrow {
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            color: var(--nl-text-secondary);
+        }
+        
+        .nl-nav-arrow.rotated {
+            transform: rotate(90deg);
+        }
+        
+        .nl-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--nl-surface-alt);
+        }
+        
+        .nl-submenu.expanded {
+            max-height: 500px;
+        }
+        
+        .nl-submenu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px 12px 52px;
+            color: var(--nl-text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+        
+        .nl-submenu-item:hover {
+            background: var(--nl-hover);
+            color: var(--nl-primary);
+        }
+        
+        .nl-submenu-item.active {
+            color: var(--nl-primary);
+            border-left-color: var(--nl-primary);
+            background: var(--nl-active);
+        }
+        
+        .nl-submenu-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .nl-sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--nl-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nl-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--nl-primary), var(--nl-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .nl-user-info {
+            flex: 1;
+        }
+        
+        .nl-user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .nl-user-role {
+            font-size: 12px;
+            color: var(--nl-text-secondary);
+        }
+        
+        /* Main Content Area */
+        .nl-main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .nl-header {
+            height: var(--nl-header-height);
+            background: var(--nl-surface);
+            box-shadow: var(--nl-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 10;
+        }
+        
+        .nl-nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nl-nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--nl-surface);
+            border: 1px solid var(--nl-border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            color: var(--nl-text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .nl-nav-btn:hover {
+            background: var(--nl-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--nl-shadow);
+        }
+        
+        .nl-nav-btn.primary {
+            background: var(--nl-primary);
+            color: white;
+            border-color: var(--nl-primary);
+        }
+        
+        .nl-nav-btn.primary:hover {
+            background: var(--nl-primary-dark);
+        }
+        
+        .nl-nav-btn i {
+            font-size: 16px;
+        }
+        
+        /* Tooltip Styles */
+        .nl-tooltip {
+            position: relative;
+        }
+        
+        .nl-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--nl-text-primary);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .nl-tooltip:hover::after {
+            opacity: 1;
+        }
+        
+        .nl-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nl-notification {
+            position: relative;
+            color: var(--nl-text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .nl-notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--nl-accent);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nl-notification-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 350px;
+            background: var(--nl-surface);
+            border-radius: 8px;
+            box-shadow: var(--nl-shadow-lg);
+            z-index: 1000;
+            display: none;
+            border: 1px solid var(--nl-border);
+        }
+        
+        .nl-notification-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--nl-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nl-notification-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .nl-notification-clear {
+            color: var(--nl-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .nl-notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .nl-notification-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--nl-border);
+            display: flex;
+            gap: 12px;
+            transition: background 0.2s ease;
+        }
+        
+        .nl-notification-item:hover {
+            background: var(--nl-hover);
+        }
+        
+        .nl-notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .nl-notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .nl-notification-info {
+            flex: 1;
+        }
+        
+        .nl-notification-message {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .nl-notification-time {
+            font-size: 12px;
+            color: var(--nl-text-secondary);
+        }
+        
+        .nl-notification-icon.info {
+            background: var(--nl-primary);
+        }
+        
+        .nl-notification-icon.warning {
+            background: var(--nl-warning);
+        }
+        
+        .nl-notification-icon.error {
+            background: var(--nl-error);
+        }
+        
+        .nl-notification-icon.success {
+            background: var(--nl-success);
+        }
+        
+        .nl-user-menu {
+            position: relative;
+        }
+        
+        .nl-user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .nl-user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 200px;
+            background: var(--nl-surface);
+            border-radius: 8px;
+            box-shadow: var(--nl-shadow-lg);
+            z-index: 1000;
+            display: none;
+            border: 1px solid var(--nl-border);
+        }
+        
+        .nl-user-dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--nl-text-primary);
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+        
+        .nl-user-dropdown-item:hover {
+            background: var(--nl-hover);
+        }
+        
+        .nl-user-dropdown-item i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        .nl-content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--nl-background);
+        }
+        
+        .nl-empty-state {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px;
+        }
+        
+        .nl-empty-icon {
+            font-size: 64px;
+            color: var(--nl-primary-light);
+            margin-bottom: 20px;
+        }
+        
+        .nl-empty-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--nl-text-primary);
+            margin-bottom: 12px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .nl-empty-description {
+            font-size: 16px;
+            color: var(--nl-text-secondary);
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 1024px) {
+            .nl-nav-buttons {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nl-sidebar {
+                width: var(--nl-sidebar-collapsed);
+            }
+            
+            .nl-system-name, .nl-nav-label, .nl-user-info, .nl-nav-title, .nl-nav-badge, .nl-nav-arrow {
+                display: none;
+            }
+            
+            .nl-nav-item {
+                justify-content: center;
+                padding: 16px 0;
+            }
+            
+            .nl-notification-dropdown {
+                width: 300px;
+                right: -50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nl-dashboard">
+        <!-- Sidebar -->
+        <div class="nl-sidebar">
+            <div class="nl-sidebar-header">
+                <div class="nl-logo">NL</div>
+                <div class="nl-system-name">NEXUSLOGIX WMS</div>
+            </div>
+            
+            <nav class="nl-sidebar-nav">
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Dashboard</div>
+                    <a href="#" class="nl-nav-item active">
+                        <i class="fas fa-chart-pie"></i>
+                        <span class="nl-nav-label">Overview</span>
+                    </a>
+                </div>
+                
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Inventory Management</div>
+                    
+                    <div class="nl-nav-item" id="inventory-nav">
+                        <i class="fas fa-boxes"></i>
+                        <span class="nl-nav-label">Inventory Control</span>
+                        <span class="nl-nav-badge">3</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="inventory-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-cube"></i>
+                            <span>Stock Overview</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-search"></i>
+                            <span>Stock Search</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Stock Adjustments</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Cycle Counting</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Low Stock Alerts</span>
+                        </a>
+                    </div>
+                    
+                    <div class="nl-nav-item" id="warehouse-nav">
+                        <i class="fas fa-warehouse"></i>
+                        <span class="nl-nav-label">Warehouse Layout</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="warehouse-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-map"></i>
+                            <span>Zone Management</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-th-large"></i>
+                            <span>Bin Management</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-route"></i>
+                            <span>Putaway Rules</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Operations</div>
+                    
+                    <div class="nl-nav-item" id="inbound-nav">
+                        <i class="fas fa-arrow-down"></i>
+                        <span class="nl-nav-label">Inbound Operations</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="inbound-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>Receiving</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-check-double"></i>
+                            <span>Quality Inspection</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-tasks"></i>
+                            <span>Putaway</span>
+                        </a>
+                    </div>
+                    
+                    <div class="nl-nav-item" id="outbound-nav">
+                        <i class="fas fa-arrow-up"></i>
+                        <span class="nl-nav-label">Outbound Operations</span>
+                        <span class="nl-nav-badge">5</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="outbound-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-list-ol"></i>
+                            <span>Order Management</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-people-carry"></i>
+                            <span>Picking</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-box"></i>
+                            <span>Packing</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Shipping</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Automation</div>
+                    
+                    <div class="nl-nav-item" id="automation-nav">
+                        <i class="fas fa-robot"></i>
+                        <span class="nl-nav-label">Automation Systems</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="automation-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-cogs"></i>
+                            <span>AGV Fleet</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-conveyor-belt"></i>
+                            <span>Conveyor Systems</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-archive"></i>
+                            <span>AS/RS Management</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Analytics & Reports</div>
+                    
+                    <div class="nl-nav-item" id="analytics-nav">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="nl-nav-label">Performance Analytics</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="analytics-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Operational KPIs</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Inventory Reports</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Custom Reports</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nl-nav-section">
+                    <div class="nl-nav-title">Administration</div>
+                    
+                    <div class="nl-nav-item" id="admin-nav">
+                        <i class="fas fa-cogs"></i>
+                        <span class="nl-nav-label">System Settings</span>
+                        <i class="fas fa-chevron-right nl-nav-arrow"></i>
+                    </div>
+                    <div class="nl-submenu" id="admin-submenu">
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-users-cog"></i>
+                            <span>User Management</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Security & Permissions</span>
+                        </a>
+                        <a href="#" class="nl-submenu-item">
+                            <i class="fas fa-database"></i>
+                            <span>Data Management</span>
+                        </a>
+                    </div>
+                    
+                    <a href="#" class="nl-nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="nl-nav-label">Support Center</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="nl-sidebar-footer">
+                <div class="nl-user-avatar">AJ</div>
+                <div class="nl-user-info">
+                    <div class="nl-user-name">Alex Johnson</div>
+                    <div class="nl-user-role">Operations Director</div>
+                </div>
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="nl-main-content">
+            <header class="nl-header">
+                <div class="nl-nav-buttons">
+                    <button class="nl-nav-btn nl-tooltip" data-tooltip="Home">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    <button class="nl-nav-btn nl-tooltip" data-tooltip="Print">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <button class="nl-nav-btn nl-tooltip" data-tooltip="Save">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <button class="nl-nav-btn primary nl-tooltip" data-tooltip="Submit">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                
+                <div class="nl-header-actions">
+                    <div class="nl-notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="nl-notification-badge">3</span>
+                        <div class="nl-notification-dropdown">
+                            <div class="nl-notification-header">
+                                <div class="nl-notification-title">Notifications</div>
+                                <div class="nl-notification-clear">Clear All</div>
+                            </div>
+                            <div class="nl-notification-list">
+                                <div class="nl-notification-item">
+                                    <div class="nl-notification-icon warning">
+                                        <i class="fas fa-exclamation"></i>
+                                    </div>
+                                    <div class="nl-notification-info">
+                                        <div class="nl-notification-message">Low stock alert for SKU #A-2456</div>
+                                        <div class="nl-notification-time">10 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="nl-notification-item">
+                                    <div class="nl-notification-icon error">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                    <div class="nl-notification-info">
+                                        <div class="nl-notification-message">Conveyor system error in Zone B</div>
+                                        <div class="nl-notification-time">25 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="nl-notification-item">
+                                    <div class="nl-notification-icon info">
+                                        <i class="fas fa-info"></i>
+                                    </div>
+                                    <div class="nl-notification-info">
+                                        <div class="nl-notification-message">New shipment received at Dock 3</div>
+                                        <div class="nl-notification-time">1 hour ago</div>
+                                    </div>
+                                </div>
+                                <div class="nl-notification-item">
+                                    <div class="nl-notification-icon success">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="nl-notification-info">
+                                        <div class="nl-notification-message">Monthly inventory report is ready</div>
+                                        <div class="nl-notification-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nl-user-menu">
+                        <div class="nl-user-trigger">
+                            <div class="nl-user-avatar">AJ</div>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nl-user-dropdown">
+                            <a href="#" class="nl-user-dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="#" class="nl-user-dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Account Settings</span>
+                            </a>
+                            <a href="#" class="nl-user-dropdown-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>Help & Support</span>
+                            </a>
+                            <div class="nl-user-dropdown-item" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="nl-content-area">
+                <div class="nl-empty-state">
+                    <div class="nl-empty-icon">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <h2 class="nl-empty-title">Welcome to NexusLogix WMS</h2>
+                    <p class="nl-empty-description">
+                        Select a menu option from the sidebar to begin managing your warehouse operations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle submenus when clicking on parent items
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define menu items and their corresponding submenus
+            const menuItems = [
+                { trigger: 'inventory-nav', target: 'inventory-submenu' },
+                { trigger: 'warehouse-nav', target: 'warehouse-submenu' },
+                { trigger: 'inbound-nav', target: 'inbound-submenu' },
+                { trigger: 'outbound-nav', target: 'outbound-submenu' },
+                { trigger: 'automation-nav', target: 'automation-submenu' },
+                { trigger: 'analytics-nav', target: 'analytics-submenu' },
+                { trigger: 'admin-nav', target: 'admin-submenu' }
+            ];
+            
+            // Add click event listeners to each menu item
+            menuItems.forEach(item => {
+                const trigger = document.getElementById(item.trigger);
+                const target = document.getElementById(item.target);
+                const arrow = trigger.querySelector('.nl-nav-arrow');
+                
+                trigger.addEventListener('click', function() {
+                    // Toggle the expanded class on the submenu
+                    target.classList.toggle('expanded');
+                    
+                    // Rotate the arrow
+                    arrow.classList.toggle('rotated');
+                    
+                    // Close other submenus
+                    menuItems.forEach(otherItem => {
+                        if (otherItem.trigger !== item.trigger) {
+                            const otherTarget = document.getElementById(otherItem.target);
+                            const otherArrow = document.getElementById(otherItem.trigger).querySelector('.nl-nav-arrow');
+                            
+                            if (otherTarget.classList.contains('expanded')) {
+                                otherTarget.classList.remove('expanded');
+                                otherArrow.classList.remove('rotated');
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Add active state to submenu items when clicked
+            document.querySelectorAll('.nl-submenu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all submenu items
+                    document.querySelectorAll('.nl-submenu-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                });
+            });
+            
+            // Notification dropdown functionality
+            const notificationIcon = document.querySelector('.nl-notification');
+            const notificationDropdown = document.querySelector('.nl-notification-dropdown');
+            
+            notificationIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationDropdown.style.display = 
+                    notificationDropdown.style.display === 'block' ? 'none' : 'block';
+                
+                // Close user dropdown if open
+                userDropdown.style.display = 'none';
+            });
+            
+            // User dropdown functionality
+            const userTrigger = document.querySelector('.nl-user-trigger');
+            const userDropdown = document.querySelector('.nl-user-dropdown');
+            
+            userTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.style.display = 
+                    userDropdown.style.display === 'block' ? 'none' : 'block';
+                
+                // Close notification dropdown if open
+                notificationDropdown.style.display = 'none';
+            });
+            
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    alert('Logging out...');
+                    // In a real application, you would redirect to logout URL
+                    // window.location.href = '/logout';
+                }
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                notificationDropdown.style.display = 'none';
+                userDropdown.style.display = 'none';
+            });
+            
+            // Clear all notifications
+            document.querySelector('.nl-notification-clear').addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Clear all notifications?')) {
+                    document.querySelector('.nl-notification-list').innerHTML = 
+                        '<div class="nl-notification-item" style="justify-content: center; color: var(--nl-text-secondary);">No notifications</div>';
+                    document.querySelector('.nl-notification-badge').style.display = 'none';
+                }
+            });
+            
+            // Navigation button functionality
+            document.querySelectorAll('.nl-nav-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tooltipText = this.getAttribute('data-tooltip');
+                    alert(`${tooltipText} button clicked!`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
