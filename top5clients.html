@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCorp Analytics | 2090</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --nc-top5-primary: #3A4FBE;
+            --nc-top5-primary-light: #5A6FDE;
+            --nc-top5-primary-dark: #2A3B9E;
+            --nc-top5-secondary: #00C2D6;
+            --nc-top5-accent: #FF5E7D;
+            --nc-top5-background: #F0F4FF;
+            --nc-top5-surface: #FFFFFF;
+            --nc-top5-text-primary: #1A2332;
+            --nc-top5-text-secondary: #5A6578;
+            --nc-top5-border: #DDE4F0;
+            --nc-top5-shadow: 0 4px 20px rgba(58, 79, 190, 0.08);
+            --nc-top5-glow: 0 0 20px rgba(58, 79, 190, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .nc-top5-body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--nc-top5-background);
+            color: var(--nc-top5-text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nc-top5-container {
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .nc-top5-chart-card {
+            background: var(--nc-top5-surface);
+            border-radius: 16px;
+            box-shadow: var(--nc-top5-shadow);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .nc-top5-chart-card:hover {
+            box-shadow: var(--nc-top5-shadow), var(--nc-top5-glow);
+        }
+        
+        .nc-top5-chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .nc-top5-chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--nc-top5-text-primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .nc-top5-time-selector-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nc-top5-time-label {
+            font-size: 12px;
+            color: var(--nc-top5-text-secondary);
+            font-weight: 500;
+        }
+        
+        .nc-top5-select {
+            background: var(--nc-top5-surface);
+            border: 1px solid var(--nc-top5-border);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 12px;
+            color: var(--nc-top5-text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A6578' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 12px;
+            padding-right: 28px;
+        }
+        
+        .nc-top5-select:focus {
+            outline: none;
+            border-color: var(--nc-top5-primary);
+            box-shadow: 0 0 0 2px rgba(58, 79, 190, 0.1);
+        }
+        
+        .nc-top5-chart-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .nc-top5-chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .nc-top5-chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="nc-top5-body">
+    <div class="nc-top5-container">
+        <div class="nc-top5-chart-card">
+            <div class="nc-top5-chart-header">
+                <h2 class="nc-top5-chart-title">TOP 5 CLIENTS BY SALES VOLUME</h2>
+                <div class="nc-top5-time-selector-container">
+                    <span class="nc-top5-time-label">PERIOD:</span>
+                    <select class="nc-top5-select" id="nc-top5-timePeriodSelect">
+                        <option value="7d">LAST 7 DAYS</option>
+                        <option value="30d" selected>LAST 30 DAYS</option>
+                        <option value="90d">LAST 90 DAYS</option>
+                        <option value="1y">LAST YEAR</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nc-top5-chart-container">
+                <canvas id="nc-top5-salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ncTop5Ctx = document.getElementById('nc-top5-salesChart').getContext('2d');
+            
+            // Sample data for the chart
+            const ncTop5ClientNames = ['Nova Corp', 'Quantum Ind', 'Stellar Sys', 'Aether Tech', 'Zenith Sol'];
+            const ncTop5SalesData = [850000, 720000, 540000, 480000, 350000];
+            
+            // Function to create 3D gradient effect
+            function ncTop5Create3DGradient(ctx, topColor, bottomColor) {
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, topColor);
+                gradient.addColorStop(0.7, bottomColor);
+                gradient.addColorStop(1, bottomColor);
+                return gradient;
+            }
+            
+            // Create the chart with 3D effect and shadow
+            const ncTop5SalesChart = new Chart(ncTop5Ctx, {
+                type: 'bar',
+                data: {
+                    labels: ncTop5ClientNames,
+                    datasets: [{
+                        label: 'Sales Volume',
+                        data: ncTop5SalesData,
+                        backgroundColor: [
+                            ncTop5Create3DGradient(ncTop5Ctx, '#3A4FBE', '#2A3B9E'),
+                            ncTop5Create3DGradient(ncTop5Ctx, '#5A6FDE', '#3A4FBE'),
+                            ncTop5Create3DGradient(ncTop5Ctx, '#00C2D6', '#00A0B2'),
+                            ncTop5Create3DGradient(ncTop5Ctx, '#FF5E7D', '#E04A68'),
+                            ncTop5Create3DGradient(ncTop5Ctx, '#8A6BFF', '#6A4BDF')
+                        ],
+                        borderColor: [
+                            '#2A3B9E',
+                            '#3A4FBE',
+                            '#00A0B2',
+                            '#E04A68',
+                            '#6A4BDF'
+                        ],
+                        borderWidth: 1,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8,
+                        // Add shadow effect
+                        shadowColor: 'rgba(0, 0, 0, 0.2)',
+                        shadowBlur: 8,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1A2332',
+                            bodyColor: '#5A6578',
+                            borderColor: '#DDE4F0',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                        minimumFractionDigits: 0
+                                    }).format(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#5A6578',
+                                font: {
+                                    family: "'Exo 2', sans-serif",
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(221, 228, 240, 0.6)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#5A6578',
+                                font: {
+                                    family: "'Exo 2', sans-serif",
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    if (value >= 1000) {
+                                        return '$' + (value / 1000).toFixed(0) + 'K';
+                                    }
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Handle time period selection
+            document.getElementById('nc-top5-timePeriodSelect').addEventListener('change', function() {
+                // In a real application, this would fetch new data based on the selected time period
+                const ncTop5TimePeriod = this.value;
+                let ncTop5Multiplier = 1;
+                
+                switch(ncTop5TimePeriod) {
+                    case '7d':
+                        ncTop5Multiplier = 0.25;
+                        break;
+                    case '90d':
+                        ncTop5Multiplier = 1.5;
+                        break;
+                    case '1y':
+                        ncTop5Multiplier = 4;
+                        break;
+                }
+                
+                // Update chart data
+                ncTop5SalesChart.data.datasets[0].data = ncTop5SalesData.map(value => value * ncTop5Multiplier);
+                ncTop5SalesChart.update();
+            });
+        });
+    </script>
+</body>
+</html>
