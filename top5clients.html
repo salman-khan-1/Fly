@@ -33,24 +33,24 @@
             background-color: var(--nc-top5-background);
             color: var(--nc-top5-text-primary);
             line-height: 1.6;
-            padding: 20px;
+            padding: 0; /* Remove body padding */
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* Remove centering properties */
         }
         
         .nc-top5-container {
-            max-width: 1000px;
-            width: 100%;
+            max-width: none; /* Remove max-width constraint */
+            width: 100%; /* Take full width */
+            margin: 0; /* Remove any margin */
         }
         
         .nc-top5-chart-card {
             background: var(--nc-top5-surface);
-            border-radius: 16px;
+            border-radius: 0; /* Remove border radius for edge-to-edge appearance */
             box-shadow: var(--nc-top5-shadow);
-            padding: 24px;
+            padding: 20px; /* Slightly reduced padding */
             transition: all 0.3s ease;
+            width: 100%; /* Ensure full width */
         }
         
         .nc-top5-chart-card:hover {
@@ -61,11 +61,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Reduced margin */
         }
         
         .nc-top5-chart-title {
-            font-size: 20px;
+            font-size: 18px; /* Slightly smaller font */
             font-weight: 600;
             color: var(--nc-top5-text-primary);
             font-family: 'Orbitron', sans-serif;
@@ -109,7 +109,7 @@
         
         .nc-top5-chart-container {
             width: 100%;
-            height: 350px;
+            height: 250px; /* Decreased height from 350px */
             position: relative;
         }
         
@@ -117,11 +117,11 @@
             .nc-top5-chart-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 16px;
+                gap: 12px; /* Reduced gap */
             }
             
             .nc-top5-chart-container {
-                height: 300px;
+                height: 220px; /* Decreased height for mobile */
             }
         }
     </style>
@@ -233,7 +233,7 @@
                                 color: '#5A6578',
                                 font: {
                                     family: "'Exo 2', sans-serif",
-                                    size: 12
+                                    size: 11 // Slightly smaller font for compactness
                                 }
                             }
                         },
@@ -247,7 +247,7 @@
                                 color: '#5A6578',
                                 font: {
                                     family: "'Exo 2', sans-serif",
-                                    size: 12
+                                    size: 11 // Slightly smaller font for compactness
                                 },
                                 callback: function(value) {
                                     if (value >= 1000) {
