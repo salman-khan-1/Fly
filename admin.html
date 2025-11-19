@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCorp Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --neo-primary-bg: #f0f5ff;
+            --neo-card-bg: rgba(255, 255, 255, 0.92);
+            --neo-accent-blue: #0099ff;
+            --neo-accent-purple: #9966ff;
+            --neo-accent-cyan: #00e5ff;
+            --neo-accent-pink: #ff66cc;
+            --neo-accent-green: #00e676;
+            --neo-accent-orange: #ff9800;
+            --neo-text-dark: #222233;
+            --neo-text-light: #666699;
+            --neo-border-light: rgba(0, 153, 255, 0.25);
+            --neo-shadow-light: 0 4px 20px rgba(0, 153, 255, 0.1);
+            --neo-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--neo-primary-bg);
+            color: var(--neo-text-dark);
+            padding: 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .neo-dashboard-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .neo-dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--neo-border-light);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .neo-dashboard-title {
+            font-weight: 350;
+            font-size: 1.5rem;
+            color: var(--neo-text-dark);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Performance Metrics Table */
+        .neo-data-table-container {
+            width: 100%;
+            background: var(--neo-card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--neo-shadow-light);
+            border: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            margin-bottom: 20px;
+        }
+
+        .neo-data-table-container:hover {
+            box-shadow: 0 8px 25px rgba(0, 153, 255, 0.15);
+        }
+
+        .neo-data-table-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--neo-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .neo-data-table-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--neo-text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .neo-department-filters {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .neo-filter-btn {
+            padding: 4px 10px;
+            border-radius: 14px;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--neo-accent-blue);
+            border: 1px solid var(--neo-border-light);
+            cursor: pointer;
+            transition: var(--neo-transition);
+            font-size: 0.7rem;
+        }
+
+        .neo-filter-btn.active {
+            background: var(--neo-accent-blue);
+            color: white;
+        }
+
+        .neo-filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 153, 255, 0.2);
+        }
+
+        .neo-data-table-wrapper {
+            max-height: 240px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .neo-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .neo-data-table th {
+            background: rgb(223 242 255);
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--neo-text-light);
+            border-bottom: 1px solid var(--neo-border-light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .neo-data-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            font-size: 0.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .neo-data-table tr:hover td {
+            background: rgba(0, 153, 255, 0.03);
+        }
+
+        .neo-data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Metrics and Chart Section */
+        .neo-metrics-chart-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .neo-kpi-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .neo-kpi-card {
+            background: var(--neo-card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: var(--neo-shadow-light);
+            border: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .neo-kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 153, 255, 0.15);
+        }
+
+        .neo-kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .neo-kpi-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--neo-text-light);
+        }
+
+        .neo-kpi-icon {
+            font-size: 0.9rem;
+            color: var(--neo-accent-blue);
+        }
+
+        .neo-kpi-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--neo-text-dark);
+            margin-bottom: 3px;
+        }
+
+        .neo-kpi-change {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .neo-kpi-change.positive {
+            color: var(--neo-accent-green);
+        }
+
+        .neo-kpi-change.negative {
+            color: var(--neo-accent-pink);
+        }
+
+        .neo-kpi-change.neutral {
+            color: var(--neo-accent-orange);
+        }
+
+        /* Chart Styles */
+        .neo-chart-card {
+            background: var(--neo-card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--neo-shadow-light);
+            border: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+        }
+
+        .neo-chart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 153, 255, 0.15);
+        }
+
+        .neo-chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .neo-chart-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--neo-text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .neo-time-selector-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .neo-time-label {
+            font-size: 0.7rem;
+            color: var(--neo-text-light);
+            font-weight: 500;
+        }
+
+        .neo-time-select {
+            background: var(--neo-card-bg);
+            border: 1px solid var(--neo-border-light);
+            border-radius: 5px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            color: var(--neo-text-dark);
+            cursor: pointer;
+            transition: var(--neo-transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666699' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 8px;
+            padding-right: 20px;
+        }
+
+        .neo-time-select:focus {
+            outline: none;
+            border-color: var(--neo-accent-blue);
+            box-shadow: 0 0 0 2px rgba(0, 153, 255, 0.1);
+        }
+
+        .neo-chart-container {
+            width: 100%;
+            height: 150px;
+            position: relative;
+        }
+
+        /* Table column widths */
+        .neo-data-table th:nth-child(1),
+        .neo-data-table td:nth-child(1) {
+            width: 15%;
+        }
+
+        .neo-data-table th:nth-child(2),
+        .neo-data-table td:nth-child(2) {
+            width: 20%;
+        }
+
+        .neo-data-table th:nth-child(3),
+        .neo-data-table td:nth-child(3) {
+            width: 25%;
+        }
+
+        .neo-data-table th:nth-child(4),
+        .neo-data-table td:nth-child(4) {
+            width: 15%;
+        }
+
+        .neo-data-table th:nth-child(5),
+        .neo-data-table td:nth-child(5) {
+            width: 15%;
+        }
+
+        .neo-data-table th:nth-child(6),
+        .neo-data-table td:nth-child(6) {
+            width: 10%;
+        }
+
+        /* Status colors */
+        .neo-positive {
+            color: var(--neo-accent-green);
+        }
+
+        .neo-negative {
+            color: var(--neo-accent-pink);
+        }
+
+        .neo-neutral {
+            color: var(--neo-accent-orange);
+        }
+
+        .neo-trend-indicator {
+            margin-left: 3px;
+            font-size: 0.65rem;
+        }
+
+        @media (max-width: 992px) {
+            .neo-metrics-chart-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .neo-data-table-wrapper {
+                overflow-x: auto;
+            }
+            
+            .neo-data-table th,
+            .neo-data-table td {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .neo-dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .neo-data-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .neo-department-filters {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .neo-kpi-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .neo-dashboard-title {
+                font-size: 1.3rem;
+            }
+            
+            .neo-kpi-value {
+                font-size: 1.2rem;
+            }
+            
+            .neo-chart-container {
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neo-dashboard-container">
+        <div class="neo-dashboard-header">
+            <h1 class="neo-dashboard-title">
+                <i class="fas fa-warehouse"></i>
+                NEO CORP ANALYTICS
+            </h1>
+        </div>
+        
+        <!-- Comprehensive Performance Metrics Table -->
+        <div class="neo-data-table-container">
+            <div class="neo-data-table-header">
+                <div class="neo-data-table-title">
+                    <i class="fas fa-table"></i>
+                    Performance Metrics
+                </div>
+                <div class="neo-department-filters">
+                    <button class="neo-filter-btn active" data-department="all">All</button>
+                    <button class="neo-filter-btn" data-department="Operations">Operations</button>
+                    <button class="neo-filter-btn" data-department="Inventory">Inventory</button>
+                    <button class="neo-filter-btn" data-department="Financial">Financial</button>
+                    <button class="neo-filter-btn" data-department="Shipping">Shipping</button>
+                    <button class="neo-filter-btn" data-department="Quality">Quality</button>
+                </div>
+            </div>
+            <div class="neo-data-table-wrapper">
+                <table class="neo-data-table">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Indicator</th>
+                            <th>Period</th>
+                            <th>Current</th>
+                            <th>Previous</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="neo-table-body">
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Receivable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$124,580</td>
+                            <td>$118,420</td>
+                            <td class="neo-positive">
+                                <span>+5.2%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Payable</td>
+                            <td>Today vs One Month Ago</td>
+                            <td>$87,420</td>
+                            <td>$89,950</td>
+                            <td class="neo-negative">
+                                <span>-2.8%</span>
+                                <i class="fas fa-arrow-down neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Invoices Created Today</td>
+                            <td>Current</td>
+                            <td>142</td>
+                            <td>N/A</td>
+                            <td class="neo-positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Invoices Created This Week</td>
+                            <td>Current</td>
+                            <td>897</td>
+                            <td>N/A</td>
+                            <td class="neo-positive">
+                                <span>Live</span>
+                                <i class="fas fa-bolt neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Sales</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>$2.45M</td>
+                            <td>$2.17M</td>
+                            <td class="neo-positive">
+                                <span>+12.7%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Sales (Orders)</td>
+                            <td>This Month vs Same Last Quarter to Date</td>
+                            <td>3,842</td>
+                            <td>3,548</td>
+                            <td class="neo-positive">
+                                <span>+8.3%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Purchase Orders</td>
+                            <td>This Month vs Last Month</td>
+                            <td>1,240</td>
+                            <td>1,180</td>
+                            <td class="neo-positive">
+                                <span>+5.1%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Purchase Value</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$845,000</td>
+                            <td>$810,000</td>
+                            <td class="neo-positive">
+                                <span>+4.3%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Operating Expenses</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$324,500</td>
+                            <td>$310,200</td>
+                            <td class="neo-negative">
+                                <span>+4.6%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Financial">
+                            <td>Financial</td>
+                            <td>Payroll Expenses</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$187,300</td>
+                            <td>$182,500</td>
+                            <td class="neo-negative">
+                                <span>+2.6%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>Order Picking Accuracy</td>
+                            <td>Today vs Last Week</td>
+                            <td>99.4%</td>
+                            <td>99.1%</td>
+                            <td class="neo-positive">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Operations">
+                            <td>Operations</td>
+                            <td>On-time Shipment</td>
+                            <td>This Week vs Last Week</td>
+                            <td>97.8%</td>
+                            <td>96.6%</td>
+                            <td class="neo-positive">
+                                <span>+1.2%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Inventory">
+                            <td>Inventory</td>
+                            <td>Inventory Turnover</td>
+                            <td>Current Month vs Previous</td>
+                            <td>8.2x</td>
+                            <td>7.7x</td>
+                            <td class="neo-positive">
+                                <span>+0.5x</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Inventory">
+                            <td>Inventory</td>
+                            <td>Stockout Rate</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>1.4%</td>
+                            <td>1.1%</td>
+                            <td class="neo-negative">
+                                <span>+0.3%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Shipping">
+                            <td>Shipping</td>
+                            <td>On-Time Delivery</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>95.2%</td>
+                            <td>94.8%</td>
+                            <td class="neo-positive">
+                                <span>+0.4%</span>
+                                <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Shipping">
+                            <td>Shipping</td>
+                            <td>Shipping Cost per Unit</td>
+                            <td>This Month vs Last Month</td>
+                            <td>$4.75</td>
+                            <td>$4.82</td>
+                            <td class="neo-positive">
+                                <span>-1.5%</span>
+                                <i class="fas fa-arrow-down neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Quality">
+                            <td>Quality</td>
+                            <td>Defect Rate</td>
+                            <td>Current Week vs Last Week</td>
+                            <td>0.8%</td>
+                            <td>0.9%</td>
+                            <td class="neo-positive">
+                                <span>-0.1%</span>
+                                <i class="fas fa-arrow-down neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                        <tr data-department="Quality">
+                            <td>Quality</td>
+                            <td>Customer Returns</td>
+                            <td>This Month vs Last Month</td>
+                            <td>1.2%</td>
+                            <td>1.4%</td>
+                            <td class="neo-positive">
+                                <span>-0.2%</span>
+                                <i class="fas fa-arrow-down neo-trend-indicator"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Metrics and Chart Section -->
+        <div class="neo-metrics-chart-section">
+            <!-- Performance Metrics -->
+            <div class="neo-kpi-container">
+                <div class="neo-kpi-card">
+                    <div class="neo-kpi-header">
+                        <span class="neo-kpi-title">Inventory Turnover</span>
+                        <i class="fas fa-boxes neo-kpi-icon"></i>
+                    </div>
+                    <div class="neo-kpi-value">8.2x</div>
+                    <div class="neo-kpi-change positive">
+                        <span>+12.5%</span>
+                        <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                    </div>
+                </div>
+                
+                <div class="neo-kpi-card">
+                    <div class="neo-kpi-header">
+                        <span class="neo-kpi-title">Stockout Rate</span>
+                        <i class="fas fa-exclamation-triangle neo-kpi-icon"></i>
+                    </div>
+                    <div class="neo-kpi-value">2.8%</div>
+                    <div class="neo-kpi-change negative">
+                        <span>+3.2%</span>
+                        <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                    </div>
+                </div>
+                
+                <div class="neo-kpi-card">
+                    <div class="neo-kpi-header">
+                        <span class="neo-kpi-title">Order Accuracy</span>
+                        <i class="fas fa-clipboard-check neo-kpi-icon"></i>
+                    </div>
+                    <div class="neo-kpi-value">99.4%</div>
+                    <div class="neo-kpi-change positive">
+                        <span>+0.3%</span>
+                        <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                    </div>
+                </div>
+                
+                <div class="neo-kpi-card">
+                    <div class="neo-kpi-header">
+                        <span class="neo-kpi-title">On-time Delivery</span>
+                        <i class="fas fa-shipping-fast neo-kpi-icon"></i>
+                    </div>
+                    <div class="neo-kpi-value">95.2%</div>
+                    <div class="neo-kpi-change positive">
+                        <span>+0.4%</span>
+                        <i class="fas fa-arrow-up neo-trend-indicator"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top 5 Clients Chart -->
+            <div class="neo-chart-card">
+                <div class="neo-chart-header">
+                    <h2 class="neo-chart-title">
+                        <i class="fas fa-chart-bar"></i>
+                        TOP 5 CLIENTS BY SALES VOLUME
+                    </h2>
+                    <div class="neo-time-selector-container">
+                        <span class="neo-time-label">PERIOD:</span>
+                        <select class="neo-time-select" id="neo-time-period-select">
+                            <option value="7d">LAST 7 DAYS</option>
+                            <option value="30d" selected>LAST 30 DAYS</option>
+                            <option value="90d">LAST 90 DAYS</option>
+                            <option value="1y">LAST YEAR</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="neo-chart-container">
+                    <canvas id="neo-sales-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const neoSalesChartCtx = document.getElementById('neo-sales-chart').getContext('2d');
+            
+            // Sample data for the chart
+            const neoClientNames = ['Nova Corp', 'Quantum Ind', 'Stellar Sys', 'Aether Tech', 'Zenith Sol'];
+            const neoSalesData = [850000, 720000, 540000, 480000, 350000];
+            
+            // Function to create gradient effect
+            function neoCreateGradient(ctx, topColor, bottomColor) {
+                const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+                gradient.addColorStop(0, topColor);
+                gradient.addColorStop(0.7, bottomColor);
+                gradient.addColorStop(1, bottomColor);
+                return gradient;
+            }
+            
+            // Create the chart
+            const neoSalesChart = new Chart(neoSalesChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: neoClientNames,
+                    datasets: [{
+                        label: 'Sales Volume',
+                        data: neoSalesData,
+                        backgroundColor: [
+                            neoCreateGradient(neoSalesChartCtx, '#3A4FBE', '#2A3B9E'),
+                            neoCreateGradient(neoSalesChartCtx, '#5A6FDE', '#3A4FBE'),
+                            neoCreateGradient(neoSalesChartCtx, '#00C2D6', '#00A0B2'),
+                            neoCreateGradient(neoSalesChartCtx, '#FF5E7D', '#E04A68'),
+                            neoCreateGradient(neoSalesChartCtx, '#8A6BFF', '#6A4BDF')
+                        ],
+                        borderColor: [
+                            '#2A3B9E',
+                            '#3A4FBE',
+                            '#00A0B2',
+                            '#E04A68',
+                            '#6A4BDF'
+                        ],
+                        borderWidth: 1,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#222233',
+                            bodyColor: '#666699',
+                            borderColor: 'rgba(0, 153, 255, 0.25)',
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                            displayColors: false,
+                            padding: 6,
+                            titleFont: {
+                                size: 10
+                            },
+                            bodyFont: {
+                                size: 10
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                        minimumFractionDigits: 0
+                                    }).format(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#666699',
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(221, 228, 240, 0.6)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#666699',
+                                font: {
+                                    size: 9
+                                },
+                                callback: function(value) {
+                                    if (value >= 1000) {
+                                        return '$' + (value / 1000).toFixed(0) + 'K';
+                                    }
+                                    return '$' + value;
+                                },
+                                maxTicksLimit: 5
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 800,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Handle time period selection
+            document.getElementById('neo-time-period-select').addEventListener('change', function() {
+                const neoTimePeriod = this.value;
+                let neoMultiplier = 1;
+                
+                switch(neoTimePeriod) {
+                    case '7d':
+                        neoMultiplier = 0.25;
+                        break;
+                    case '90d':
+                        neoMultiplier = 1.5;
+                        break;
+                    case '1y':
+                        neoMultiplier = 4;
+                        break;
+                }
+                
+                // Update chart data
+                neoSalesChart.data.datasets[0].data = neoSalesData.map(value => value * neoMultiplier);
+                neoSalesChart.update();
+            });
+            
+            // Department filtering functionality
+            const neoFilterButtons = document.querySelectorAll('.neo-filter-btn');
+            const neoTableRows = document.querySelectorAll('#neo-table-body tr');
+            
+            neoFilterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    neoFilterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const neoDepartment = this.getAttribute('data-department');
+                    
+                    // Show/hide table rows based on filter
+                    neoTableRows.forEach(row => {
+                        const neoRowDepartment = row.getAttribute('data-department');
+                        
+                        if (neoDepartment === 'all') {
+                            row.style.display = 'table-row';
+                        } else if (neoRowDepartment === neoDepartment) {
+                            row.style.display = 'table-row';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Simulate real-time data updates
+            setInterval(() => {
+                // Update "Invoices Created Today" with a random increase
+                const neoRows = document.querySelectorAll('#neo-table-body tr');
+                neoRows.forEach(row => {
+                    const neoIndicatorCell = row.cells[1];
+                    if (neoIndicatorCell && neoIndicatorCell.textContent.trim() === "Invoices Created Today") {
+                        const neoTodayInvoicesValue = row.cells[3];
+                        let neoCurrentValue = parseInt(neoTodayInvoicesValue.textContent);
+                        if (!isNaN(neoCurrentValue)) {
+                            neoTodayInvoicesValue.textContent = neoCurrentValue + Math.floor(Math.random() * 3);
+                        }
+                    }
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
