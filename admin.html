@@ -37,7 +37,101 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
+            /* Compact Metrics Section */
+.neo-compact-metrics {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 0;
+}
 
+.neo-compact-card {
+    background: var(--neo-card-bg);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: var(--neo-shadow-light);
+    border: 1px solid var(--neo-border-light);
+    transition: var(--neo-transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 60px;
+}
+
+.neo-compact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 153, 255, 0.15);
+}
+
+.neo-compact-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(0, 153, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neo-accent-blue);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.neo-compact-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.neo-compact-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--neo-text-dark);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.neo-compact-label {
+    font-size: 0.7rem;
+    color: var(--neo-text-light);
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .neo-compact-metrics {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .neo-compact-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .neo-compact-metrics {
+        grid-template-columns: 1fr;
+    }
+    
+    .neo-compact-card {
+        padding: 8px;
+    }
+    
+    .neo-compact-value {
+        font-size: 0.9rem;
+    }
+    
+    .neo-compact-label {
+        font-size: 0.65rem;
+    }
+}
         .neo-dashboard-container {
             max-width: 1400px;
             width: 100%;
@@ -128,10 +222,9 @@
         }
 
         .neo-data-table-wrapper {
-            max-height: 210px;
+            max-height: 240px;
             overflow-y: auto;
             overflow-x: auto;
-            min-height: 210px;
         }
 
         .neo-data-table {
@@ -424,9 +517,382 @@
                 height: 130px;
             }
         }
+        /* Compact Store Toggle Styles */
+.neo-store-selector-container {
+    display: flex;
+    align-items: center;
+}
+
+.neo-store-toggle-group {
+    display: flex;
+    gap: 4px;
+}
+
+.neo-store-toggle {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: rgba(0, 153, 255, 0.08);
+    color: var(--neo-text-dark);
+    border: 1px solid var(--neo-border-light);
+    cursor: pointer;
+    transition: var(--neo-transition);
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+    min-width: 32px;
+    height: 24px;
+    justify-content: center;
+}
+
+.neo-store-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--store-color, var(--neo-accent-blue));
+    opacity: 0;
+    transition: var(--neo-transition);
+    z-index: 1;
+}
+
+.neo-store-toggle.active::before {
+    opacity: 0.12;
+}
+
+.neo-store-toggle.active {
+    border-color: var(--store-color, var(--neo-accent-blue));
+    box-shadow: 0 1px 4px rgba(0, 153, 255, 0.15);
+}
+
+.neo-store-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 153, 255, 0.2);
+}
+
+.neo-store-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--store-color, var(--neo-accent-blue));
+    transition: var(--neo-transition);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.neo-store-toggle.active .neo-store-dot {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 2px var(--store-color, var(--neo-accent-blue));
+}
+
+.neo-store-toggle span:last-child {
+    position: relative;
+    z-index: 2;
+    line-height: 1;
+}
+
+/* Store color definitions */
+.neo-store-toggle[data-store="store1"] { --store-color: #0099ff; }
+.neo-store-toggle[data-store="store2"] { --store-color: #9966ff; }
+.neo-store-toggle[data-store="store3"] { --store-color: #00e676; }
+.neo-store-toggle[data-store="store4"] { --store-color: #ff66cc; }
+.neo-store-toggle[data-store="store5"] { --store-color: #ff9800; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .neo-chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .neo-store-selector-container {
+        width: 100%;
+    }
+    
+    .neo-store-toggle-group {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .neo-store-toggle {
+        flex: 1;
+        min-width: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .neo-store-toggle {
+        padding: 3px 6px;
+        font-size: 0.6rem;
+        height: 22px;
+        min-width: 26px;
+    }
+    
+    .neo-store-dot {
+        width: 5px;
+        height: 5px;
+    }
+    
+    .neo-chart-container {
+        height: 160px !important;
+    }
+}
+
+/* Compact Alerts Section */
+.neo-alerts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.neo-alert-card.compact {
+    background: var(--neo-card-bg);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: var(--neo-shadow-light);
+    border: 1px solid var(--neo-border-light);
+    transition: var(--neo-transition);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+.neo-alert-card.compact:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 153, 255, 0.15);
+}
+
+.neo-alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--neo-border-light);
+}
+
+.neo-alert-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--neo-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.neo-alert-badge {
+    background: rgba(0, 153, 255, 0.1);
+    color: var(--neo-accent-blue);
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    border: 1px solid var(--neo-border-light);
+}
+
+.neo-alert-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.neo-alert-item.compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(0, 153, 255, 0.08);
+    transition: var(--neo-transition);
+}
+
+.neo-alert-item.compact:hover {
+    background: rgba(0, 153, 255, 0.03);
+    border-radius: 3px;
+    padding: 4px 3px;
+}
+
+.neo-alert-item.compact:last-child {
+    border-bottom: none;
+}
+
+.neo-alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+}
+
+.neo-alert-product {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--neo-text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.neo-alert-metric {
+    font-size: 0.6rem;
+    color: var(--neo-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status indicators */
+.neo-alert-status {
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
+.neo-alert-status.critical {
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.neo-alert-status.warning {
+    background: rgba(255, 102, 204, 0.15);
+    color: #ff66cc;
+    border: 1px solid rgba(255, 102, 204, 0.3);
+}
+
+/* Score indicators */
+.neo-alert-score {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-left: 6px;
+    min-width: 36px;
+    text-align: center;
+}
+
+.neo-alert-score.excellent {
+    background: rgba(0, 230, 118, 0.15);
+    color: #00e676;
+    border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+.neo-alert-score.good {
+    background: rgba(0, 153, 255, 0.15);
+    color: #0099ff;
+    border: 1px solid rgba(0, 153, 255, 0.3);
+}
+
+.neo-alert-score.average {
+    background: rgba(153, 102, 255, 0.15);
+    color: #9966ff;
+    border: 1px solid rgba(153, 102, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .neo-alerts-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .neo-alert-card.compact {
+        min-height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .neo-alert-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .neo-alert-item.compact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+    }
+    
+    .neo-alert-status,
+    .neo-alert-score {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+    
+    .neo-alert-card.compact {
+        padding: 8px;
+        min-height: 150px;
+    }
+}
     </style>
 </head>
 <body>
+    <!-- Compact Metrics Section -->
+<div class="neo-compact-metrics">
+    <div class="neo-compact-card">
+        <div class="neo-compact-icon">
+            <i class="fas fa-money-bill-wave"></i>
+        </div>
+        <div class="neo-compact-content">
+            <div class="neo-compact-value">$124,580</div>
+            <div class="neo-compact-label">Revenue Today</div>
+        </div>
+    </div>
+    
+    <div class="neo-compact-card">
+        <div class="neo-compact-icon">
+            <i class="fas fa-boxes"></i>
+        </div>
+        <div class="neo-compact-content">
+            <div class="neo-compact-value">$2.45M</div>
+            <div class="neo-compact-label">Inventory Value</div>
+        </div>
+    </div>
+    
+    <div class="neo-compact-card">
+        <div class="neo-compact-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="neo-compact-content">
+            <div class="neo-compact-value">24.8%</div>
+            <div class="neo-compact-label">Profit Margin</div>
+        </div>
+    </div>
+    
+    <div class="neo-compact-card">
+        <div class="neo-compact-icon">
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+        <div class="neo-compact-content">
+            <div class="neo-compact-value">3,842</div>
+            <div class="neo-compact-label">Total Sales</div>
+        </div>
+    </div>
+    
+    <div class="neo-compact-card">
+        <div class="neo-compact-icon">
+            <i class="fas fa-receipt"></i>
+        </div>
+        <div class="neo-compact-content">
+            <div class="neo-compact-value">$511,800</div>
+            <div class="neo-compact-label">Total Expenses</div>
+        </div>
+    </div>
+</div>
     <div class="neo-dashboard-container">
         <div class="neo-dashboard-header">
             <h1 class="neo-dashboard-title">
@@ -743,7 +1209,126 @@
             </div>
         </div>
     </div>
+    <!-- Multi-Store Revenue Chart -->
+<div class="neo-chart-card">
+    <div class="neo-chart-header">
+        <h2 class="neo-chart-title">
+            <i class="fas fa-chart-line"></i>
+            STORE REVENUE TREND
+        </h2>
+        <div class="neo-store-selector-container">
+            <div class="neo-store-toggle-group">
+                <button class="neo-store-toggle active" data-store="store1" title="Store A">
+                    <span class="neo-store-dot"></span>
+                    madina
+                </button>
+                <button class="neo-store-toggle active" data-store="store2" title="Store B">
+                    <span class="neo-store-dot"></span>
+                    B
+                </button>
+                <button class="neo-store-toggle active" data-store="store3" title="Store C">
+                    <span class="neo-store-dot"></span>
+                    C
+                </button>
+                <button class="neo-store-toggle" data-store="store4" title="Store D">
+                    <span class="neo-store-dot"></span>
+                    D
+                </button>
+                <button class="neo-store-toggle" data-store="store5" title="Store E">
+                    <span class="neo-store-dot"></span>
+                    E
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="neo-chart-container" style="height: 180px;">
+        <canvas id="neo-revenue-chart"></canvas>
+    </div>
+</div>
+<!-- Compact Alerts Section -->
+<div class="neo-alerts-section">
+    <!-- Critical Stock Alerts -->
+    <div class="neo-alert-card compact">
+        <div class="neo-alert-header">
+            <h3 class="neo-alert-title">
+                <i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i>
+                STOCK ALERTS
+            </h3>
+            <span class="neo-alert-badge">3</span>
+        </div>
+        <div class="neo-alert-list">
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Quantum Processors</span>
+                    <span class="neo-alert-metric">12 units</span>
+                </div>
+                <div class="neo-alert-status critical">CRITICAL</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Neural Interface Chips</span>
+                    <span class="neo-alert-metric">8 units</span>
+                </div>
+                <div class="neo-alert-status warning">LOW</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Holographic Displays</span>
+                    <span class="neo-alert-metric">15 units</span>
+                </div>
+                <div class="neo-alert-status warning">LOW</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Supplier Reliability Scoreboard -->
+    <div class="neo-alert-card compact">
+        <div class="neo-alert-header">
+            <h3 class="neo-alert-title">
+                <i class="fas fa-star" style="color: #00e676;"></i>
+                SUPPLIER SCORES
+            </h3>
+            <span class="neo-alert-badge">Top 5</span>
+        </div>
+        <div class="neo-alert-list">
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Quantum Components Inc.</span>
+                    <span class="neo-alert-metric">98.7% On-time</span>
+                </div>
+                <div class="neo-alert-score excellent">98.7</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Neural Tech Supplies</span>
+                    <span class="neo-alert-metric">96.2% On-time</span>
+                </div>
+                <div class="neo-alert-score good">96.2</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Holo Display Co.</span>
+                    <span class="neo-alert-metric">95.8% On-time</span>
+                </div>
+                <div class="neo-alert-score good">95.8</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Precision Circuits Ltd</span>
+                    <span class="neo-alert-metric">94.1% On-time</span>
+                </div>
+                <div class="neo-alert-score average">94.1</div>
+            </div>
+            <div class="neo-alert-item compact">
+                <div class="neo-alert-content">
+                    <span class="neo-alert-product">Advanced Materials Co</span>
+                    <span class="neo-alert-metric">92.3% On-time</span>
+                </div>
+                <div class="neo-alert-score average">92.3</div>
+            </div>
+        </div>
+    </div>
+</div>
     <script>
         // Initialize the chart
         document.addEventListener('DOMContentLoaded', function() {
@@ -930,6 +1515,192 @@
                 });
             }, 5000);
         });
+
+        // Multi-Store Revenue Chart with Toggle Buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const neoRevenueChartCtx = document.getElementById('neo-revenue-chart').getContext('2d');
+    const neoStoreToggles = document.querySelectorAll('.neo-store-toggle');
+    
+    // Sample data for 7 days
+    const neoDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
+    // Store data with different revenue patterns
+    const neoStoreData = {
+        store1: {
+            name: 'Store A',
+            data: [45000, 52000, 48000, 61000, 55000, 72000, 68000],
+            color: '#0099ff'
+        },
+        store2: {
+            name: 'Store B', 
+            data: [38000, 42000, 51000, 47000, 59000, 53000, 61000],
+            color: '#9966ff'
+        },
+        store3: {
+            name: 'Store C',
+            data: [52000, 58000, 54000, 62000, 68000, 75000, 71000],
+            color: '#00e676'
+        },
+        store4: {
+            name: 'Store D',
+            data: [29000, 32000, 35000, 41000, 38000, 45000, 42000],
+            color: '#ff66cc'
+        },
+        store5: {
+            name: 'Store E',
+            data: [61000, 67000, 63000, 69000, 72000, 68000, 74000],
+            color: '#ff9800'
+        }
+    };
+    
+    // Function to create gradient for line charts
+    function neoCreateLineGradient(ctx, color) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(0.7, color + '80');
+        gradient.addColorStop(1, color + '00');
+        return gradient;
+    }
+    
+    // Function to get currently active stores
+    function neoGetActiveStores() {
+        return Array.from(neoStoreToggles)
+            .filter(toggle => toggle.classList.contains('active'))
+            .map(toggle => toggle.getAttribute('data-store'));
+    }
+    
+    // Function to update chart based on active stores
+    function neoUpdateChart() {
+        const activeStores = neoGetActiveStores();
+        
+        const datasets = activeStores.map(storeId => {
+            const store = neoStoreData[storeId];
+            return {
+                label: store.name,
+                data: store.data,
+                borderColor: store.color,
+                backgroundColor: neoCreateLineGradient(neoRevenueChartCtx, store.color),
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: store.color,
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            };
+        });
+        
+        neoRevenueChart.data.datasets = datasets;
+        neoRevenueChart.update();
+    }
+    
+    // Initialize the revenue chart
+    const neoRevenueChart = new Chart(neoRevenueChartCtx, {
+        type: 'line',
+        data: {
+            labels: neoDays,
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 15,
+                        font: {
+                            size: 9
+                        },
+                        color: '#666699'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#222233',
+                    bodyColor: '#666699',
+                    borderColor: 'rgba(0, 153, 255, 0.25)',
+                    borderWidth: 1,
+                    cornerRadius: 6,
+                    padding: 8,
+                    titleFont: {
+                        size: 10
+                    },
+                    bodyFont: {
+                        size: 10
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + 
+                                new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                    minimumFractionDigits: 0
+                                }).format(context.parsed.y);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(221, 228, 240, 0.6)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#666699',
+                        font: {
+                            size: 9
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(221, 228, 240, 0.6)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#666699',
+                        font: {
+                            size: 9
+                        },
+                        callback: function(value) {
+                            if (value >= 1000) {
+                                return '$' + (value / 1000).toFixed(0) + 'K';
+                            }
+                            return '$' + value;
+                        },
+                        maxTicksLimit: 6
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            animation: {
+                duration: 800,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+    
+    // Event listeners for store toggle buttons
+    neoStoreToggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            neoUpdateChart();
+        });
+    });
+    
+    // Initialize the chart with default active stores
+    neoUpdateChart();
+});
     </script>
 </body>
 </html>
