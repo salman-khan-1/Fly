@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCorp Retail - Approval Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neo-primary-bg: #f0f5ff;
+            --neo-card-bg: rgba(255, 255, 255, 0.92);
+            --neo-accent-blue: #0099ff;
+            --neo-accent-purple: #9966ff;
+            --neo-accent-cyan: #00e5ff;
+            --neo-accent-pink: #ff66cc;
+            --neo-accent-green: #00e676;
+            --neo-accent-orange: #ff9800;
+            --neo-text-dark: #222233;
+            --neo-text-light: #666699;
+            --neo-border-light: rgba(0, 153, 255, 0.25);
+            --neo-shadow-light: 0 4px 20px rgba(0, 153, 255, 0.1);
+            --neo-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--neo-primary-bg);
+            color: var(--neo-text-dark);
+            padding: 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .neo-dashboard-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .neo-dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--neo-border-light);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .neo-dashboard-title {
+            font-weight: 350;
+            font-size: 1.5rem;
+            color: var(--neo-text-dark);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Approval Stats */
+        .neo-approval-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .neo-stat-card {
+            background: var(--neo-card-bg);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: var(--neo-shadow-light);
+            border: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .neo-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 153, 255, 0.15);
+        }
+
+        .neo-stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: rgba(0, 153, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neo-accent-blue);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .neo-stat-content {
+            flex: 1;
+        }
+
+        .neo-stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--neo-text-dark);
+            line-height: 1.2;
+        }
+
+        .neo-stat-label {
+            font-size: 0.75rem;
+            color: var(--neo-text-light);
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* Approval Table */
+        .neo-approval-table-container {
+            width: 100%;
+            background: var(--neo-card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--neo-shadow-light);
+            border: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            margin-bottom: 20px;
+        }
+
+        .neo-approval-table-container:hover {
+            box-shadow: 0 8px 25px rgba(0, 153, 255, 0.15);
+        }
+
+        .neo-approval-table-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--neo-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .neo-approval-table-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--neo-text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Filters in header */
+        .neo-filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .neo-filter-btn {
+            padding: 4px 10px;
+            border-radius: 14px;
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--neo-accent-blue);
+            border: 1px solid var(--neo-border-light);
+            cursor: pointer;
+            transition: var(--neo-transition);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .neo-filter-btn.active {
+            background: var(--neo-accent-blue);
+            color: white;
+        }
+
+        .neo-filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 153, 255, 0.2);
+        }
+
+        .neo-search-box {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .neo-search-input {
+            width: 100%;
+            padding: 6px 12px 6px 32px;
+            border-radius: 14px;
+            background: var(--neo-card-bg);
+            border: 1px solid var(--neo-border-light);
+            font-size: 0.7rem;
+            color: var(--neo-text-dark);
+            transition: var(--neo-transition);
+        }
+
+        .neo-search-input:focus {
+            outline: none;
+            border-color: var(--neo-accent-blue);
+            box-shadow: 0 0 0 2px rgba(0, 153, 255, 0.1);
+        }
+
+        .neo-search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neo-text-light);
+            font-size: 0.7rem;
+        }
+
+        /* Table with fixed height for 7 rows */
+        .neo-approval-table-wrapper {
+            height: 340px; /* Fixed height to show exactly 7 rows */
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .neo-approval-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .neo-approval-table th {
+            background: rgb(223 242 255);
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--neo-text-light);
+            border-bottom: 1px solid var(--neo-border-light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .neo-approval-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--neo-border-light);
+            transition: var(--neo-transition);
+            font-size: 0.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: 42px; /* Fixed row height */
+        }
+
+        .neo-approval-table tr:hover td {
+            background: rgba(0, 153, 255, 0.03);
+        }
+
+        .neo-approval-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status badges */
+        .neo-status-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .neo-status-pending {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .neo-status-approved {
+            background: rgba(0, 230, 118, 0.15);
+            color: #00e676;
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+
+        .neo-status-rejected {
+            background: rgba(255, 102, 204, 0.15);
+            color: #ff66cc;
+            border: 1px solid rgba(255, 102, 204, 0.3);
+        }
+
+        .neo-status-urgent {
+            background: rgba(255, 0, 0, 0.15);
+            color: #ff0000;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+
+        /* Action buttons */
+        .neo-action-buttons {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .neo-action-btn {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--neo-transition);
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .neo-approve-btn {
+            background: rgba(0, 230, 118, 0.1);
+            color: #00e676;
+            border-color: rgba(0, 230, 118, 0.3);
+        }
+
+        .neo-approve-btn:hover {
+            background: rgba(0, 230, 118, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .neo-reject-btn {
+            background: rgba(255, 102, 204, 0.1);
+            color: #ff66cc;
+            border-color: rgba(255, 102, 204, 0.3);
+        }
+
+        .neo-reject-btn:hover {
+            background: rgba(255, 102, 204, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .neo-details-btn {
+            background: rgba(0, 153, 255, 0.1);
+            color: #0099ff;
+            border-color: rgba(0, 153, 255, 0.3);
+        }
+
+        .neo-details-btn:hover {
+            background: rgba(0, 153, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Modal Styles */
+        .neo-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .neo-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .neo-modal {
+            background: var(--neo-card-bg);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .neo-modal-overlay.active .neo-modal {
+            transform: translateY(0);
+        }
+
+        .neo-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--neo-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .neo-modal-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--neo-text-dark);
+        }
+
+        .neo-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--neo-text-light);
+            cursor: pointer;
+            transition: var(--neo-transition);
+        }
+
+        .neo-modal-close:hover {
+            color: var(--neo-text-dark);
+            transform: rotate(90deg);
+        }
+
+        .neo-modal-body {
+            padding: 20px;
+        }
+
+        .neo-detail-row {
+            display: flex;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--neo-border-light);
+        }
+
+        .neo-detail-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--neo-text-light);
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .neo-detail-value {
+            font-size: 0.8rem;
+            color: var(--neo-text-dark);
+            flex: 1;
+        }
+
+        .neo-detail-description {
+            font-size: 0.8rem;
+            color: var(--neo-text-dark);
+            line-height: 1.5;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 153, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid var(--neo-accent-blue);
+        }
+
+        .neo-attachments {
+            margin-top: 15px;
+        }
+
+        .neo-attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(0, 153, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .neo-attachment-icon {
+            color: var(--neo-accent-blue);
+        }
+
+        .neo-attachment-name {
+            font-size: 0.8rem;
+            color: var(--neo-text-dark);
+        }
+
+        .neo-attachment-download {
+            margin-left: auto;
+            color: var(--neo-accent-blue);
+            cursor: pointer;
+        }
+
+        .neo-modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--neo-border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .neo-modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--neo-transition);
+            border: 1px solid;
+        }
+
+        .neo-modal-approve {
+            background: var(--neo-accent-green);
+            color: white;
+            border-color: var(--neo-accent-green);
+        }
+
+        .neo-modal-reject {
+            background: var(--neo-accent-pink);
+            color: white;
+            border-color: var(--neo-accent-pink);
+        }
+
+        .neo-modal-cancel {
+            background: rgba(0, 153, 255, 0.1);
+            color: var(--neo-accent-blue);
+            border-color: var(--neo-border-light);
+        }
+
+        /* Table column widths */
+        .neo-approval-table th:nth-child(1),
+        .neo-approval-table td:nth-child(1) {
+            width: 12%;
+        }
+
+        .neo-approval-table th:nth-child(2),
+        .neo-approval-table td:nth-child(2) {
+            width: 22%;
+        }
+
+        .neo-approval-table th:nth-child(3),
+        .neo-approval-table td:nth-child(3) {
+            width: 12%;
+        }
+
+        .neo-approval-table th:nth-child(4),
+        .neo-approval-table td:nth-child(4) {
+            width: 10%;
+        }
+
+        .neo-approval-table th:nth-child(5),
+        .neo-approval-table td:nth-child(5) {
+            width: 10%;
+        }
+
+        .neo-approval-table th:nth-child(6),
+        .neo-approval-table td:nth-child(6) {
+            width: 10%;
+        }
+
+        .neo-approval-table th:nth-child(7),
+        .neo-approval-table td:nth-child(7) {
+            width: 12%;
+        }
+
+        .neo-approval-table th:nth-child(8),
+        .neo-approval-table td:nth-child(8) {
+            width: 12%;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .neo-approval-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .neo-approval-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .neo-approval-table-wrapper {
+                overflow-x: auto;
+            }
+            
+            .neo-approval-table th,
+            .neo-approval-table td {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .neo-dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .neo-approval-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .neo-filter-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .neo-search-box {
+                width: 100%;
+            }
+            
+            .neo-approval-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .neo-dashboard-title {
+                font-size: 1.3rem;
+            }
+            
+            .neo-modal {
+                width: 95%;
+            }
+            
+            .neo-detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .neo-detail-label {
+                width: 100%;
+            }
+            
+            .neo-modal-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neo-dashboard-container">
+        <div class="neo-dashboard-header">
+            <h1 class="neo-dashboard-title">
+                <i class="fas fa-clipboard-check"></i>
+                RETAIL APPROVAL DASHBOARD
+            </h1>
+        </div>
+        
+        <!-- Approval Stats -->
+        <div class="neo-approval-stats">
+            <div class="neo-stat-card">
+                <div class="neo-stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="neo-stat-content">
+                    <div class="neo-stat-value">24</div>
+                    <div class="neo-stat-label">Pending Approvals</div>
+                </div>
+            </div>
+            
+            <div class="neo-stat-card">
+                <div class="neo-stat-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="neo-stat-content">
+                    <div class="neo-stat-value">8</div>
+                    <div class="neo-stat-label">Urgent Requests</div>
+                </div>
+            </div>
+            
+            <div class="neo-stat-card">
+                <div class="neo-stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="neo-stat-content">
+                    <div class="neo-stat-value">$248,750</div>
+                    <div class="neo-stat-label">Pending Amount</div>
+                </div>
+            </div>
+            
+            <div class="neo-stat-card">
+                <div class="neo-stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="neo-stat-content">
+                    <div class="neo-stat-value">14</div>
+                    <div class="neo-stat-label">Inventory Requests</div>
+                </div>
+            </div>
+            
+            <div class="neo-stat-card">
+                <div class="neo-stat-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="neo-stat-content">
+                    <div class="neo-stat-value">6</div>
+                    <div class="neo-stat-label">Store Operations</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Approval Table with Filters in Header -->
+        <div class="neo-approval-table-container">
+            <div class="neo-approval-table-header">
+                <div class="neo-approval-table-title">
+                    <i class="fas fa-list"></i>
+                    Pending Approvals (24)
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div class="neo-filter-group">
+                        <button class="neo-filter-btn active" data-filter="all">All</button>
+                        <button class="neo-filter-btn" data-filter="purchase">Purchase</button>
+                        <button class="neo-filter-btn" data-filter="inventory">Inventory</button>
+                        <button class="neo-filter-btn" data-filter="vendor">Vendor</button>
+                        <button class="neo-filter-btn" data-filter="pricing">Pricing</button>
+                        <button class="neo-filter-btn" data-filter="store">Store Ops</button>
+                        <button class="neo-filter-btn" data-filter="hr">HR</button>
+                        <button class="neo-filter-btn" data-filter="marketing">Marketing</button>
+                        <button class="neo-filter-btn" data-filter="logistics">Logistics</button>
+                        <button class="neo-filter-btn" data-filter="returns">Returns</button>
+                    </div>
+                    
+                    <div class="neo-search-box">
+                        <i class="fas fa-search neo-search-icon"></i>
+                        <input type="text" class="neo-search-input" placeholder="Search approvals...">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="neo-approval-table-wrapper">
+                <table class="neo-approval-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Requester</th>
+                            <th>Store/Location</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="neo-approval-body">
+                        <!-- Purchase Orders -->
+                        <tr data-category="purchase" data-status="urgent">
+                            <td>Purchase Order</td>
+                            <td>Winter Collection - Apparel & Accessories</td>
+                            <td>Sarah Johnson</td>
+                            <td>Central Warehouse</td>
+                            <td>$85,400</td>
+                            <td>Today</td>
+                            <td><span class="neo-status-badge neo-status-urgent">Urgent</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="1">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="1">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="purchase" data-status="pending">
+                            <td>Purchase Order</td>
+                            <td>Store Fixtures & Displays</td>
+                            <td>Michael Chen</td>
+                            <td>Store #15</td>
+                            <td>$12,750</td>
+                            <td>2 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="2">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="2">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="2">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Inventory Management -->
+                        <tr data-category="inventory" data-status="urgent">
+                            <td>Inventory Adjustment</td>
+                            <td>Stock Write-off - Damaged Goods</td>
+                            <td>Robert Garcia</td>
+                            <td>Store #08</td>
+                            <td>$4,280</td>
+                            <td>Today</td>
+                            <td><span class="neo-status-badge neo-status-urgent">Urgent</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="3">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="inventory" data-status="pending">
+                            <td>Stock Transfer</td>
+                            <td>High-demand items to Store #12</td>
+                            <td>Jessica Williams</td>
+                            <td>Central Warehouse</td>
+                            <td>$18,500</td>
+                            <td>1 day ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="4">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="4">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="4">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Vendor Management -->
+                        <tr data-category="vendor" data-status="pending">
+                            <td>New Vendor</td>
+                            <td>Eco-Friendly Packaging Supplier</td>
+                            <td>David Miller</td>
+                            <td>Corporate</td>
+                            <td>$0</td>
+                            <td>3 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="5">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="5">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="5">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="vendor" data-status="pending">
+                            <td>Vendor Contract</td>
+                            <td>Renewal - Logistics Partner</td>
+                            <td>Amanda Wilson</td>
+                            <td>Corporate</td>
+                            <td>$120,000</td>
+                            <td>4 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="6">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="6">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="6">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Pricing & Promotions -->
+                        <tr data-category="pricing" data-status="urgent">
+                            <td>Price Change</td>
+                            <td>Seasonal Clearance - 40% Off</td>
+                            <td>Thomas Brown</td>
+                            <td>All Stores</td>
+                            <td>$0</td>
+                            <td>Today</td>
+                            <td><span class="neo-status-badge neo-status-urgent">Urgent</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="7">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="7">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="pricing" data-status="pending">
+                            <td>Promotion</td>
+                            <td>Buy One Get One 50% Off</td>
+                            <td>Jennifer Lee</td>
+                            <td>Online & Store #01-10</td>
+                            <td>$0</td>
+                            <td>2 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="8">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="8">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="8">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Store Operations -->
+                        <tr data-category="store" data-status="pending">
+                            <td>Store Renovation</td>
+                            <td>Flooring Upgrade - Store #05</td>
+                            <td>Kevin Martinez</td>
+                            <td>Store #05</td>
+                            <td>$25,000</td>
+                            <td>5 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="9">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="9">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="9">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="store" data-status="pending">
+                            <td>Equipment Purchase</td>
+                            <td>New POS Systems - 5 Stores</td>
+                            <td>Rachel Adams</td>
+                            <td>Stores #03,07,11,14,18</td>
+                            <td>$42,800</td>
+                            <td>3 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="10">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="10">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="10">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- HR & Staffing -->
+                        <tr data-category="hr" data-status="pending">
+                            <td>New Hire</td>
+                            <td>Assistant Store Manager</td>
+                            <td>Lisa Thompson</td>
+                            <td>Store #12</td>
+                            <td>$52,000</td>
+                            <td>2 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="11">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="11">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="11">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="hr" data-status="pending">
+                            <td>Overtime Approval</td>
+                            <td>Holiday Season Staffing</td>
+                            <td>James Wilson</td>
+                            <td>All Stores</td>
+                            <td>$18,500</td>
+                            <td>4 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="12">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="12">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="12">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Marketing -->
+                        <tr data-category="marketing" data-status="pending">
+                            <td>Marketing Campaign</td>
+                            <td>Social Media Ad Campaign</td>
+                            <td>Daniel Clark</td>
+                            <td>Corporate</td>
+                            <td>$15,000</td>
+                            <td>3 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="13">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="13">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="13">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-category="marketing" data-status="urgent">
+                            <td>Event Sponsorship</td>
+                            <td>Local Community Festival</td>
+                            <td>Michelle Rodriguez</td>
+                            <td>Store #06</td>
+                            <td>$5,000</td>
+                            <td>Today</td>
+                            <td><span class="neo-status-badge neo-status-urgent">Urgent</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="14">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="14">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Logistics -->
+                        <tr data-category="logistics" data-status="pending">
+                            <td>Shipping Contract</td>
+                            <td>Express Delivery Service</td>
+                            <td>Brian Taylor</td>
+                            <td>Distribution Center</td>
+                            <td>$45,000</td>
+                            <td>2 days ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="15">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="15">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="15">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Returns & Refunds -->
+                        <tr data-category="returns" data-status="pending">
+                            <td>Bulk Return</td>
+                            <td>Defective Electronics Batch</td>
+                            <td>Stephanie Lewis</td>
+                            <td>Store #09</td>
+                            <td>$8,750</td>
+                            <td>1 day ago</td>
+                            <td><span class="neo-status-badge neo-status-pending">Pending</span></td>
+                            <td>
+                                <div class="neo-action-buttons">
+                                    <button class="neo-action-btn neo-approve-btn" data-id="16">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="neo-action-btn neo-reject-btn" data-id="16">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="neo-action-btn neo-details-btn" data-id="16">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Detail Modal -->
+    <div class="neo-modal-overlay" id="neo-approval-modal">
+        <div class="neo-modal">
+            <div class="neo-modal-header">
+                <h2 class="neo-modal-title">Approval Details</h2>
+                <button class="neo-modal-close" id="neo-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="neo-modal-body">
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Category:</div>
+                    <div class="neo-detail-value" id="detail-category">Purchase Order</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Description:</div>
+                    <div class="neo-detail-value" id="detail-description">Winter Collection - Apparel & Accessories</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Requester:</div>
+                    <div class="neo-detail-value" id="detail-requester">Sarah Johnson</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Department:</div>
+                    <div class="neo-detail-value" id="detail-department">Merchandising</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Store/Location:</div>
+                    <div class="neo-detail-value" id="detail-location">Central Warehouse</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Amount:</div>
+                    <div class="neo-detail-value" id="detail-amount">$85,400</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Date Submitted:</div>
+                    <div class="neo-detail-value" id="detail-date">Today</div>
+                </div>
+                <div class="neo-detail-row">
+                    <div class="neo-detail-label">Priority:</div>
+                    <div class="neo-detail-value" id="detail-priority">Urgent</div>
+                </div>
+                <div class="neo-detail-description" id="detail-justification">
+                    This purchase order is for the upcoming Winter Collection, including apparel, accessories, and seasonal items. The order needs to be placed immediately to ensure delivery before the holiday shopping season. Delaying this order would result in missing key sales opportunities during our peak season.
+                </div>
+                
+                <div class="neo-attachments">
+                    <div class="neo-detail-label">Attachments:</div>
+                    <div class="neo-attachment-item">
+                        <i class="fas fa-file-pdf neo-attachment-icon"></i>
+                        <span class="neo-attachment-name">Purchase_Order_Winter_2024.pdf</span>
+                        <i class="fas fa-download neo-attachment-download"></i>
+                    </div>
+                    <div class="neo-attachment-item">
+                        <i class="fas fa-file-excel neo-attachment-icon"></i>
+                        <span class="neo-attachment-name">Product_List_Winter.xlsx</span>
+                        <i class="fas fa-download neo-attachment-download"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="neo-modal-footer">
+                <button class="neo-modal-btn neo-modal-cancel" id="neo-modal-cancel">Cancel</button>
+                <button class="neo-modal-btn neo-modal-reject" id="neo-modal-reject">Reject</button>
+                <button class="neo-modal-btn neo-modal-approve" id="neo-modal-approve">Approve</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.neo-filter-btn');
+            const approvalRows = document.querySelectorAll('#neo-approval-body tr');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Show/hide table rows based on filter
+                    approvalRows.forEach(row => {
+                        const rowCategory = row.getAttribute('data-category');
+                        
+                        if (filter === 'all') {
+                            row.style.display = 'table-row';
+                        } else if (rowCategory === filter) {
+                            row.style.display = 'table-row';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Modal functionality
+            const modal = document.getElementById('neo-approval-modal');
+            const closeModal = document.getElementById('neo-modal-close');
+            const cancelModal = document.getElementById('neo-modal-cancel');
+            const detailButtons = document.querySelectorAll('.neo-details-btn');
+            
+            // Sample data for modal details
+            const approvalDetails = {
+                1: {
+                    category: 'Purchase Order',
+                    description: 'Winter Collection - Apparel & Accessories',
+                    requester: 'Sarah Johnson',
+                    department: 'Merchandising',
+                    location: 'Central Warehouse',
+                    amount: '$85,400',
+                    date: 'Today',
+                    priority: 'Urgent',
+                    justification: 'This purchase order is for the upcoming Winter Collection, including apparel, accessories, and seasonal items. The order needs to be placed immediately to ensure delivery before the holiday shopping season. Delaying this order would result in missing key sales opportunities during our peak season.'
+                },
+                2: {
+                    category: 'Purchase Order',
+                    description: 'Store Fixtures & Displays',
+                    requester: 'Michael Chen',
+                    department: 'Store Operations',
+                    location: 'Store #15',
+                    amount: '$12,750',
+                    date: '2 days ago',
+                    priority: 'High',
+                    justification: 'New fixtures and displays needed for Store #15 renovation. The current displays are outdated and not optimized for our product categories. This upgrade will improve customer experience and increase sales per square foot.'
+                },
+                3: {
+                    category: 'Inventory Adjustment',
+                    description: 'Stock Write-off - Damaged Goods',
+                    requester: 'Robert Garcia',
+                    department: 'Inventory Management',
+                    location: 'Store #08',
+                    amount: '$4,280',
+                    date: 'Today',
+                    priority: 'Urgent',
+                    justification: 'Water damage from roof leak during recent storm. Affected 35 units of various products. Insurance claim has been filed. Immediate write-off required for accurate inventory counts.'
+                },
+                4: {
+                    category: 'Stock Transfer',
+                    description: 'High-demand items to Store #12',
+                    requester: 'Jessica Williams',
+                    department: 'Inventory Management',
+                    location: 'Central Warehouse',
+                    amount: '$18,500',
+                    date: '1 day ago',
+                    priority: 'High',
+                    justification: 'Store #12 is experiencing higher than expected foot traffic and sales. Transfer needed to replenish best-selling items that are running low. This will prevent lost sales during peak shopping weekend.'
+                },
+                5: {
+                    category: 'New Vendor',
+                    description: 'Eco-Friendly Packaging Supplier',
+                    requester: 'David Miller',
+                    department: 'Procurement',
+                    location: 'Corporate',
+                    amount: '$0',
+                    date: '3 days ago',
+                    priority: 'Normal',
+                    justification: 'New supplier offers sustainable packaging options at competitive prices. Aligns with our corporate sustainability goals. Vendor has been vetted and meets all quality standards.'
+                },
+                6: {
+                    category: 'Vendor Contract',
+                    description: 'Renewal - Logistics Partner',
+                    requester: 'Amanda Wilson',
+                    department: 'Logistics',
+                    location: 'Corporate',
+                    amount: '$120,000',
+                    date: '4 days ago',
+                    priority: 'High',
+                    justification: 'Contract renewal with our primary logistics partner. Includes improved delivery timelines and reduced rates for bulk shipments. Current contract expires in 30 days.'
+                },
+                7: {
+                    category: 'Price Change',
+                    description: 'Seasonal Clearance - 40% Off',
+                    requester: 'Thomas Brown',
+                    department: 'Pricing',
+                    location: 'All Stores',
+                    amount: '$0',
+                    date: 'Today',
+                    priority: 'Urgent',
+                    justification: 'Clearance event for summer seasonal items. Inventory levels are high and new seasonal products are arriving. This promotion will help clear space and generate cash flow.'
+                },
+                8: {
+                    category: 'Promotion',
+                    description: 'Buy One Get One 50% Off',
+                    requester: 'Jennifer Lee',
+                    department: 'Marketing',
+                    location: 'Online & Store #01-10',
+                    amount: '$0',
+                    date: '2 days ago',
+                    priority: 'Normal',
+                    justification: 'Promotion to boost sales of selected home goods category. Competitors are running similar promotions. Expected to increase foot traffic and average transaction value.'
+                },
+                9: {
+                    category: 'Store Renovation',
+                    description: 'Flooring Upgrade - Store #05',
+                    requester: 'Kevin Martinez',
+                    department: 'Facilities',
+                    location: 'Store #05',
+                    amount: '$25,000',
+                    date: '5 days ago',
+                    priority: 'Normal',
+                    justification: 'Current flooring is worn and presents safety concerns. Upgrade to commercial-grade flooring that is more durable and easier to maintain. Project scheduled during slow business week.'
+                },
+                10: {
+                    category: 'Equipment Purchase',
+                    description: 'New POS Systems - 5 Stores',
+                    requester: 'Rachel Adams',
+                    department: 'IT',
+                    location: 'Stores #03,07,11,14,18',
+                    amount: '$42,800',
+                    date: '3 days ago',
+                    priority: 'High',
+                    justification: 'Current POS systems are outdated and experiencing frequent downtime. New systems will improve transaction speed, inventory accuracy, and customer experience. Includes training and installation.'
+                },
+                11: {
+                    category: 'New Hire',
+                    description: 'Assistant Store Manager',
+                    requester: 'Lisa Thompson',
+                    department: 'HR',
+                    location: 'Store #12',
+                    amount: '$52,000',
+                    date: '2 days ago',
+                    priority: 'Normal',
+                    justification: 'Current assistant manager promoted to store manager at different location. New hire needed to maintain store operations and support team of 15 employees. Candidate has 5 years retail management experience.'
+                },
+                12: {
+                    category: 'Overtime Approval',
+                    description: 'Holiday Season Staffing',
+                    requester: 'James Wilson',
+                    department: 'HR',
+                    location: 'All Stores',
+                    amount: '$18,500',
+                    date: '4 days ago',
+                    priority: 'High',
+                    justification: 'Additional staffing needed during extended holiday hours. Overtime approval for existing staff to cover peak shopping periods. More cost-effective than hiring temporary staff for short period.'
+                },
+                13: {
+                    category: 'Marketing Campaign',
+                    description: 'Social Media Ad Campaign',
+                    requester: 'Daniel Clark',
+                    department: 'Marketing',
+                    location: 'Corporate',
+                    amount: '$15,000',
+                    date: '3 days ago',
+                    priority: 'Normal',
+                    justification: 'Targeted social media campaign for new product launch. Focus on Instagram and Facebook platforms. Expected reach of 500,000 potential customers with estimated ROI of 3:1.'
+                },
+                14: {
+                    category: 'Event Sponsorship',
+                    description: 'Local Community Festival',
+                    requester: 'Michelle Rodriguez',
+                    department: 'Marketing',
+                    location: 'Store #06',
+                    amount: '$5,000',
+                    date: 'Today',
+                    priority: 'Urgent',
+                    justification: 'Sponsorship opportunity for annual community festival. Event attracts 10,000+ attendees. Includes branded booth, product sampling, and promotional materials. Deadline for commitment is tomorrow.'
+                },
+                15: {
+                    category: 'Shipping Contract',
+                    description: 'Express Delivery Service',
+                    requester: 'Brian Taylor',
+                    department: 'Logistics',
+                    location: 'Distribution Center',
+                    amount: '$45,000',
+                    date: '2 days ago',
+                    priority: 'High',
+                    justification: 'Contract for express delivery service to improve customer satisfaction with faster shipping times. Will reduce delivery times by 2-3 days for online orders.'
+                },
+                16: {
+                    category: 'Bulk Return',
+                    description: 'Defective Electronics Batch',
+                    requester: 'Stephanie Lewis',
+                    department: 'Customer Service',
+                    location: 'Store #09',
+                    amount: '$8,750',
+                    date: '1 day ago',
+                    priority: 'Normal',
+                    justification: 'Return of defective electronics batch from supplier. Products have consistent manufacturing defect affecting 15% of units. Supplier has agreed to full refund and replacement.'
+                }
+            };
+            
+            // Open modal when details button is clicked
+            detailButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const approvalId = this.getAttribute('data-id');
+                    const details = approvalDetails[approvalId];
+                    
+                    // Populate modal with details
+                    document.getElementById('detail-category').textContent = details.category;
+                    document.getElementById('detail-description').textContent = details.description;
+                    document.getElementById('detail-requester').textContent = details.requester;
+                    document.getElementById('detail-department').textContent = details.department;
+                    document.getElementById('detail-location').textContent = details.location;
+                    document.getElementById('detail-amount').textContent = details.amount;
+                    document.getElementById('detail-date').textContent = details.date;
+                    document.getElementById('detail-priority').textContent = details.priority;
+                    document.getElementById('detail-justification').textContent = details.justification;
+                    
+                    // Set the approve/reject buttons to work with this approval
+                    document.getElementById('neo-modal-approve').setAttribute('data-id', approvalId);
+                    document.getElementById('neo-modal-reject').setAttribute('data-id', approvalId);
+                    
+                    // Show modal
+                    modal.classList.add('active');
+                });
+            });
+            
+            // Close modal
+            function closeModalFunc() {
+                modal.classList.remove('active');
+            }
+            
+            closeModal.addEventListener('click', closeModalFunc);
+            cancelModal.addEventListener('click', closeModalFunc);
+            
+            // Approve action
+            document.getElementById('neo-modal-approve').addEventListener('click', function() {
+                const approvalId = this.getAttribute('data-id');
+                alert(`Approval #${approvalId} has been approved!`);
+                closeModalFunc();
+                // In a real application, you would send this to the server
+            });
+            
+            // Reject action
+            document.getElementById('neo-modal-reject').addEventListener('click', function() {
+                const approvalId = this.getAttribute('data-id');
+                alert(`Approval #${approvalId} has been rejected!`);
+                closeModalFunc();
+                // In a real application, you would send this to the server
+            });
+            
+            // Quick approve buttons in table
+            const quickApproveButtons = document.querySelectorAll('.neo-approve-btn');
+            quickApproveButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const approvalId = this.getAttribute('data-id');
+                    if (confirm(`Are you sure you want to approve request #${approvalId}?`)) {
+                        alert(`Approval #${approvalId} has been approved!`);
+                        // In a real application, you would send this to the server
+                    }
+                });
+            });
+            
+            // Quick reject buttons in table
+            const quickRejectButtons = document.querySelectorAll('.neo-reject-btn');
+            quickRejectButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const approvalId = this.getAttribute('data-id');
+                    if (confirm(`Are you sure you want to reject request #${approvalId}?`)) {
+                        alert(`Approval #${approvalId} has been rejected!`);
+                        // In a real application, you would send this to the server
+                    }
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.neo-search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                approvalRows.forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(searchTerm)) {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Attachment download functionality
+            const downloadButtons = document.querySelectorAll('.neo-attachment-download');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Attachment download would start here in a real application');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
