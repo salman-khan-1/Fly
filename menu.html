@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCorp WMS - Ultra Compact</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neo-primary-bg: #f8faff;
+            --neo-secondary-bg: #ffffff;
+            --neo-card-bg: rgba(255, 255, 255, 0.92);
+            --neo-accent-blue: #0099ff;
+            --neo-accent-purple: #9966ff;
+            --neo-accent-cyan: #00e5ff;
+            --neo-accent-pink: #ff66cc;
+            --neo-accent-green: #00e676;
+            --neo-accent-orange: #ff9800;
+            --neo-text-dark: #222233;
+            --neo-text-light: #666699;
+            --neo-border-light: rgba(0, 153, 255, 0.25);
+            --neo-shadow-light: 0 4px 20px rgba(0, 153, 255, 0.1);
+            --neo-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--neo-primary-bg);
+            color: var(--neo-text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .wms-dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-left: 180px; /* Space for fixed sidebar */
+        }
+
+        /* Ultra Compact Fixed Sidebar */
+        .wms-sidebar {
+            width: 180px;
+            background: var(--neo-secondary-bg);
+            border-right: 1px solid var(--neo-border-light);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--neo-shadow-light);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        /* Scrollable Navigation Area */
+        .wms-sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Header */
+        .wms-sidebar-header {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--neo-border-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--neo-card-bg);
+            flex-shrink: 0;
+        }
+
+        .wms-logo {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--neo-accent-blue), var(--neo-accent-purple));
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wms-logo i {
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .wms-sidebar-title {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--neo-text-dark);
+        }
+
+        /* Navigation Section */
+        .wms-nav-section {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--neo-border-light);
+        }
+
+        .wms-section-title {
+            padding: 0 10px 6px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--neo-text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wms-section-title i {
+            font-size: 0.55rem;
+        }
+
+        .wms-nav-menu {
+            list-style: none;
+        }
+
+        .wms-nav-item {
+            margin: 1px 0;
+        }
+
+        .wms-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            color: var(--neo-text-dark);
+            text-decoration: none;
+            transition: var(--neo-transition);
+            position: relative;
+            font-size: 0.75rem;
+        }
+
+        .wms-nav-link:hover {
+            color: var(--neo-accent-blue);
+            background: rgba(0, 153, 255, 0.05);
+        }
+
+        .wms-nav-link.active {
+            color: var(--neo-accent-blue);
+            background: rgba(0, 153, 255, 0.1);
+            border-right: 2px solid var(--neo-accent-blue);
+        }
+
+        .wms-nav-link.active .wms-nav-icon {
+            color: var(--neo-accent-blue);
+        }
+
+        .wms-nav-icon {
+            width: 14px;
+            text-align: center;
+            font-size: 0.7rem;
+            transition: var(--neo-transition);
+            color: var(--neo-text-light);
+        }
+
+        .wms-nav-text {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wms-nav-badge {
+            margin-left: auto;
+            background: var(--neo-accent-pink);
+            color: white;
+            font-size: 0.55rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .wms-nav-arrow {
+            margin-left: auto;
+            font-size: 0.55rem;
+            color: var(--neo-text-light);
+            transition: var(--neo-transition);
+            flex-shrink: 0;
+        }
+
+        .wms-nav-item.active .wms-nav-arrow {
+            transform: rotate(90deg);
+            color: var(--neo-accent-blue);
+        }
+
+        /* Submenu */
+        .wms-submenu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .wms-nav-item.active .wms-submenu {
+            max-height: 500px;
+        }
+
+        .wms-submenu-item {
+            margin: 0;
+        }
+
+        .wms-submenu-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px 4px 26px;
+            color: var(--neo-text-light);
+            text-decoration: none;
+            transition: var(--neo-transition);
+            font-size: 0.7rem;
+            border-left: 1px solid transparent;
+        }
+
+        .wms-submenu-link:hover {
+            color: var(--neo-accent-blue);
+            background: rgba(0, 153, 255, 0.03);
+            border-left-color: var(--neo-border-light);
+        }
+
+        .wms-submenu-link.active {
+            color: var(--neo-accent-blue);
+            background: rgba(0, 153, 255, 0.05);
+            border-left-color: var(--neo-accent-blue);
+        }
+
+        .wms-submenu-icon {
+            width: 12px;
+            text-align: center;
+            font-size: 0.65rem;
+        }
+
+        /* User Profile Section */
+        .wms-user-section {
+            padding: 10px;
+            border-top: 1px solid var(--neo-border-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--neo-card-bg);
+            flex-shrink: 0;
+        }
+
+        .wms-user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neo-accent-purple), var(--neo-accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        .wms-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wms-user-name {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wms-user-role {
+            font-size: 0.55rem;
+            color: var(--neo-text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wms-user-status {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--neo-accent-green);
+            flex-shrink: 0;
+        }
+
+        /* Main Content Area */
+        .wms-main-content {
+            flex: 1;
+            padding: 15px;
+            background: var(--neo-primary-bg);
+            overflow-y: auto;
+        }
+
+        .wms-content-header {
+            margin-bottom: 15px;
+        }
+
+        .wms-content-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--neo-text-dark);
+        }
+
+        .wms-content-subtitle {
+            color: var(--neo-text-light);
+            font-size: 0.8rem;
+        }
+
+        .wms-content-placeholder {
+            background: var(--neo-card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--neo-border-light);
+            box-shadow: var(--neo-shadow-light);
+        }
+
+        .wms-placeholder-icon {
+            font-size: 2rem;
+            color: var(--neo-accent-blue);
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .wms-placeholder-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--neo-text-dark);
+        }
+
+        .wms-placeholder-text {
+            color: var(--neo-text-light);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.4;
+            font-size: 0.8rem;
+        }
+
+        /* Scrollbar Styling */
+        .wms-sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .wms-sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .wms-sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--neo-border-light);
+            border-radius: 2px;
+        }
+
+        .wms-sidebar-nav::-webkit-scrollbar-thumb:hover {
+            background: var(--neo-accent-blue);
+        }
+
+        /* PRINT STYLES - Hide sidebar and adjust layout for printing */
+        @media print {
+            .wms-sidebar {
+                display: none !important;
+            }
+            
+            .wms-dashboard-container {
+                padding-left: 0 !important;
+                display: block !important;
+            }
+            
+            .wms-main-content {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            
+            .wms-content-header,
+            .wms-content-placeholder {
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+            }
+            
+            /* Ensure text is black for printing */
+            body, .wms-content-title, .wms-placeholder-title, .wms-placeholder-text {
+                color: #000 !important;
+                background: white !important;
+            }
+            
+            /* Hide elements that shouldn't print */
+            .wms-nav-badge,
+            .wms-user-status {
+                display: none !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .wms-dashboard-container {
+                padding-left: 0;
+                flex-direction: column;
+            }
+            
+            .wms-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .wms-nav-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 8px;
+            }
+            
+            .wms-nav-item {
+                flex-shrink: 0;
+            }
+            
+            .wms-nav-link {
+                padding: 6px 10px;
+                white-space: nowrap;
+            }
+            
+            .wms-user-section {
+                display: none;
+            }
+            
+            .wms-submenu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wms-dashboard-container">
+        <!-- Ultra Compact Fixed Sidebar -->
+        <aside class="wms-sidebar">
+            <!-- Sidebar Header -->
+            <div class="wms-sidebar-header">
+                <div class="wms-logo">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h1 class="wms-sidebar-title">NEO-WMS</h1>
+            </div>
+
+            <!-- Scrollable Navigation Area -->
+            <div class="wms-sidebar-nav">
+                <!-- Navigation Sections -->
+                <div class="wms-nav-section">
+                    <h2 class="wms-section-title">
+                        <i class="fas fa-compass"></i>
+                        DASHBOARD
+                    </h2>
+                    <ul class="wms-nav-menu">
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link active">
+                                <i class="fas fa-home wms-nav-icon"></i>
+                                <span class="wms-nav-text">Overview</span>
+                            </a>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-chart-bar wms-nav-icon"></i>
+                                <span class="wms-nav-text">Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="wms-nav-section">
+                    <h2 class="wms-section-title">
+                        <i class="fas fa-warehouse"></i>
+                        OPERATIONS
+                    </h2>
+                    <ul class="wms-nav-menu">
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-boxes wms-nav-icon"></i>
+                                <span class="wms-nav-text">Inventory</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-list wms-submenu-icon"></i>
+                                        <span>Stock Levels</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-search wms-submenu-icon"></i>
+                                        <span>Stock Search</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-chart-line wms-submenu-icon"></i>
+                                        <span>Stock Movement</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-shipping-fast wms-nav-icon"></i>
+                                <span class="wms-nav-text">Receiving</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-clipboard-list wms-submenu-icon"></i>
+                                        <span>ASN Management</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-check-circle wms-submenu-icon"></i>
+                                        <span>Quality Check</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-dolly wms-nav-icon"></i>
+                                <span class="wms-nav-text">Picking</span>
+                                <span class="wms-nav-badge">12</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-tasks wms-submenu-icon"></i>
+                                        <span>Pick Lists</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-route wms-submenu-icon"></i>
+                                        <span>Pick Routes</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-clock wms-submenu-icon"></i>
+                                        <span>Pick Performance</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-truck-loading wms-nav-icon"></i>
+                                <span class="wms-nav-text">Shipping</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-box-open wms-submenu-icon"></i>
+                                        <span>Packing</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-shipping-fast wms-submenu-icon"></i>
+                                        <span>Dispatch</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-file-invoice wms-submenu-icon"></i>
+                                        <span>Shipping Docs</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="wms-nav-section">
+                    <h2 class="wms-section-title">
+                        <i class="fas fa-cogs"></i>
+                        MANAGEMENT
+                    </h2>
+                    <ul class="wms-nav-menu">
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-users wms-nav-icon"></i>
+                                <span class="wms-nav-text">Users</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-user-plus wms-submenu-icon"></i>
+                                        <span>Add Users</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-user-shield wms-submenu-icon"></i>
+                                        <span>Roles & Permissions</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-microchip wms-nav-icon"></i>
+                                <span class="wms-nav-text">Devices</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-barcode wms-submenu-icon"></i>
+                                        <span>Scanners</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-print wms-submenu-icon"></i>
+                                        <span>Printers</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="wms-nav-section">
+                    <h2 class="wms-section-title">
+                        <i class="fas fa-chart-line"></i>
+                        REPORTS
+                    </h2>
+                    <ul class="wms-nav-menu">
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-file-alt wms-nav-icon"></i>
+                                <span class="wms-nav-text">Daily Reports</span>
+                            </a>
+                        </li>
+                        <li class="wms-nav-item">
+                            <a href="#" class="wms-nav-link">
+                                <i class="fas fa-chart-pie wms-nav-icon"></i>
+                                <span class="wms-nav-text">Performance</span>
+                                <i class="fas fa-chevron-right wms-nav-arrow"></i>
+                            </a>
+                            <ul class="wms-submenu">
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-tachometer-alt wms-submenu-icon"></i>
+                                        <span>KPIs</span>
+                                    </a>
+                                </li>
+                                <li class="wms-submenu-item">
+                                    <a href="#" class="wms-submenu-link">
+                                        <i class="fas fa-user-clock wms-submenu-icon"></i>
+                                        <span>Staff Performance</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- User Profile Section -->
+            <div class="wms-user-section">
+                <div class="wms-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="wms-user-info">
+                    <div class="wms-user-name">Alex Morgan</div>
+                    <div class="wms-user-role">Operations Manager</div>
+                </div>
+                <div class="wms-user-status"></div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="wms-main-content">
+            <div class="wms-content-header">
+                <h1 class="wms-content-title">Warehouse Management System</h1>
+                <p class="wms-content-subtitle">NeoCorp Logistics Platform • Ultra Compact Interface</p>
+            </div>
+
+            <div class="wms-content-placeholder">
+                <div class="wms-placeholder-icon">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+                <h2 class="wms-placeholder-title">Welcome to Neo-WMS</h2>
+                <p class="wms-placeholder-text">
+                    This ultra-compact interface provides efficient access to all warehouse management functions. 
+                    The sidebar is fixed and scrollable for easy navigation.
+                </p>
+                
+                <!-- Example printable content -->
+                <div style="margin-top: 20px; padding: 15px; border: 1px dashed #ccc; background: white;">
+                    <h3 style="color: #222233; margin-bottom: 10px;">Example Printable Section</h3>
+                    <p style="color: #666699; font-size: 0.8rem;">
+                        This content will print normally. The sidebar will be completely hidden when printing.
+                        You can add any printable content here like reports, invoices, or data tables.
+                    </p>
+                    <button onclick="window.print()" style="margin-top: 10px; padding: 5px 10px; background: var(--neo-accent-blue); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Print This Page
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Add interactive effects to sidebar navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.wms-nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Toggle submenu if it exists
+                    const parentItem = this.parentElement;
+                    const submenu = parentItem.querySelector('.wms-submenu');
+                    
+                    if (submenu) {
+                        e.preventDefault();
+                        
+                        // Close other open submenus
+                        document.querySelectorAll('.wms-nav-item.active').forEach(item => {
+                            if (item !== parentItem) {
+                                item.classList.remove('active');
+                            }
+                        });
+                        
+                        // Toggle current submenu
+                        parentItem.classList.toggle('active');
+                    } else {
+                        // Remove active class from all links
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
