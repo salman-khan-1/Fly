@@ -464,15 +464,16 @@
         .professional-card {
             background: var(--white);
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+            
             box-shadow: var(--card-shadow);
             transition: all 0.2s ease;
             overflow: hidden;
+            margin-top: 1.2px;
         }
         
         .professional-card:hover {
             box-shadow: var(--hover-shadow);
-            transform: translateY(-1px);
+            
         }
         
         .professional-input {
@@ -573,6 +574,172 @@
         
         .compact-attachment-section .card-header {
             padding: 0.5rem 0.75rem;
+        }
+
+        /* NEW: Search bar styles */
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            padding-right: 0.5rem;
+        }
+        
+        .search-input-group {
+            position: relative;
+            width: 320px; /* Increased width to accommodate buttons */
+        }
+        
+        .search-input {
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.4rem 1rem 0.4rem 2.5rem;
+            font-size: 0.8rem;
+            background: var(--white);
+            color: var(--dark-gray);
+            width: 100%;
+            transition: all 0.2s ease;
+            height: 32px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+            z-index: 5;
+        }
+        
+        .clear-search {
+            position: absolute;
+            right: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: none;
+            z-index: 5;
+        }
+        
+        .clear-search:hover {
+            color: var(--error-red);
+        }
+
+        /* NEW: Search navigation buttons */
+        .search-nav-buttons {
+            display: flex;
+            margin-left: 0.5rem;
+            gap: 0.25rem;
+        }
+        
+        .search-nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #bac4d2;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--medium-gray);
+            transition: all 0.2s ease;
+        }
+        
+        .search-nav-btn:hover {
+            background: var(--accent-blue);
+            color: var(--white);
+            border-color: var(--accent-blue);
+        }
+        
+        .search-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--light-gray);
+            color: var(--medium-gray);
+        }
+
+        /* NEW: Search highlighting styles */
+        .search-match {
+            background-color: rgba(255, 255, 0, 0.3) !important;
+            border-left: 3px solid var(--warning-orange) !important;
+            transition: all 0.2s ease;
+        }
+        
+        .search-match-highlight {
+            background-color: rgba(255, 215, 0, 0.5) !important;
+            font-weight: 600;
+        }
+
+        /* NEW: Navigation hint styles */
+        .navigation-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            font-size: 0.7rem;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: none;
+        }
+
+        /* NEW: Current match highlight */
+        .current-match {
+            background-color: rgba(255, 165, 0, 0.4) !important;
+            border-left: 3px solid var(--warning-orange) !important;
+        }
+
+        /* NEW: File attachment styles */
+        .file-name-display {
+            font-size: 0.65rem;
+            display: block;
+            word-break: break-all;
+            margin-top: 0.2rem;
+        }
+
+        .cancel-btn {
+            height: 26px;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .view-btn {
+            height: 26px;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        /* Style for disabled upload button */
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Style for uploaded state */
+        .upload-btn.btn-success {
+            background: var(--success-green);
+            border-color: var(--success-green);
+        }
+
+        /* Button group styling for compact layout */
+        .button-group {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .button-group .btn {
+            flex: 1;
         }
 
         @media print {
@@ -1039,6 +1206,26 @@
                                             <i class="bi bi-paperclip me-1"></i>Attachments <span id="attachmentCount" class="badge badge-sm ms-1" style="background: var(--accent-blue);">0</span>
                                         </button>
                                     </li>
+                                    
+                                    <!-- NEW: Search bar in the tabs row -->
+                                    <li class="nav-item ms-auto search-container">
+                                        <div class="search-input-group">
+                                            <i class="bi bi-search search-icon"></i>
+                                            <input type="text" class="search-input" placeholder="Search items..." id="globalSearch">
+                                            <button class="clear-search" id="clearSearch">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </div>
+                                        <!-- NEW: Search navigation buttons -->
+                                        <div class="search-nav-buttons">
+                                            <button class="search-nav-btn" id="prevMatch" title="Previous match" disabled>
+                                                <i class="bi bi-chevron-up" style="   color: black;  font-weight: bolder;  font-size: 14px;"></i>
+                                            </button>
+                                            <button class="search-nav-btn" id="nextMatch" title="Next match" disabled>
+                                                <i class="bi bi-chevron-down" style="   color: black;  font-weight: bolder;  font-size: 14px;"></i>
+                                            </button>
+                                        </div>
+                                    </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <!-- Items Tab -->
@@ -1085,6 +1272,7 @@
                                                         <span id="selectedCount">0 selected</span>
                                                         <span class="mx-2">•</span>
                                                         <span id="rowCount">120 rows</span>
+                                                        <span id="matchCount" class="ms-2" style="display: none;"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1106,6 +1294,7 @@
                                                     <div class="row g-2 align-items-center">
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control form-control-sm professional-input custom-name" placeholder="Enter custom file name...">
+                                                            <span class="file-name-display small text-muted mt-1" style="display: none;"></span>
                                                         </div>
                                                         <div class="col-md-2 position-relative">
                                                             <button type="button" class="btn btn-primary btn-sm w-100 professional-btn upload-btn">
@@ -1114,9 +1303,14 @@
                                                             <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button type="button" class="btn btn-outline-info btn-sm w-100 professional-btn view-btn" disabled>
-                                                                <i class="bi bi-eye me-1"></i> View
-                                                            </button>
+                                                            <div class="button-group">
+                                                                <button type="button" class="btn btn-outline-info btn-sm view-btn" style="display: none;" title="View file">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm cancel-btn" style="display: none;" title="Cancel upload">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1125,6 +1319,7 @@
                                                     <div class="row g-2 align-items-center">
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control form-control-sm professional-input custom-name" placeholder="Enter custom file name...">
+                                                            <span class="file-name-display small text-muted mt-1" style="display: none;"></span>
                                                         </div>
                                                         <div class="col-md-2 position-relative">
                                                             <button type="button" class="btn btn-primary btn-sm w-100 professional-btn upload-btn">
@@ -1133,9 +1328,14 @@
                                                             <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button type="button" class="btn btn-outline-info btn-sm w-100 professional-btn view-btn" disabled>
-                                                                <i class="bi bi-eye me-1"></i> View
-                                                            </button>
+                                                            <div class="button-group">
+                                                                <button type="button" class="btn btn-outline-info btn-sm view-btn" style="display: none;" title="View file">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm cancel-btn" style="display: none;" title="Cancel upload">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1144,6 +1344,7 @@
                                                     <div class="row g-2 align-items-center">
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control form-control-sm professional-input custom-name" placeholder="Enter custom file name...">
+                                                            <span class="file-name-display small text-muted mt-1" style="display: none;"></span>
                                                         </div>
                                                         <div class="col-md-2 position-relative">
                                                             <button type="button" class="btn btn-primary btn-sm w-100 professional-btn upload-btn">
@@ -1152,9 +1353,14 @@
                                                             <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button type="button" class="btn btn-outline-info btn-sm w-100 professional-btn view-btn" disabled>
-                                                                <i class="bi bi-eye me-1"></i> View
-                                                            </button>
+                                                            <div class="button-group">
+                                                                <button type="button" class="btn btn-outline-info btn-sm view-btn" style="display: none;" title="View file">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm cancel-btn" style="display: none;" title="Cancel upload">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1163,6 +1369,7 @@
                                                     <div class="row g-2 align-items-center">
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control form-control-sm professional-input custom-name" placeholder="Enter custom file name...">
+                                                            <span class="file-name-display small text-muted mt-1" style="display: none;"></span>
                                                         </div>
                                                         <div class="col-md-2 position-relative">
                                                             <button type="button" class="btn btn-primary btn-sm w-100 professional-btn upload-btn">
@@ -1171,9 +1378,14 @@
                                                             <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button type="button" class="btn btn-outline-info btn-sm w-100 professional-btn view-btn" disabled>
-                                                                <i class="bi bi-eye me-1"></i> View
-                                                            </button>
+                                                            <div class="button-group">
+                                                                <button type="button" class="btn btn-outline-info btn-sm view-btn" style="display: none;" title="View file">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm cancel-btn" style="display: none;" title="Cancel upload">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1182,6 +1394,7 @@
                                                     <div class="row g-2 align-items-center">
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control form-control-sm professional-input custom-name" placeholder="Enter custom file name...">
+                                                            <span class="file-name-display small text-muted mt-1" style="display: none;"></span>
                                                         </div>
                                                         <div class="col-md-2 position-relative">
                                                             <button type="button" class="btn btn-primary btn-sm w-100 professional-btn upload-btn">
@@ -1190,9 +1403,14 @@
                                                             <input type="file" class="hidden-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" hidden>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button type="button" class="btn btn-outline-info btn-sm w-100 professional-btn view-btn" disabled>
-                                                                <i class="bi bi-eye me-1"></i> View
-                                                            </button>
+                                                            <div class="button-group">
+                                                                <button type="button" class="btn btn-outline-info btn-sm view-btn" style="display: none;" title="View file">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger btn-sm cancel-btn" style="display: none;" title="Cancel upload">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1206,6 +1424,11 @@
                 </main>
             </div>
         </div>
+    </div>
+
+    <!-- NEW: Navigation hint -->
+    <div class="navigation-hint" id="navigationHint">
+        Use arrow keys to navigate between inputs
     </div>
 
     <!-- PDF Modal -->
@@ -1238,7 +1461,118 @@
 
     <!-- Print Section (Hidden in normal mode, shown only when printing) -->
     <div id="printSection">
-        <!-- Print content remains the same -->
+       <div class="print-container">
+        <div class="header-title">Entry Voucher</div>
+
+        <div class="meta-bar">
+            <div class="left">Printed by: Salman Khan</div>
+            <div class="right">Printed on: 09/08/2025 16:07</div>
+            <div class="full">Company: Care Storage Trading Co.</div>
+        </div>
+
+        <div class="card-invoice">
+            <div class="invoice-meta">
+                <div class="row">
+                    <div class="col-md-6 bigcol"><span class="label"> Invoice #:</span> <span class="value">900</span> </div>
+                    <div class="col-md-6 smlcol"><span class="label">Transaction Date:</span>  <span class="value">09/08/2025</span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 bigcol"><span class="label">Account Type:</span>  <span class="value"> Direct Purchase Voucher</span> </div>
+                    <div class="col-md-4 smlcol"><span class="label">Party Type:</span><span class="value">Suppliers</span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 bigcol"><span class="label">Party:</span> <span class="value">Nutrition Supply Est. 0000763</span> </div>
+                    <div class="col-md-4 smlcol"><span class="label">Currency:</span> <span class="value">SAR</span> </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><span class="label">Target Location:</span> <span class="value"> 1311 Jeddah Warehouse</span></div>
+                    <div class="col-md-4"><span class="label">Notes:</span> <span class="value"> Nutrition Supply Est.</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table table-bordered voucher-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Barcode</th>
+                        <th>Description</th>
+                        <th>Qty</th>
+                        <th>Free</th>
+                        <th>Total</th>
+                        <th>Unit</th>
+                        <th>Base Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>3401399277092</td>
+                        <td>Bioderma Face Wash 500ml Oily Skin (Blue)</td>
+                        <td>312</td>
+                        <td>0</td>
+                        <td>312</td>
+                        <td>Pcs</td>
+                        <td>312 Pcs</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>3401399277108</td>
+                        <td>Bioderma Face Wash 500ml Dry Skin (Pink)</td>
+                        <td>250</td>
+                        <td>0</td>
+                        <td>250</td>
+                        <td>Pcs</td>
+                        <td>250 Pcs</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>3401399277115</td>
+                        <td>Bioderma Face Wash 500ml Sensitive Skin (Green)</td>
+                        <td>180</td>
+                        <td>0</td>
+                        <td>180</td>
+                        <td>Pcs</td>
+                        <td>180 Pcs</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end">Subtotal</td>
+                        <td>742.00</td>
+                        <td>0.00</td>
+                        <td>742.00</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-end">Discount</td>
+                        <td colspan="1">5.00%</td>
+                        <td>37.10</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-end">Total After Discount</td>
+                        <td colspan="1"></td>
+                        <td>704.90</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-end">VAT (15%)</td>
+                        <td colspan="1"></td>
+                        <td>105.74</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-end">Grand Total</td>
+                        <td colspan="1"></td>
+                        <td>810.64</td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1261,10 +1595,303 @@
         const printPdf = document.getElementById("printPdf");
         const printFrame = document.getElementById("print-frame");
 
+        // Search functionality variables
+        const globalSearch = document.getElementById("globalSearch");
+        const clearSearch = document.getElementById("clearSearch");
+        const matchCount = document.getElementById("matchCount");
+        const navigationHint = document.getElementById("navigationHint");
+        const prevMatch = document.getElementById("prevMatch");
+        const nextMatch = document.getElementById("nextMatch");
+
+        // NEW: Keyboard navigation variables
+        let currentInputIndex = 0;
+        let allInputs = [];
+        let matchedRows = [];
+        let currentMatchIndex = -1;
+
         let attachments = [];
         let pdfDoc = null;
         let scale = 1.0;
         let currentPdfUrl = null;
+
+        // NEW: Search functionality with highlighting, auto-scroll, and navigation
+        function setupSearch() {
+            globalSearch.addEventListener("input", function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm) {
+                    clearSearch.style.display = "block";
+                } else {
+                    clearSearch.style.display = "none";
+                }
+                
+                // Highlight table rows based on search term
+                highlightMatchingRows(searchTerm);
+            });
+            
+            clearSearch.addEventListener("click", function() {
+                globalSearch.value = "";
+                clearSearch.style.display = "none";
+                highlightMatchingRows("");
+                resetMatchNavigation();
+            });
+            
+            // Focus search on Ctrl+F
+            document.addEventListener("keydown", function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+                    e.preventDefault();
+                    globalSearch.focus();
+                }
+            });
+            
+            // NEW: Next/Previous match buttons
+            prevMatch.addEventListener("click", navigateToPrevMatch);
+            nextMatch.addEventListener("click", navigateToNextMatch);
+        }
+        
+        function highlightMatchingRows(searchTerm) {
+            const tableBody = document.querySelector("#itemsTable tbody");
+            const rows = tableBody.querySelectorAll("tr");
+            let matchCountValue = 0;
+            
+            // Reset matched rows array
+            matchedRows = [];
+            currentMatchIndex = -1;
+            
+            // Remove all existing search highlights
+            rows.forEach(row => {
+                row.classList.remove("search-match", "current-match");
+                
+                // Remove highlights from individual cells
+                const cells = row.querySelectorAll("td");
+                cells.forEach(cell => {
+                    cell.classList.remove("search-match-highlight");
+                    
+                    // Remove any inline styles we might have added
+                    if (cell.style.backgroundColor) {
+                        cell.style.backgroundColor = "";
+                    }
+                });
+            });
+            
+            // If search term is empty, reset and exit
+            if (!searchTerm) {
+                matchCount.style.display = "none";
+                resetMatchNavigation();
+                return;
+            }
+            
+            // Highlight matching rows - SEARCH ONLY IN COLUMNS 2, 3, AND 4
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                let rowHasMatch = false;
+                
+                // Search only in columns 2, 3, and 4 (Item Code, SKU, Description)
+                const searchColumns = [2, 3, 4];
+                
+                searchColumns.forEach(colIndex => {
+                    const cell = cells[colIndex];
+                    if (cell) {
+                        const input = cell.querySelector("input");
+                        let cellText = "";
+                        
+                        if (input) {
+                            // Get value from input field
+                            cellText = input.value.toLowerCase();
+                        } else {
+                            // Get text content from regular cell
+                            cellText = cell.textContent.toLowerCase();
+                        }
+                        
+                        // Check if this cell contains the search term
+                        if (cellText.includes(searchTerm)) {
+                            rowHasMatch = true;
+                            cell.classList.add("search-match-highlight");
+                        }
+                    }
+                });
+                
+                // If any cell in the row matched, highlight the entire row
+                if (rowHasMatch) {
+                    row.classList.add("search-match");
+                    matchedRows.push(row);
+                    matchCountValue++;
+                }
+            });
+            
+            // Update match count display
+            if (matchCountValue > 0) {
+                matchCount.textContent = `${matchCountValue} matches`;
+                matchCount.style.display = "inline";
+                matchCount.style.color = "var(--warning-orange)";
+                matchCount.style.fontWeight = "600";
+                
+                // Enable navigation buttons
+                prevMatch.disabled = false;
+                nextMatch.disabled = false;
+                
+                // Auto-navigate to first match
+                navigateToMatch(0);
+            } else {
+                matchCount.textContent = "No matches";
+                matchCount.style.display = "inline";
+                matchCount.style.color = "var(--error-red)";
+                matchCount.style.fontWeight = "600";
+                resetMatchNavigation();
+            }
+        }
+        
+        function navigateToNextMatch() {
+            if (matchedRows.length === 0) return;
+            
+            currentMatchIndex = (currentMatchIndex + 1) % matchedRows.length;
+            navigateToMatch(currentMatchIndex);
+        }
+        
+        function navigateToPrevMatch() {
+            if (matchedRows.length === 0) return;
+            
+            currentMatchIndex = (currentMatchIndex - 1 + matchedRows.length) % matchedRows.length;
+            navigateToMatch(currentMatchIndex);
+        }
+        
+        function navigateToMatch(index) {
+            if (matchedRows.length === 0) return;
+            
+            // Remove current match highlight from all rows
+            matchedRows.forEach(row => {
+                row.classList.remove("current-match");
+            });
+            
+            // Add current match highlight to the target row
+            const targetRow = matchedRows[index];
+            targetRow.classList.add("current-match");
+            
+            // Scroll to the matching row
+            const tableContainer = document.querySelector('.table-scroll');
+            const rowPosition = targetRow.offsetTop - tableContainer.offsetTop;
+            
+            // Smooth scroll to the matching row
+            tableContainer.scrollTo({
+                top: rowPosition - 50, // Offset to show some context above
+                behavior: 'smooth'
+            });
+            
+            // Update match counter display
+            matchCount.textContent = `${index + 1} of ${matchedRows.length} matches`;
+        }
+        
+        function resetMatchNavigation() {
+            prevMatch.disabled = true;
+            nextMatch.disabled = true;
+            currentMatchIndex = -1;
+        }
+
+        // NEW: Fixed keyboard navigation between table inputs
+        function setupKeyboardNavigation() {
+            // Get all editable inputs in the table
+            allInputs = Array.from(document.querySelectorAll('#itemsTable tbody td input'));
+            
+            // Create a 2D array to organize inputs by row and column
+            const rows = document.querySelectorAll('#itemsTable tbody tr');
+            const inputGrid = [];
+            
+            rows.forEach(row => {
+                const rowInputs = Array.from(row.querySelectorAll('td input'));
+                inputGrid.push(rowInputs);
+            });
+            
+            // Add event listeners for arrow key navigation
+            document.addEventListener('keydown', function(e) {
+                handleArrowKeyNavigation(e, inputGrid);
+            });
+            
+            // Show navigation hint when user focuses on any table input
+            allInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    showNavigationHint();
+                });
+            });
+        }
+        
+        function handleArrowKeyNavigation(e, inputGrid) {
+            // Only handle arrow keys when an input in the table is focused
+            const activeElement = document.activeElement;
+            if (!allInputs.includes(activeElement)) return;
+            
+            const key = e.key;
+            
+            // Check if it's an arrow key
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+                e.preventDefault();
+                
+                // Find the current input's position in the grid
+                let currentRow = -1;
+                let currentCol = -1;
+                
+                for (let i = 0; i < inputGrid.length; i++) {
+                    for (let j = 0; j < inputGrid[i].length; j++) {
+                        if (inputGrid[i][j] === activeElement) {
+                            currentRow = i;
+                            currentCol = j;
+                            break;
+                        }
+                    }
+                    if (currentRow !== -1) break;
+                }
+                
+                if (currentRow === -1 || currentCol === -1) return;
+                
+                let newRow = currentRow;
+                let newCol = currentCol;
+                
+                switch(key) {
+                    case 'ArrowUp':
+                        // Move up one row (same column)
+                        newRow = Math.max(0, currentRow - 1);
+                        break;
+                    case 'ArrowDown':
+                        // Move down one row (same column)
+                        newRow = Math.min(inputGrid.length - 1, currentRow + 1);
+                        break;
+                    case 'ArrowLeft':
+                        // Move left one column
+                        newCol = Math.max(0, currentCol - 1);
+                        break;
+                    case 'ArrowRight':
+                        // Move right one column
+                        newCol = Math.min(inputGrid[currentRow].length - 1, currentCol + 1);
+                        break;
+                }
+                
+                // Focus the new input
+                if ((newRow !== currentRow || newCol !== currentCol) && inputGrid[newRow] && inputGrid[newRow][newCol]) {
+                    inputGrid[newRow][newCol].focus();
+                    
+                    // Scroll to the focused input if needed
+                    const inputRect = inputGrid[newRow][newCol].getBoundingClientRect();
+                    const tableContainer = document.querySelector('.table-scroll');
+                    const containerRect = tableContainer.getBoundingClientRect();
+                    
+                    if (inputRect.bottom > containerRect.bottom) {
+                        // Input is below the visible area, scroll down
+                        tableContainer.scrollTop += (inputRect.bottom - containerRect.bottom + 10);
+                    } else if (inputRect.top < containerRect.top) {
+                        // Input is above the visible area, scroll up
+                        tableContainer.scrollTop -= (containerRect.top - inputRect.top + 10);
+                    }
+                }
+            }
+        }
+        
+        function showNavigationHint() {
+            navigationHint.style.display = 'block';
+            
+            // Hide the hint after 3 seconds
+            setTimeout(() => {
+                navigationHint.style.display = 'none';
+            }, 3000);
+        }
 
         // Initialize all 5 file upload fields
         document.querySelectorAll(".upload-field-row").forEach(row => {
@@ -1274,10 +1901,19 @@
         function attachUploadHandlers(row) {
             const uploadBtn = row.querySelector(".upload-btn");
             const viewBtn = row.querySelector(".view-btn");
+            const cancelBtn = row.querySelector(".cancel-btn");
             const fileInput = row.querySelector(".hidden-file");
             const customNameInput = row.querySelector(".custom-name");
+            const fileNameDisplay = row.querySelector(".file-name-display");
+            
+            let currentFile = null;
 
             uploadBtn.addEventListener("click", () => {
+                if (currentFile) {
+                    alert("Please cancel the current file before uploading a new one.");
+                    return;
+                }
+                
                 const customName = customNameInput.value.trim();
                 if (!customName) {
                     alert("Please enter a custom file name before uploading.");
@@ -1285,27 +1921,81 @@
                 }
                 // Trigger hidden file chooser
                 fileInput.click();
-
-                fileInput.onchange = () => {
-                    if (fileInput.files.length === 0) return;
-                    const file = fileInput.files[0];
-
-                    // Rename file before upload
-                    const renamedFile = new File([file], customName + "." + file.name.split('.').pop(), { type: file.type });
-
-                    // Use your existing upload logic
-                    handleFiles([renamedFile]);
-
-                    // Enable View button
-                    viewBtn.disabled = false;
-                    viewBtn.dataset.url = URL.createObjectURL(file);
-                };
             });
 
-            viewBtn.addEventListener("click", () => {
-                if (viewBtn.dataset.url) {
-                    openPdf(viewBtn.dataset.url); // existing PDF viewer
+            fileInput.onchange = () => {
+                if (fileInput.files.length === 0) return;
+                
+                if (currentFile) {
+                    alert("A file is already uploaded. Please cancel it first before uploading a new file.");
+                    fileInput.value = "";
+                    return;
                 }
+                
+                const file = fileInput.files[0];
+                const customName = customNameInput.value.trim();
+
+                // Rename file before upload
+                const renamedFile = new File([file], customName + "." + file.name.split('.').pop(), { type: file.type });
+
+                // Use your existing upload logic
+                handleFiles([renamedFile]);
+
+                // Store current file info
+                currentFile = {
+                    file: renamedFile,
+                    url: URL.createObjectURL(file),
+                    customName: customName
+                };
+
+                // Update UI
+                fileNameDisplay.textContent = `Uploaded: ${renamedFile.name}`;
+                fileNameDisplay.style.display = 'block';
+                customNameInput.disabled = true;
+                uploadBtn.disabled = true;
+                uploadBtn.innerHTML = '<i class="bi bi-check me-1"></i> Uploaded';
+                uploadBtn.classList.remove('btn-primary');
+                uploadBtn.classList.add('btn-success');
+                viewBtn.style.display = 'block';
+                cancelBtn.style.display = 'block';
+
+                updateAttachmentCount();
+            };
+
+            viewBtn.addEventListener("click", () => {
+                if (currentFile && currentFile.url) {
+                    openPdf(currentFile.url);
+                }
+            });
+
+            cancelBtn.addEventListener("click", () => {
+                if (currentFile && currentFile.url) {
+                    URL.revokeObjectURL(currentFile.url);
+                }
+                
+                // Reset file input
+                fileInput.value = "";
+                
+                // Reset UI
+                fileNameDisplay.style.display = 'none';
+                customNameInput.disabled = false;
+                customNameInput.value = "";
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="bi bi-upload me-1"></i> Upload';
+                uploadBtn.classList.remove('btn-success');
+                uploadBtn.classList.add('btn-primary');
+                viewBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+                
+                // Remove from attachments array
+                if (currentFile) {
+                    attachments = attachments.filter(attachment => 
+                        attachment.name !== currentFile.file.name
+                    );
+                }
+                
+                currentFile = null;
+                updateAttachmentCount();
             });
         }
 
@@ -1592,6 +2282,9 @@
             }
             document.getElementById('itemCount').textContent = count;
             document.getElementById('rowCount').textContent = `${count} rows`;
+            
+            // NEW: Set up keyboard navigation after generating rows
+            setupKeyboardNavigation();
         }
         
         // Vendor history tooltip interaction
@@ -1689,6 +2382,9 @@
             
             // Update serial numbers
             updateSerialNumbers();
+            
+            // NEW: Update keyboard navigation after adding row
+            setupKeyboardNavigation();
         });
         
         // Remove selected rows
@@ -1707,6 +2403,9 @@
             updateSerialNumbers();
             updateSelectedCount();
             updateRemoveButton();
+            
+            // NEW: Update keyboard navigation after removing rows
+            setupKeyboardNavigation();
         });
         
         // Update serial numbers in table
@@ -1761,6 +2460,9 @@
                 window.print();
             }, 1000);
         }
+        
+        // NEW: Initialize search functionality with highlighting, auto-scroll, and navigation
+        setupSearch();
     </script>
 </body>
 </html>
