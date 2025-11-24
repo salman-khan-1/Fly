@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karwan ERP - Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-blue: #1e3a5f;
+            --secondary-blue: #2c5282;
+            --accent-blue: #3182ce;
+            --light-blue: #ebf8ff;
+            --dark-gray: #2d3748;
+            --medium-gray: #4a5568;
+            --light-gray: #e2e8f0;
+            --background-gray: #f7fafc;
+            --white: #ffffff;
+            --success-green: #38a169;
+            --warning-orange: #dd6b20;
+            --error-red: #e53e3e;
+            --border-color: #cbd5e0;
+            --border-radius: 0.25rem;
+            --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: var(--background-gray);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 0.7rem;
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 0.3rem;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .content-header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 0.3rem 0.7rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+        }
+        
+        .content-body {
+            padding: 0.6rem;
+        }
+        
+        .nav-tabs {
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--medium-gray);
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.65rem;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-tabs .nav-link.active {
+            border-bottom: 2px solid var(--accent-blue);
+            color: var(--primary-blue);
+            background: transparent;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-blue);
+            background: rgba(49, 130, 206, 0.05);
+        }
+        
+        .form-section {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 0.3rem;
+            color: var(--accent-blue);
+            font-size: 0.65rem;
+        }
+        
+        .required:after {
+            content: " *";
+            color: var(--error-red);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.2rem;
+            font-size: 0.6rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.15rem;
+            border: 1px solid var(--border-color);
+            padding: 0.15rem 0.4rem;
+            font-size: 0.6rem;
+            height: 22px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.2);
+            background: var(--white);
+        }
+        
+        .input-group-text {
+            background: var(--light-gray);
+            border: 1px solid var(--border-color);
+            color: var(--medium-gray);
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+            height: 22px;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transition: all 0.2s ease;
+            font-size: 0.6rem;
+            padding: 0.15rem 0.5rem;
+            height: 22px;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-blue);
+            border-color: var(--secondary-blue);
+            transform: translateY(-1px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .btn-outline-secondary {
+            border-color: var(--border-color);
+            color: var(--medium-gray);
+            font-size: 0.6rem;
+            padding: 0.15rem 0.5rem;
+            height: 22px;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--light-gray);
+            border-color: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+        
+        .image-upload-container {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 0.6rem;
+            text-align: center;
+            background: var(--background-gray);
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            transition: all 0.2s ease;
+            font-size: 0.6rem;
+        }
+        
+        .image-upload-container:hover {
+            border-color: var(--accent-blue);
+            background-color: var(--light-blue);
+        }
+        
+        .supplier-form {
+            background-color: var(--background-gray);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 0.8rem;
+        }
+        
+        .table th {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.3rem 0.4rem;
+            font-size: 0.6rem;
+        }
+        
+        .table td {
+            border-color: var(--border-color);
+            padding: 0.2rem 0.4rem;
+            font-size: 0.6rem;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: var(--light-blue);
+        }
+        
+        .action-buttons {
+            padding: 0.6rem;
+            background-color: var(--light-gray);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer {
+            padding: 0.4rem 0.7rem;
+            background-color: var(--light-gray);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.55rem;
+            color: var(--medium-gray);
+        }
+        
+        .badge {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.15rem;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        
+        .form-check-input, .form-check-label {
+            font-size: 0.6rem;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1055;
+        }
+        
+        .toast {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            font-size: 0.6rem;
+        }
+        
+        .toast-success {
+            border-left: 2px solid var(--success-green);
+        }
+        
+        .toast-error {
+            border-left: 2px solid var(--error-red);
+        }
+        
+        .table-responsive {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .price-summary {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 0.6rem;
+            margin-top: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .supplier-badge {
+            background-color: var(--accent-blue);
+            color: white;
+            font-size: 0.55rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.15rem;
+            margin-left: 0.2rem;
+        }
+        
+        .primary-supplier {
+            background-color: var(--success-green);
+        }
+        
+        .supplier-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            max-height: 120px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .supplier-suggestion-item {
+            padding: 0.2rem 0.4rem;
+            cursor: pointer;
+            font-size: 0.6rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .supplier-suggestion-item:hover {
+            background-color: var(--light-blue);
+        }
+        
+        .supplier-input-container {
+            position: relative;
+        }
+        
+        .edit-supplier-btn {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.3rem;
+            height: 18px;
+        }
+        
+        .price-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 0.2rem;
+        }
+        
+        .price-indicator-bar {
+            height: 3px;
+            border-radius: 1px;
+            margin-right: 0.2rem;
+            flex-grow: 1;
+        }
+        
+        .price-low {
+            background-color: var(--success-green);
+        }
+        
+        .price-medium {
+            background-color: var(--warning-orange);
+        }
+        
+        .price-high {
+            background-color: var(--error-red);
+        }
+        
+        .profit-margin {
+            font-size: 0.55rem;
+            font-weight: 600;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.15rem;
+        }
+        
+        .margin-high {
+            background-color: var(--success-green);
+            color: white;
+        }
+        
+        .margin-medium {
+            background-color: var(--warning-orange);
+            color: white;
+        }
+        
+        .margin-low {
+            background-color: var(--error-red);
+            color: white;
+        }
+        
+        .sourcing-action-buttons {
+            padding: 0.6rem;
+            background-color: var(--light-gray);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.4rem 0.6rem;
+        }
+        
+        .modal-body {
+            padding: 0.6rem;
+        }
+        
+        .modal-footer {
+            padding: 0.4rem 0.6rem;
+        }
+        
+        .modal .form-control, .modal .form-select {
+            font-size: 0.6rem;
+            height: 22px;
+        }
+        
+        .modal .btn {
+            font-size: 0.6rem;
+            height: 22px;
+            padding: 0.15rem 0.5rem;
+        }
+        
+        .modal .form-label {
+            font-size: 0.6rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    <h6 class="mb-0" id="pageTitle">Create New Product</h6>
+                </div>
+                <div>
+                    <button type="button" id="createCategoryBtn" class="btn btn-sm btn-light me-1">
+                        <i class="bi bi-folder-plus me-1"></i> Create Category
+                    </button>
+                    <button type="button" id="createSupplierBtn" class="btn btn-sm btn-light">
+                        <i class="bi bi-person-plus me-1"></i> Create Supplier
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-body">
+                <ul class="nav nav-tabs mb-2" id="productTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="product-tab" data-bs-toggle="tab" data-bs-target="#product" type="button" role="tab">
+                            <i class="bi bi-box me-1"></i>Product Details
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sourcing-tab" data-bs-toggle="tab" data-bs-target="#sourcing" type="button" role="tab">
+                            <i class="bi bi-truck me-1"></i>Sourcing & Pricing
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="productTabsContent">
+                    <!-- Product Details Tab -->
+                    <div class="tab-pane fade show active" id="product" role="tabpanel">
+                        <form id="productForm" class="needs-validation" novalidate>
+                            <div class="form-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-info-circle"></i>Basic Information
+                                </h6>
+                                <div class="row g-1">
+                                    <div class="col-md-4 mb-1">
+                                        <div class="image-upload-container" id="imageUploadArea">
+                                            <i class="bi bi-cloud-arrow-up" style="font-size: 1.2rem; color: var(--medium-gray);"></i>
+                                            <p class="mt-1 mb-0">Click to upload product image</p>
+                                            <small class="text-muted">JPG, PNG (Max 2MB)</small>
+                                            <input type="file" class="d-none" id="productImage" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row g-1 mb-1">
+                                            <div class="col-md-6">
+                                                <label for="productName" class="form-label required">Product Name</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                                    <input type="text" class="form-control" id="productName" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter product name
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="sku" class="form-label required">SKU</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                                                    <input type="text" class="form-control" id="sku" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter SKU
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row g-1 mb-1">
+                                            <div class="col-md-6">
+                                                <label for="barcode" class="form-label">Barcode</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                                                    <input type="text" class="form-control" id="barcode">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="category" class="form-label required">Category</label>
+                                                <select class="form-select" id="category" required>
+                                                    <option value="">Select Category</option>
+                                                    <option>Electronics</option>
+                                                    <option>Office Supplies</option>
+                                                    <option>Raw Materials</option>
+                                                    <option>Finished Goods</option>
+                                                    <option>Consumables</option>
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    Please select a category
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row g-1">
+                                            <div class="col-12">
+                                                <label for="description" class="form-label">Description</label>
+                                                <textarea class="form-control" id="description" rows="2" placeholder="Product description..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-gear"></i>Specifications
+                                </h6>
+                                <div class="row g-1 mb-1">
+                                    <div class="col-md-3">
+                                        <label for="weight" class="form-label">Weight (kg)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-speedometer2"></i></span>
+                                            <input type="number" class="form-control" id="weight" step="0.01" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="dimensions" class="form-label">Dimensions (cm)</label>
+                                        <input type="text" class="form-control" id="dimensions" placeholder="L x W x H">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="unitPrice" class="form-label required">Retail Price ($)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                            <input type="number" class="form-control" id="unitPrice" step="0.01" min="0.01" required>
+                                            <div class="invalid-feedback">
+                                                Valid price required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="stockQuantity" class="form-label required">Stock Quantity</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-boxes"></i></span>
+                                            <input type="number" class="form-control" id="stockQuantity" min="0" required>
+                                            <div class="invalid-feedback">
+                                                Valid quantity required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-1 mb-1">
+                                    <div class="col-md-4">
+                                        <label for="unitOfMeasure" class="form-label required">Unit of Measure</label>
+                                        <select class="form-select" id="unitOfMeasure" required>
+                                            <option value="">Select Unit</option>
+                                            <option>Piece</option>
+                                            <option>Box</option>
+                                            <option>Kilogram</option>
+                                            <option>Liter</option>
+                                            <option>Meter</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select a unit
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="reorderLevel" class="form-label">Reorder Level</label>
+                                        <input type="number" class="form-control" id="reorderLevel" min="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Status</label>
+                                        <div class="d-flex gap-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="status" id="active" value="active" checked>
+                                                <label class="form-check-label" for="active">
+                                                    Active
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="status" id="inactive" value="inactive">
+                                                <label class="form-check-label" for="inactive">
+                                                    Inactive
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="action-buttons">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" id="cancelBtn">
+                                    <i class="bi bi-x-lg me-1"></i>Cancel
+                                </button>
+                                <div>
+                                    <button type="button" class="btn btn-light me-1" id="saveDraftBtn">
+                                        <i class="bi bi-save me-1"></i>Save Draft
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="saveProductBtn">
+                                        <i class="bi bi-check-circle me-1"></i>Save Product
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sourcing Tab -->
+                    <div class="tab-pane fade" id="sourcing" role="tabpanel">
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-person-plus"></i>Add Supplier & Pricing
+                            </h6>
+                            <div class="supplier-form">
+                                <div class="row g-1 mb-1">
+                                    <div class="col-md-3">
+                                        <label for="supplierInput" class="form-label required">Supplier</label>
+                                        <div class="supplier-input-container">
+                                            <input type="text" class="form-control" id="supplierInput" list="supplierList" placeholder="Type or select supplier">
+                                            <datalist id="supplierList">
+                                                <!-- Supplier options will be populated dynamically -->
+                                            </datalist>
+                                            <div class="supplier-suggestions" id="supplierSuggestions">
+                                                <!-- Supplier suggestions will be populated dynamically -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="supplierBarcode" class="form-label">Supplier Barcode</label>
+                                        <input type="text" class="form-control" id="supplierBarcode" placeholder="Supplier's barcode">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="supplierPrice" class="form-label required">Cost Price ($)</label>
+                                        <input type="number" class="form-control" id="supplierPrice" step="0.01" min="0.01">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="taxRate" class="form-label required">Tax %</label>
+                                        <input type="number" class="form-control" id="taxRate" step="0.01" min="0" max="100" value="15">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="minOrder" class="form-label">Min. Order</label>
+                                        <input type="number" class="form-control" id="minOrder" min="1" value="1">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="leadTime" class="form-label">Lead Days</label>
+                                        <input type="number" class="form-control" id="leadTime" min="1" value="14">
+                                    </div>
+                                </div>
+                                
+                                <div class="sourcing-action-buttons">
+                                    <button type="button" class="btn btn-outline-secondary" id="resetSupplierFormBtn">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                    </button>
+                                    <button class="btn btn-primary" id="saveSupplierBtn">
+                                        <i class="bi bi-plus-lg me-1"></i>Save Supplier
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <h6 class="section-title mt-2">
+                                <i class="bi bi-list-ul"></i>Supplier Pricing
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Supplier</th>
+                                            <th>Barcode</th>
+                                            <th>Cost Price</th>
+                                            <th>Tax %</th>
+                                            <th>Total Cost</th>
+                                            <th>Min. Order</th>
+                                            <th>Lead Time</th>
+                                            <th>Primary</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="supplierTableBody">
+                                        <!-- Supplier rows will be added here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Enhanced Price Analysis -->
+                            <div class="price-summary">
+                                <h6 class="section-title mb-1">
+                                    <i class="bi bi-graph-up"></i>Enhanced Price Analysis
+                                </h6>
+                                <div class="row g-1 mb-2">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Best Supplier Price</label>
+                                        <div class="fw-bold text-success" id="bestSupplierPrice">$0.00</div>
+                                        <div class="price-indicator">
+                                            <div class="price-indicator-bar price-low" id="bestPriceBar"></div>
+                                            <span class="text-muted" id="bestSupplierName">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Highest Cost</label>
+                                        <div class="fw-bold text-danger" id="highestCost">$0.00</div>
+                                        <div class="price-indicator">
+                                            <div class="price-indicator-bar price-high" id="highestCostBar"></div>
+                                            <span class="text-muted" id="highestSupplier">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Average Cost</label>
+                                        <div class="fw-bold text-primary" id="averageCost">$0.00</div>
+                                        <div class="price-indicator">
+                                            <div class="price-indicator-bar price-medium" id="averageCostBar"></div>
+                                            <span class="text-muted">All Suppliers</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Recommended Retail</label>
+                                        <div class="fw-bold" id="recommendedRetail">$0.00</div>
+                                        <div class="d-flex align-items-center mt-1">
+                                            <span class="profit-margin margin-medium" id="profitMargin">0%</span>
+                                            <span class="text-muted ms-1" id="marginType">Margin</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-1">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Price Range</label>
+                                        <div class="fw-bold" id="priceRange">$0.00 - $0.00</div>
+                                        <div class="text-muted small" id="priceDifference">Difference: $0.00</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Best Value Supplier</label>
+                                        <div class="fw-bold text-success" id="bestValueSupplier">-</div>
+                                        <div class="text-muted small" id="bestValueDetails">Balances cost & lead time</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Cost Efficiency</label>
+                                        <div class="fw-bold" id="costEfficiency">-</div>
+                                        <div class="text-muted small" id="efficiencyDetails">Based on price & delivery</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div class="d-flex justify-content-between">
+                    <small>© 2023 Karwan ERP System. All rights reserved.</small>
+                    <small id="lastSaved">Form not saved yet</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Creation Modal -->
+    <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="createCategoryModalLabel">Create New Category</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm">
+                        <div class="mb-1">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="categoryDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="categoryDescription" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save Category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supplier Creation Modal -->
+    <div class="modal fade" id="createSupplierModal" tabindex="-1" aria-labelledby="createSupplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="createSupplierModalLabel">Create New Supplier</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="supplierForm">
+                        <div class="mb-1">
+                            <label for="supplierName" class="form-label">Supplier Name</label>
+                            <input type="text" class="form-control" id="supplierName" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="supplierContact" class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" id="supplierContact">
+                        </div>
+                        <div class="mb-1">
+                            <label for="supplierEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="supplierEmail">
+                        </div>
+                        <div class="mb-1">
+                            <label for="supplierPhone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="supplierPhone">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveSupplierModalBtn">Save Supplier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Supplier Modal -->
+    <div class="modal fade" id="editSupplierModal" tabindex="-1" aria-labelledby="editSupplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="editSupplierModalLabel">Edit Supplier Pricing</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSupplierForm">
+                        <input type="hidden" id="editSupplierId">
+                        <div class="mb-1">
+                            <label for="editSupplierName" class="form-label">Supplier</label>
+                            <input type="text" class="form-control" id="editSupplierName" readonly>
+                        </div>
+                        <div class="mb-1">
+                            <label for="editSupplierBarcode" class="form-label">Supplier Barcode</label>
+                            <input type="text" class="form-control" id="editSupplierBarcode">
+                        </div>
+                        <div class="mb-1">
+                            <label for="editSupplierPrice" class="form-label">Cost Price ($)</label>
+                            <input type="number" class="form-control" id="editSupplierPrice" step="0.01" min="0.01">
+                        </div>
+                        <div class="mb-1">
+                            <label for="editTaxRate" class="form-label">Tax %</label>
+                            <input type="number" class="form-control" id="editTaxRate" step="0.01" min="0" max="100">
+                        </div>
+                        <div class="mb-1">
+                            <label for="editMinOrder" class="form-label">Min. Order</label>
+                            <input type="number" class="form-control" id="editMinOrder" min="1">
+                        </div>
+                        <div class="mb-1">
+                            <label for="editLeadTime" class="form-label">Lead Days</label>
+                            <input type="number" class="form-control" id="editLeadTime" min="1">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateSupplierBtn">Update Supplier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Fixed JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Product data structure
+            let productData = {
+                id: null,
+                name: '',
+                sku: '',
+                barcode: '',
+                category: '',
+                description: '',
+                weight: 0,
+                dimensions: '',
+                unitPrice: 0,
+                stockQuantity: 0,
+                unitOfMeasure: '',
+                reorderLevel: 0,
+                status: 'active',
+                image: null,
+                suppliers: [],
+                createdAt: null,
+                updatedAt: null
+            };
+            
+            let suppliers = [];
+            let primarySupplierId = null;
+            
+            // Global supplier database
+            let globalSuppliers = [
+                { id: 1, name: 'Global Suppliers Inc.', contact: 'John Smith', email: 'john@globalsuppliers.com', phone: '+1-555-0101' },
+                { id: 2, name: 'Material World Ltd.', contact: 'Sarah Johnson', email: 'sarah@materialworld.com', phone: '+1-555-0102' },
+                { id: 3, name: 'Tech Importers Co.', contact: 'Michael Brown', email: 'michael@techimporters.com', phone: '+1-555-0103' },
+                { id: 4, name: 'Quality Components LLC', contact: 'Robert Wilson', email: 'robert@qualitycomponents.com', phone: '+1-555-0104' },
+                { id: 5, name: 'Raw Material Solutions', contact: 'Jennifer Lee', email: 'jennifer@rawmaterials.com', phone: '+1-555-0105' }
+            ];
+            
+            // DOM Elements
+            const productForm = document.getElementById('productForm');
+            const supplierTableBody = document.getElementById('supplierTableBody');
+            const saveProductBtn = document.getElementById('saveProductBtn');
+            const saveDraftBtn = document.getElementById('saveDraftBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const lastSaved = document.getElementById('lastSaved');
+            const supplierInput = document.getElementById('supplierInput');
+            const supplierList = document.getElementById('supplierList');
+            const supplierSuggestions = document.getElementById('supplierSuggestions');
+            const saveSupplierBtn = document.getElementById('saveSupplierBtn');
+            const resetSupplierFormBtn = document.getElementById('resetSupplierFormBtn');
+            
+            // Initialize the form
+            initializeForm();
+            populateSupplierList();
+            
+            // Image upload functionality
+            document.getElementById('imageUploadArea').addEventListener('click', function() {
+                document.getElementById('productImage').click();
+            });
+            
+            document.getElementById('productImage').addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('imageUploadArea').innerHTML = `
+                            <img src="${event.target.result}" class="img-fluid rounded" alt="Product Image" style="max-height: 70px;">
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-secondary mt-1" id="changeImageBtn">
+                                    <i class="bi bi-arrow-repeat me-1"></i>Change
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add event listener to the new Change button
+                        document.getElementById('changeImageBtn').addEventListener('click', function() {
+                            document.getElementById('productImage').click();
+                        });
+                        
+                        // Store image data
+                        productData.image = event.target.result;
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Supplier input functionality
+            supplierInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                if (searchTerm.length > 0) {
+                    showSupplierSuggestions(searchTerm);
+                } else {
+                    supplierSuggestions.style.display = 'none';
+                }
+            });
+            
+            supplierInput.addEventListener('focus', function() {
+                if (this.value.length > 0) {
+                    showSupplierSuggestions(this.value.toLowerCase());
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!supplierInput.contains(e.target) && !supplierSuggestions.contains(e.target)) {
+                    supplierSuggestions.style.display = 'none';
+                }
+            });
+            
+            // Save supplier functionality
+            saveSupplierBtn.addEventListener('click', function() {
+                const supplierName = supplierInput.value.trim();
+                const supplierBarcode = document.getElementById('supplierBarcode').value.trim();
+                const costPrice = parseFloat(document.getElementById('supplierPrice').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                const minOrder = parseInt(document.getElementById('minOrder').value);
+                const leadTime = parseInt(document.getElementById('leadTime').value);
+                
+                if (!supplierName || !costPrice || isNaN(costPrice)) {
+                    showToast('Please enter a supplier name and valid cost price', 'error');
+                    return;
+                }
+                
+                // Check if supplier already exists for this product
+                if (suppliers.some(s => s.name.toLowerCase() === supplierName.toLowerCase())) {
+                    showToast('This supplier has already been added for this product', 'error');
+                    return;
+                }
+                
+                const totalCost = costPrice * (1 + taxRate / 100);
+                const supplierId = Date.now();
+                
+                // Check if supplier exists in global database
+                let supplier = globalSuppliers.find(s => s.name.toLowerCase() === supplierName.toLowerCase());
+                let isNewSupplier = false;
+                
+                if (!supplier) {
+                    // Create a new supplier
+                    isNewSupplier = true;
+                    const newSupplierId = globalSuppliers.length > 0 ? Math.max(...globalSuppliers.map(s => s.id)) + 1 : 1;
+                    supplier = {
+                        id: newSupplierId,
+                        name: supplierName,
+                        contact: '',
+                        email: '',
+                        phone: ''
+                    };
+                    globalSuppliers.push(supplier);
+                    populateSupplierList();
+                    showToast(`New supplier "${supplierName}" created`, 'success');
+                }
+                
+                const productSupplier = {
+                    id: supplierId,
+                    supplierId: supplier.id,
+                    name: supplierName,
+                    barcode: supplierBarcode,
+                    costPrice: costPrice,
+                    taxRate: taxRate,
+                    totalCost: totalCost,
+                    minOrder: minOrder,
+                    leadTime: leadTime,
+                    isPrimary: suppliers.length === 0 // First supplier is primary by default
+                };
+                
+                suppliers.push(productSupplier);
+                
+                // Set as primary if it's the first supplier
+                if (suppliers.length === 1) {
+                    primarySupplierId = supplierId;
+                }
+                
+                renderSupplierTable();
+                updateEnhancedPriceAnalysis();
+                resetSupplierForm();
+                
+                showToast('Supplier saved successfully', 'success');
+            });
+            
+            // Reset supplier form
+            resetSupplierFormBtn.addEventListener('click', function() {
+                resetSupplierForm();
+            });
+            
+            // Show supplier suggestions
+            function showSupplierSuggestions(searchTerm) {
+                supplierSuggestions.innerHTML = '';
+                const filteredSuppliers = globalSuppliers.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm)
+                );
+                
+                if (filteredSuppliers.length === 0) {
+                    const item = document.createElement('div');
+                    item.className = 'supplier-suggestion-item text-muted';
+                    item.textContent = 'No suppliers found. Type to create a new one.';
+                    supplierSuggestions.appendChild(item);
+                } else {
+                    filteredSuppliers.forEach(supplier => {
+                        const item = document.createElement('div');
+                        item.className = 'supplier-suggestion-item';
+                        item.textContent = supplier.name;
+                        item.addEventListener('click', function() {
+                            supplierInput.value = supplier.name;
+                            supplierSuggestions.style.display = 'none';
+                        });
+                        supplierSuggestions.appendChild(item);
+                    });
+                }
+                
+                supplierSuggestions.style.display = 'block';
+            }
+            
+            // Populate supplier list for datalist
+            function populateSupplierList() {
+                supplierList.innerHTML = '';
+                globalSuppliers.forEach(supplier => {
+                    const option = document.createElement('option');
+                    option.value = supplier.name;
+                    supplierList.appendChild(option);
+                });
+            }
+            
+            // Set primary supplier
+            function setPrimarySupplier(supplierId) {
+                primarySupplierId = supplierId;
+                suppliers.forEach(supplier => {
+                    supplier.isPrimary = supplier.id === supplierId;
+                });
+                renderSupplierTable();
+                updateEnhancedPriceAnalysis();
+            }
+            
+            // Edit supplier pricing
+            function editSupplier(supplierId) {
+                const supplier = suppliers.find(s => s.id === supplierId);
+                if (supplier) {
+                    document.getElementById('editSupplierId').value = supplier.id;
+                    document.getElementById('editSupplierName').value = supplier.name;
+                    document.getElementById('editSupplierBarcode').value = supplier.barcode || '';
+                    document.getElementById('editSupplierPrice').value = supplier.costPrice;
+                    document.getElementById('editTaxRate').value = supplier.taxRate;
+                    document.getElementById('editMinOrder').value = supplier.minOrder;
+                    document.getElementById('editLeadTime').value = supplier.leadTime;
+                    
+                    const editModal = new bootstrap.Modal(document.getElementById('editSupplierModal'));
+                    editModal.show();
+                }
+            }
+            
+            // Remove supplier
+            function removeSupplier(supplierId) {
+                suppliers = suppliers.filter(s => s.id !== supplierId);
+                
+                // If we removed the primary supplier, set a new primary
+                if (supplierId === primarySupplierId && suppliers.length > 0) {
+                    primarySupplierId = suppliers[0].id;
+                    suppliers[0].isPrimary = true;
+                } else if (suppliers.length === 0) {
+                    primarySupplierId = null;
+                }
+                
+                renderSupplierTable();
+                updateEnhancedPriceAnalysis();
+                showToast('Supplier removed successfully', 'success');
+            }
+            
+            // Render supplier table
+            function renderSupplierTable() {
+                supplierTableBody.innerHTML = '';
+                
+                if (suppliers.length === 0) {
+                    supplierTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-2">
+                                <i class="bi bi-info-circle me-1"></i>No suppliers added yet
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                suppliers.forEach(supplier => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${supplier.name} ${supplier.isPrimary ? '<span class="supplier-badge primary-supplier">Primary</span>' : ''}</td>
+                        <td>${supplier.barcode || '-'}</td>
+                        <td>$${supplier.costPrice.toFixed(2)}</td>
+                        <td>${supplier.taxRate}%</td>
+                        <td>$${supplier.totalCost.toFixed(2)}</td>
+                        <td>${supplier.minOrder}</td>
+                        <td>${supplier.leadTime} days</td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" ${supplier.isPrimary ? 'checked' : ''} 
+                                       onchange="setPrimarySupplier(${supplier.id})">
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1 edit-supplier-btn" onclick="editSupplier(${supplier.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeSupplier(${supplier.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    supplierTableBody.appendChild(row);
+                });
+            }
+            
+            // Enhanced Price Analysis
+            function updateEnhancedPriceAnalysis() {
+                if (suppliers.length === 0) {
+                    resetPriceAnalysis();
+                    return;
+                }
+                
+                const costs = suppliers.map(s => s.totalCost);
+                const lowestCost = Math.min(...costs);
+                const highestCost = Math.max(...costs);
+                const averageCost = costs.reduce((a, b) => a + b, 0) / costs.length;
+                const priceRange = highestCost - lowestCost;
+                
+                // Find suppliers with lowest and highest costs
+                const bestSupplier = suppliers.find(s => s.totalCost === lowestCost);
+                const highestSupplier = suppliers.find(s => s.totalCost === highestCost);
+                
+                // Calculate recommended retail price with different margin strategies
+                const retailPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+                let recommendedRetail = averageCost * 1.3; // Default 30% margin
+                
+                // Adjust margin based on price range and competition
+                if (priceRange > averageCost * 0.5) {
+                    // High price variability - use more competitive pricing
+                    recommendedRetail = lowestCost * 1.4; // 40% margin on lowest cost
+                } else if (priceRange < averageCost * 0.1) {
+                    // Low price variability - use standard pricing
+                    recommendedRetail = averageCost * 1.35; // 35% margin
+                }
+                
+                // Calculate profit margin
+                const profitMargin = ((recommendedRetail - averageCost) / recommendedRetail) * 100;
+                
+                // Determine margin type
+                let marginType = 'Standard';
+                let marginClass = 'margin-medium';
+                if (profitMargin > 40) {
+                    marginType = 'High';
+                    marginClass = 'margin-high';
+                } else if (profitMargin < 20) {
+                    marginType = 'Low';
+                    marginClass = 'margin-low';
+                }
+                
+                // Find best value supplier (balance of cost and lead time)
+                let bestValueSupplier = null;
+                let bestValueScore = 0;
+                
+                suppliers.forEach(supplier => {
+                    // Score based on cost (60%) and lead time (40%)
+                    const costScore = (1 - (supplier.totalCost - lowestCost) / priceRange) * 0.6;
+                    const leadTimeScore = (1 - (supplier.leadTime - 1) / 30) * 0.4; // Assuming max 30 days lead time
+                    const totalScore = costScore + leadTimeScore;
+                    
+                    if (totalScore > bestValueScore) {
+                        bestValueScore = totalScore;
+                        bestValueSupplier = supplier;
+                    }
+                });
+                
+                // Update UI - Focus on Best Supplier Price
+                document.getElementById('bestSupplierPrice').textContent = `$${lowestCost.toFixed(2)}`;
+                document.getElementById('highestCost').textContent = `$${highestCost.toFixed(2)}`;
+                document.getElementById('averageCost').textContent = `$${averageCost.toFixed(2)}`;
+                document.getElementById('recommendedRetail').textContent = `$${recommendedRetail.toFixed(2)}`;
+                document.getElementById('bestSupplierName').textContent = bestSupplier ? bestSupplier.name : '-';
+                document.getElementById('highestSupplier').textContent = highestSupplier ? highestSupplier.name : '-';
+                
+                document.getElementById('priceRange').textContent = `$${lowestCost.toFixed(2)} - $${highestCost.toFixed(2)}`;
+                document.getElementById('priceDifference').textContent = `Difference: $${priceRange.toFixed(2)}`;
+                
+                document.getElementById('bestValueSupplier').textContent = bestValueSupplier ? bestValueSupplier.name : '-';
+                document.getElementById('bestValueDetails').textContent = bestValueSupplier ? 
+                    `Cost: $${bestValueSupplier.totalCost.toFixed(2)}, Lead: ${bestValueSupplier.leadTime} days` : 
+                    'Balances cost & lead time';
+                
+                document.getElementById('costEfficiency').textContent = `${Math.round(bestValueScore * 100)}%`;
+                document.getElementById('efficiencyDetails').textContent = 'Based on price & delivery';
+                
+                // Update profit margin indicator
+                const profitMarginElement = document.getElementById('profitMargin');
+                profitMarginElement.textContent = `${profitMargin.toFixed(1)}%`;
+                profitMarginElement.className = `profit-margin ${marginClass}`;
+                document.getElementById('marginType').textContent = `${marginType} Margin`;
+                
+                // Update visual indicators
+                updatePriceIndicators(lowestCost, highestCost, averageCost);
+                
+                // Update retail price field if it's empty
+                const retailPriceField = document.getElementById('unitPrice');
+                if (!retailPriceField.value || parseFloat(retailPriceField.value) === 0) {
+                    retailPriceField.value = recommendedRetail.toFixed(2);
+                }
+            }
+            
+            function updatePriceIndicators(lowest, highest, average) {
+                const range = highest - lowest;
+                
+                // Calculate positions as percentages
+                const lowestPos = 0;
+                const averagePos = ((average - lowest) / range) * 100;
+                const highestPos = 100;
+                
+                // Update indicator bars
+                document.getElementById('bestPriceBar').style.width = `${averagePos}%`;
+                document.getElementById('averageCostBar').style.width = `${100 - averagePos}%`;
+                document.getElementById('highestCostBar').style.width = '100%';
+            }
+            
+            function resetPriceAnalysis() {
+                document.getElementById('bestSupplierPrice').textContent = '$0.00';
+                document.getElementById('highestCost').textContent = '$0.00';
+                document.getElementById('averageCost').textContent = '$0.00';
+                document.getElementById('recommendedRetail').textContent = '$0.00';
+                document.getElementById('bestSupplierName').textContent = '-';
+                document.getElementById('highestSupplier').textContent = '-';
+                document.getElementById('priceRange').textContent = '$0.00 - $0.00';
+                document.getElementById('priceDifference').textContent = 'Difference: $0.00';
+                document.getElementById('bestValueSupplier').textContent = '-';
+                document.getElementById('bestValueDetails').textContent = 'Balances cost & lead time';
+                document.getElementById('costEfficiency').textContent = '-';
+                document.getElementById('efficiencyDetails').textContent = 'Based on price & delivery';
+                
+                const profitMarginElement = document.getElementById('profitMargin');
+                profitMarginElement.textContent = '0%';
+                profitMarginElement.className = 'profit-margin margin-low';
+                document.getElementById('marginType').textContent = 'Margin';
+                
+                document.getElementById('bestPriceBar').style.width = '0%';
+                document.getElementById('averageCostBar').style.width = '0%';
+                document.getElementById('highestCostBar').style.width = '0%';
+            }
+            
+            // Reset supplier form
+            function resetSupplierForm() {
+                supplierInput.value = '';
+                document.getElementById('supplierBarcode').value = '';
+                document.getElementById('supplierPrice').value = '';
+                document.getElementById('taxRate').value = '15';
+                document.getElementById('minOrder').value = '1';
+                document.getElementById('leadTime').value = '14';
+                supplierSuggestions.style.display = 'none';
+                
+                showToast('Supplier form has been reset', 'success');
+            }
+            
+            // Initialize form
+            function initializeForm() {
+                // Set current date as default
+                const now = new Date();
+                productData.createdAt = now;
+                productData.updatedAt = now;
+                
+                // Generate a SKU if empty
+                if (!productData.sku) {
+                    const skuPrefix = 'PROD';
+                    const randomNum = Math.floor(1000 + Math.random() * 9000);
+                    productData.sku = `${skuPrefix}-${randomNum}`;
+                    document.getElementById('sku').value = productData.sku;
+                }
+            }
+            
+            // Save product
+            saveProductBtn.addEventListener('click', function() {
+                if (!validateForm()) {
+                    showToast('Please fill all required fields correctly', 'error');
+                    return;
+                }
+                
+                // Update product data
+                updateProductData();
+                
+                // Generate ID if new product
+                if (!productData.id) {
+                    productData.id = Date.now();
+                }
+                
+                // Update timestamp
+                productData.updatedAt = new Date();
+                
+                // Update last saved
+                lastSaved.textContent = `Last saved: ${productData.updatedAt.toLocaleString()}`;
+                
+                showToast('Product saved successfully!', 'success');
+            });
+            
+            // Save draft
+            saveDraftBtn.addEventListener('click', function() {
+                updateProductData();
+                productData.updatedAt = new Date();
+                
+                lastSaved.textContent = `Draft saved: ${productData.updatedAt.toLocaleString()}`;
+                showToast('Draft saved successfully!', 'success');
+            });
+            
+            // Cancel
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                    showToast('Operation cancelled', 'success');
+                }
+            });
+            
+            // Update product data from form
+            function updateProductData() {
+                productData.name = document.getElementById('productName').value;
+                productData.sku = document.getElementById('sku').value;
+                productData.barcode = document.getElementById('barcode').value;
+                productData.category = document.getElementById('category').value;
+                productData.description = document.getElementById('description').value;
+                productData.weight = parseFloat(document.getElementById('weight').value) || 0;
+                productData.dimensions = document.getElementById('dimensions').value;
+                productData.unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+                productData.stockQuantity = parseInt(document.getElementById('stockQuantity').value) || 0;
+                productData.unitOfMeasure = document.getElementById('unitOfMeasure').value;
+                productData.reorderLevel = parseInt(document.getElementById('reorderLevel').value) || 0;
+                productData.status = document.querySelector('input[name="status"]:checked').value;
+                productData.suppliers = suppliers;
+            }
+            
+            // Validate form
+            function validateForm() {
+                const requiredFields = [
+                    'productName', 'sku', 'category', 'unitPrice', 'stockQuantity', 'unitOfMeasure'
+                ];
+                
+                let isValid = true;
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                return isValid;
+            }
+            
+            // Category modal functionality
+            const createCategoryBtn = document.getElementById('createCategoryBtn');
+            const createCategoryModal = new bootstrap.Modal(document.getElementById('createCategoryModal'));
+            const saveCategoryBtn = document.getElementById('saveCategoryBtn');
+            
+            createCategoryBtn.addEventListener('click', function() {
+                document.getElementById('categoryName').value = '';
+                document.getElementById('categoryDescription').value = '';
+                createCategoryModal.show();
+            });
+            
+            saveCategoryBtn.addEventListener('click', function() {
+                const categoryName = document.getElementById('categoryName').value.trim();
+                const categoryDescription = document.getElementById('categoryDescription').value.trim();
+                
+                if (categoryName === '') {
+                    showToast('Category Name cannot be empty!', 'error');
+                    return;
+                }
+                
+                // Add category to dropdown
+                const categorySelect = document.getElementById('category');
+                const newOption = document.createElement('option');
+                newOption.value = categoryName;
+                newOption.textContent = categoryName;
+                categorySelect.appendChild(newOption);
+                
+                // Select the new category
+                categorySelect.value = categoryName;
+                
+                showToast(`Category "${categoryName}" saved successfully!`, 'success');
+                createCategoryModal.hide();
+            });
+            
+            // Supplier modal functionality
+            const createSupplierBtn = document.getElementById('createSupplierBtn');
+            const createSupplierModal = new bootstrap.Modal(document.getElementById('createSupplierModal'));
+            const saveSupplierModalBtn = document.getElementById('saveSupplierModalBtn');
+            
+            createSupplierBtn.addEventListener('click', function() {
+                document.getElementById('supplierName').value = '';
+                document.getElementById('supplierContact').value = '';
+                document.getElementById('supplierEmail').value = '';
+                document.getElementById('supplierPhone').value = '';
+                createSupplierModal.show();
+            });
+            
+            saveSupplierModalBtn.addEventListener('click', function() {
+                const supplierName = document.getElementById('supplierName').value.trim();
+                const supplierContact = document.getElementById('supplierContact').value.trim();
+                const supplierEmail = document.getElementById('supplierEmail').value.trim();
+                const supplierPhone = document.getElementById('supplierPhone').value.trim();
+                
+                if (supplierName === '') {
+                    showToast('Supplier Name cannot be empty!', 'error');
+                    return;
+                }
+                
+                // Check if supplier already exists
+                if (globalSuppliers.some(s => s.name.toLowerCase() === supplierName.toLowerCase())) {
+                    showToast('Supplier with this name already exists!', 'error');
+                    return;
+                }
+                
+                // Add supplier to global database
+                const newSupplierId = globalSuppliers.length > 0 ? Math.max(...globalSuppliers.map(s => s.id)) + 1 : 1;
+                const newSupplier = {
+                    id: newSupplierId,
+                    name: supplierName,
+                    contact: supplierContact,
+                    email: supplierEmail,
+                    phone: supplierPhone
+                };
+                
+                globalSuppliers.push(newSupplier);
+                populateSupplierList();
+                
+                // Auto-fill the supplier input in the form
+                supplierInput.value = supplierName;
+                
+                showToast(`Supplier "${supplierName}" created successfully!`, 'success');
+                createSupplierModal.hide();
+            });
+            
+            // Edit supplier modal functionality
+            const updateSupplierBtn = document.getElementById('updateSupplierBtn');
+            
+            updateSupplierBtn.addEventListener('click', function() {
+                const supplierId = parseInt(document.getElementById('editSupplierId').value);
+                const supplierBarcode = document.getElementById('editSupplierBarcode').value.trim();
+                const costPrice = parseFloat(document.getElementById('editSupplierPrice').value);
+                const taxRate = parseFloat(document.getElementById('editTaxRate').value);
+                const minOrder = parseInt(document.getElementById('editMinOrder').value);
+                const leadTime = parseInt(document.getElementById('editLeadTime').value);
+                
+                if (!costPrice || isNaN(costPrice)) {
+                    showToast('Please enter a valid cost price', 'error');
+                    return;
+                }
+                
+                // Find and update the supplier
+                const supplierIndex = suppliers.findIndex(s => s.id === supplierId);
+                if (supplierIndex !== -1) {
+                    suppliers[supplierIndex].barcode = supplierBarcode;
+                    suppliers[supplierIndex].costPrice = costPrice;
+                    suppliers[supplierIndex].taxRate = taxRate;
+                    suppliers[supplierIndex].totalCost = costPrice * (1 + taxRate / 100);
+                    suppliers[supplierIndex].minOrder = minOrder;
+                    suppliers[supplierIndex].leadTime = leadTime;
+                    
+                    renderSupplierTable();
+                    updateEnhancedPriceAnalysis();
+                    
+                    const editModal = bootstrap.Modal.getInstance(document.getElementById('editSupplierModal'));
+                    editModal.hide();
+                    
+                    showToast('Supplier pricing updated successfully', 'success');
+                }
+            });
+            
+            // Toast notification function
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} align-items-center`;
+                toast.setAttribute('role', 'alert');
+                
+                const bgColor = type === 'success' ? 'var(--success-green)' : 'var(--error-red)';
+                const icon = type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle';
+                
+                toast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center">
+                            <i class="bi ${icon} me-2" style="color: ${bgColor};"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                `;
+                
+                document.getElementById('toast-container').appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+                
+                // Remove toast from DOM after it's hidden
+                toast.addEventListener('hidden.bs.toast', function() {
+                    toast.remove();
+                });
+            }
+            
+            // Make functions available globally for onclick handlers
+            window.setPrimarySupplier = setPrimarySupplier;
+            window.editSupplier = editSupplier;
+            window.removeSupplier = removeSupplier;
+        });
+    </script>
+</body>
+</html>
