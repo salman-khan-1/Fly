@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoCorp WMS - Ultra Compact</title>
+    <title>NeoCorp WMS - Clean Mobile Interface</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Safari PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Neo-WMS">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0099ff">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --neo-primary-bg: #f8faff;
@@ -36,17 +54,90 @@
             color: var(--neo-text-dark);
             min-height: 100vh;
             overflow-x: hidden;
+            /* Enable PWA features */
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: none;
+        }
+
+        /* Mobile Header - Only visible on mobile */
+        .wms-mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--neo-secondary-bg);
+            border-bottom: 1px solid var(--neo-border-light);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 1100;
+            box-shadow: var(--neo-shadow-light);
+        }
+
+        .wms-header-company {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wms-header-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--neo-accent-blue), var(--neo-accent-purple));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wms-header-logo i {
+            font-size: 1rem;
+            color: white;
+        }
+
+        .wms-header-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--neo-text-dark);
+        }
+
+        .wms-header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .wms-header-toggle {
+            background: var(--neo-accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 153, 255, 0.3);
+            transition: var(--neo-transition);
+        }
+
+        .wms-header-toggle:hover {
+            background: #0080e0;
+            transform: scale(1.05);
         }
 
         .wms-dashboard-container {
             display: flex;
             min-height: 100vh;
-            padding-left: 180px; /* Space for fixed sidebar */
+            padding-left: 181px; /* Increased by 1px for sidebar */
         }
 
-        /* Ultra Compact Fixed Sidebar */
+        /* Enhanced Compact Fixed Sidebar */
         .wms-sidebar {
-            width: 180px;
+            width: 181px; /* Increased by 1px */
             background: var(--neo-secondary-bg);
             border-right: 1px solid var(--neo-border-light);
             display: flex;
@@ -58,6 +149,7 @@
             bottom: 0;
             z-index: 1000;
             overflow: hidden;
+            transition: var(--neo-transition);
         }
 
         /* Scrollable Navigation Area */
@@ -69,18 +161,18 @@
 
         /* Sidebar Header */
         .wms-sidebar-header {
-            padding: 12px 10px;
+            padding: 13px 11px; /* Increased by 1px */
             border-bottom: 1px solid var(--neo-border-light);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px; /* Increased by 1px */
             background: var(--neo-card-bg);
             flex-shrink: 0;
         }
 
         .wms-logo {
-            width: 24px;
-            height: 24px;
+            width: 25px; /* Increased by 1px */
+            height: 25px; /* Increased by 1px */
             background: linear-gradient(135deg, var(--neo-accent-blue), var(--neo-accent-purple));
             border-radius: 5px;
             display: flex;
@@ -89,35 +181,47 @@
         }
 
         .wms-logo i {
-            font-size: 0.8rem;
+            font-size: 0.85rem; /* Increased by 0.05rem */
             color: white;
         }
 
         .wms-sidebar-title {
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: 0.9rem; /* Increased by 0.05rem */
             color: var(--neo-text-dark);
+        }
+
+        /* Mobile Overlay */
+        .wms-mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 800;
         }
 
         /* Navigation Section */
         .wms-nav-section {
-            padding: 10px 0;
+            padding: 11px 0; /* Increased by 1px */
             border-bottom: 1px solid var(--neo-border-light);
         }
 
         .wms-section-title {
-            padding: 0 10px 6px;
-            font-size: 0.65rem;
+            padding: 0 11px 7px; /* Increased by 1px */
+            font-size: 0.7rem; /* Increased by 0.05rem */
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--neo-text-light);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px; /* Increased by 1px */
         }
 
         .wms-section-title i {
-            font-size: 0.55rem;
+            font-size: 0.6rem; /* Increased by 0.05rem */
         }
 
         .wms-nav-menu {
@@ -125,19 +229,19 @@
         }
 
         .wms-nav-item {
-            margin: 1px 0;
+            margin: 2px 0; /* Increased by 1px */
         }
 
         .wms-nav-link {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
+            gap: 7px; /* Increased by 1px */
+            padding: 7px 11px; /* Increased by 1px */
             color: var(--neo-text-dark);
             text-decoration: none;
             transition: var(--neo-transition);
             position: relative;
-            font-size: 0.75rem;
+            font-size: 0.8rem; /* Increased by 0.05rem */
         }
 
         .wms-nav-link:hover {
@@ -156,9 +260,9 @@
         }
 
         .wms-nav-icon {
-            width: 14px;
+            width: 15px; /* Increased by 1px */
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.75rem; /* Increased by 0.05rem */
             transition: var(--neo-transition);
             color: var(--neo-text-light);
         }
@@ -174,15 +278,15 @@
             margin-left: auto;
             background: var(--neo-accent-pink);
             color: white;
-            font-size: 0.55rem;
-            padding: 1px 4px;
+            font-size: 0.6rem; /* Increased by 0.05rem */
+            padding: 2px 5px; /* Increased by 1px */
             border-radius: 4px;
             flex-shrink: 0;
         }
 
         .wms-nav-arrow {
             margin-left: auto;
-            font-size: 0.55rem;
+            font-size: 0.6rem; /* Increased by 0.05rem */
             color: var(--neo-text-light);
             transition: var(--neo-transition);
             flex-shrink: 0;
@@ -212,12 +316,12 @@
         .wms-submenu-link {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px 4px 26px;
+            gap: 7px; /* Increased by 1px */
+            padding: 5px 11px 5px 28px; /* Increased by 1px */
             color: var(--neo-text-light);
             text-decoration: none;
             transition: var(--neo-transition);
-            font-size: 0.7rem;
+            font-size: 0.75rem; /* Increased by 0.05rem */
             border-left: 1px solid transparent;
         }
 
@@ -234,14 +338,14 @@
         }
 
         .wms-submenu-icon {
-            width: 12px;
+            width: 13px; /* Increased by 1px */
             text-align: center;
-            font-size: 0.65rem;
+            font-size: 0.7rem; /* Increased by 0.05rem */
         }
 
         /* User Profile Section */
         .wms-user-section {
-            padding: 8px 10px;
+            padding: 9px 11px; /* Increased by 1px */
             border-top: 1px solid var(--neo-border-light);
             background: var(--neo-card-bg);
             flex-shrink: 0;
@@ -250,20 +354,20 @@
         .wms-user-profile {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
+            gap: 7px; /* Increased by 1px */
+            margin-bottom: 7px; /* Increased by 1px */
         }
 
         .wms-user-avatar {
-            width: 24px;
-            height: 24px;
+            width: 25px; /* Increased by 1px */
+            height: 25px; /* Increased by 1px */
             border-radius: 50%;
             background: linear-gradient(135deg, var(--neo-accent-purple), var(--neo-accent-blue));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.75rem; /* Increased by 0.05rem */
         }
 
         .wms-user-info {
@@ -272,16 +376,16 @@
         }
 
         .wms-user-name {
-            font-size: 0.7rem;
+            font-size: 0.75rem; /* Increased by 0.05rem */
             font-weight: 500;
-            margin-bottom: 1px;
+            margin-bottom: 2px; /* Increased by 1px */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .wms-user-role {
-            font-size: 0.55rem;
+            font-size: 0.6rem; /* Increased by 0.05rem */
             color: var(--neo-text-light);
             white-space: nowrap;
             overflow: hidden;
@@ -289,8 +393,8 @@
         }
 
         .wms-user-status {
-            width: 6px;
-            height: 6px;
+            width: 7px; /* Increased by 1px */
+            height: 7px; /* Increased by 1px */
             border-radius: 50%;
             background: var(--neo-accent-green);
             flex-shrink: 0;
@@ -300,12 +404,12 @@
         .wms-logout-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
+            gap: 7px; /* Increased by 1px */
+            padding: 5px 9px; /* Increased by 1px */
             color: var(--neo-text-light);
             text-decoration: none;
             transition: var(--neo-transition);
-            font-size: 0.65rem;
+            font-size: 0.7rem; /* Increased by 0.05rem */
             border-radius: 4px;
             background: transparent;
             border: none;
@@ -319,9 +423,9 @@
         }
 
         .wms-logout-icon {
-            width: 12px;
+            width: 13px; /* Increased by 1px */
             text-align: center;
-            font-size: 0.6rem;
+            font-size: 0.65rem; /* Increased by 0.05rem */
         }
 
         /* Logout Confirmation Modal */
@@ -412,6 +516,7 @@
 
         .wms-content-header {
             margin-bottom: 15px;
+            position: relative;
         }
 
         .wms-content-title {
@@ -476,7 +581,7 @@
 
         /* PRINT STYLES - Hide sidebar and adjust layout for printing */
         @media print {
-            .wms-sidebar {
+            .wms-sidebar, .wms-mobile-header {
                 display: none !important;
             }
             
@@ -514,49 +619,163 @@
             }
         }
 
+        /* PWA Install Prompt */
+        .wms-pwa-prompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .wms-pwa-prompt-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wms-pwa-prompt-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--neo-text-dark);
+        }
+
+        .wms-pwa-prompt-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .wms-pwa-prompt-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--neo-transition);
+            border: none;
+        }
+
+        .wms-pwa-prompt-cancel {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--neo-text-light);
+        }
+
+        .wms-pwa-prompt-install {
+            background: var(--neo-accent-blue);
+            color: white;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
+            /* Show mobile header */
+            .wms-mobile-header {
+                display: flex;
+            }
+            .wms-sidebar-header{
+                display: none;
+            }
+            /* Adjust dashboard container for mobile */
             .wms-dashboard-container {
                 padding-left: 0;
-                flex-direction: column;
+                padding-top: 60px; /* Space for mobile header */
             }
             
+            /* Hide sidebar by default on mobile */
             .wms-sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                margin-top: 60px;
+                width: 281px; /* Increased by 1px */
+                transform: translateX(-100%);
+                z-index: 1000;
+                top: 0; /* Start from top of screen */
+            }
+            
+            /* Show sidebar when mobile-open class is added */
+            .wms-sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            /* Hide the close button styles since we removed it */
+            .wms-sidebar-toggle {
+                display: none;
+            }
+            
+            .wms-mobile-toggle {
+                display: none;
+            }
+            
+            .wms-mobile-overlay.active {
+                display: block;
             }
             
             .wms-nav-menu {
-                display: flex;
-                overflow-x: auto;
-                padding: 0 8px;
-            }
-            
-            .wms-nav-item {
-                flex-shrink: 0;
-            }
-            
-            .wms-nav-link {
-                padding: 6px 10px;
-                white-space: nowrap;
+                display: block;
+                padding: 0;
             }
             
             .wms-user-section {
-                display: none;
+                display: block;
             }
             
             .wms-submenu {
-                display: none;
+                display: block;
+            }
+            
+            .wms-main-content {
+                padding: 15px;
+            }
+            
+            .wms-content-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wms-sidebar {
+                width: 100%;
+            }
+            
+            .wms-main-content {
+                padding: 80px 10px 10px;
+            }
+            
+            .wms-content-placeholder {
+                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Header with Company Name and Hamburger Menu -->
+    <header class="wms-mobile-header">
+        <!-- Left-aligned company name -->
+        <div class="wms-header-company">
+            <div class="wms-header-logo">
+                <i class="fas fa-cube"></i>
+            </div>
+            <h1 class="wms-header-title">NEO-WMS</h1>
+        </div>
+        
+        <!-- Right-aligned hamburger menu -->
+        <div class="wms-header-nav">
+            <button class="wms-header-toggle" id="headerToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Overlay -->
+    <div class="wms-mobile-overlay" id="mobileOverlay"></div>
+
     <div class="wms-dashboard-container">
-        <!-- Ultra Compact Fixed Sidebar -->
-        <aside class="wms-sidebar">
-            <!-- Sidebar Header -->
+        <!-- Enhanced Compact Fixed Sidebar -->
+        <aside class="wms-sidebar" id="sidebar">
+            <!-- Sidebar Header - No close button needed -->
             <div class="wms-sidebar-header">
                 <div class="wms-logo">
                     <i class="fas fa-cube"></i>
@@ -811,7 +1030,7 @@
         <main class="wms-main-content">
             <div class="wms-content-header">
                 <h1 class="wms-content-title">Warehouse Management System</h1>
-                <p class="wms-content-subtitle">NeoCorp Logistics Platform • Ultra Compact Interface</p>
+                <p class="wms-content-subtitle">NeoCorp Logistics Platform • Clean Mobile Interface</p>
             </div>
 
             <div class="wms-content-placeholder">
@@ -820,9 +1039,20 @@
                 </div>
                 <h2 class="wms-placeholder-title">Welcome to Neo-WMS</h2>
                 <p class="wms-placeholder-text">
-                    This ultra-compact interface provides efficient access to all warehouse management functions. 
-                    The sidebar is fixed and scrollable for easy navigation.
+                    This clean interface provides better readability with slightly larger text in the sidebar
+                    while maintaining the ultra-compact design. All warehouse management functions are easily accessible.
                 </p>
+                
+                <!-- PWA Status -->
+                <div style="margin-top: 20px; padding: 15px; border: 1px dashed var(--neo-accent-blue); background: rgba(0, 153, 255, 0.05);">
+                    <h3 style="color: var(--neo-text-dark); margin-bottom: 10px;">PWA Status</h3>
+                    <p style="color: var(--neo-text-light); font-size: 0.8rem; margin-bottom: 10px;" id="pwaStatus">
+                        Checking PWA capabilities...
+                    </p>
+                    <button id="installPWA" style="display: none; margin-top: 10px; padding: 5px 10px; background: var(--neo-accent-blue); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Install App
+                    </button>
+                </div>
                 
                 <!-- Example printable content -->
                 <div style="margin-top: 20px; padding: 15px; border: 1px dashed #ccc; background: white;">
@@ -837,6 +1067,20 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div class="wms-pwa-prompt" id="pwaPrompt">
+        <div class="wms-pwa-prompt-content">
+            <h3 class="wms-pwa-prompt-title">Install Neo-WMS App</h3>
+            <p style="font-size: 0.75rem; color: var(--neo-text-light);">
+                Install this application on your device for a better experience.
+            </p>
+            <div class="wms-pwa-prompt-actions">
+                <button class="wms-pwa-prompt-btn wms-pwa-prompt-cancel" id="pwaCancel">Not Now</button>
+                <button class="wms-pwa-prompt-btn wms-pwa-prompt-install" id="pwaInstall">Install</button>
+            </div>
+        </div>
     </div>
 
     <!-- Logout Confirmation Modal -->
@@ -855,10 +1099,82 @@
     </div>
 
     <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    document.getElementById('pwaStatus').textContent = 'PWA is ready for installation';
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                    document.getElementById('pwaStatus').textContent = 'PWA features limited (offline mode not available)';
+                });
+            });
+        } else {
+            document.getElementById('pwaStatus').textContent = 'Your browser does not support PWA features';
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installButton = document.getElementById('installPWA');
+        const pwaPrompt = document.getElementById('pwaPrompt');
+        const pwaInstall = document.getElementById('pwaInstall');
+        const pwaCancel = document.getElementById('pwaCancel');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            installButton.style.display = 'block';
+            pwaPrompt.style.display = 'block';
+            
+            installButton.addEventListener('click', () => {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        installButton.style.display = 'none';
+                        pwaPrompt.style.display = 'none';
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+            
+            pwaInstall.addEventListener('click', () => {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        pwaPrompt.style.display = 'none';
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+            
+            pwaCancel.addEventListener('click', () => {
+                pwaPrompt.style.display = 'none';
+            });
+        });
+
         // Add interactive effects to sidebar navigation
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.wms-nav-link');
+            const submenuLinks = document.querySelectorAll('.wms-submenu-link');
+            const headerToggle = document.getElementById('headerToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobileOverlay');
             
+            // Handle main menu item clicks
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     // Toggle submenu if it exists
@@ -877,14 +1193,51 @@
                         
                         // Toggle current submenu
                         parentItem.classList.toggle('active');
+                        
+                        // Do NOT close sidebar on mobile when opening submenus
                     } else {
                         // Remove active class from all links
                         navLinks.forEach(l => l.classList.remove('active'));
                         
                         // Add active class to clicked link
                         this.classList.add('active');
+                        
+                        // Close sidebar on mobile after selection (only for menu items without submenus)
+                        if (window.innerWidth <= 768) {
+                            sidebar.classList.remove('mobile-open');
+                            mobileOverlay.classList.remove('active');
+                        }
                     }
                 });
+            });
+
+            // Handle submenu item clicks
+            submenuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Remove active class from all submenu links
+                    submenuLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked submenu link
+                    this.classList.add('active');
+                    
+                    // Close sidebar on mobile after submenu selection
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('mobile-open');
+                        mobileOverlay.classList.remove('active');
+                    }
+                });
+            });
+
+            // Mobile menu toggle (hamburger button in header) - TOGGLE FUNCTIONALITY
+            headerToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('mobile-open');
+                mobileOverlay.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking on overlay
+            mobileOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('mobile-open');
+                mobileOverlay.classList.remove('active');
             });
 
             // Logout functionality
@@ -918,6 +1271,14 @@
             logoutModal.addEventListener('click', function(e) {
                 if (e.target === logoutModal) {
                     logoutModal.style.display = 'none';
+                }
+            });
+            
+            // Close sidebar when window is resized to desktop size
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('mobile-open');
+                    mobileOverlay.classList.remove('active');
                 }
             });
         });
