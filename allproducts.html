@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Product Management - Karwan ERP</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Using Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
       :root {
@@ -28,12 +27,19 @@
         --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
       }
 
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         background-color: var(--background-gray);
         font-family: 'Segoe UI', system-ui, sans-serif;
         font-size: 0.75rem;
         min-height: 100vh;
         padding: 0.4rem;
+        line-height: 1.4;
       }
 
       .compact-container {
@@ -46,6 +52,7 @@
         padding: 0.6rem;
       }
 
+      /* Page Header */
       .page-header {
         background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
         color: var(--white);
@@ -66,12 +73,33 @@
         gap: 0.4rem;
       }
 
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        border-radius: var(--border-radius);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        height: 26px;
+      }
+
+      .btn-sm {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.65rem;
+        height: 22px;
+      }
+
       .btn-primary {
         background-color: var(--accent-blue);
         border-color: var(--accent-blue);
-        font-size: 0.7rem;
-        padding: 0.25rem 0.6rem;
-        font-weight: 500;
+        color: white;
       }
 
       .btn-primary:hover {
@@ -79,28 +107,63 @@
         border-color: var(--secondary-blue);
       }
 
-      .btn-sm {
-        font-size: 0.65rem;
-        padding: 0.15rem 0.4rem;
-      }
-
       .btn-success {
         background-color: var(--success-green);
         border-color: var(--success-green);
-        font-size: 0.7rem;
-        padding: 0.25rem 0.6rem;
+        color: white;
       }
 
-      .btn-info {
-        background-color: var(--accent-blue);
-        border-color: var(--accent-blue);
-        font-size: 0.7rem;
-        padding: 0.25rem 0.6rem;
+      .btn-warning {
+        background-color: #ffc107;
+        border-color:#ffc107;
+        color: rgb(0, 0, 0);
+      }
+
+      .btn-outline-danger {
+        background-color: transparent;
+        border-color: var(--error-red);
+        color: var(--error-red);
+      }
+
+      .btn-outline-danger:hover {
+        background-color: var(--error-red);
+        color: white;
+      }
+
+      .btn-light {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #212529;
+      }
+
+      .btn-light:hover {
+        background-color: #e2e6ea;
+        border-color: #dae0e5;
+      }
+
+      .btn-outline-secondary {
+        background-color: transparent;
+        border-color: var(--medium-gray);
+        color: var(--medium-gray);
+      }
+
+      .btn-outline-secondary:hover {
+        background-color: var(--medium-gray);
+        color: white;
+      }
+
+      /* Table */
+      .table-container {
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        max-height: 450px;
+        overflow-y: auto;
       }
 
       .table {
+        width: 100%;
+        border-collapse: collapse;
         font-size: 0.7rem;
-        margin-bottom: 0;
       }
 
       .table th {
@@ -111,6 +174,18 @@
         border: 1px solid var(--border-color);
         font-size: 0.65rem;
         cursor: pointer;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .table th:hover {
+        background-color: var(--secondary-blue);
+      }
+
+      .table th.filter-active {
+        background-color: var(--accent-blue);
       }
 
       .table td {
@@ -119,41 +194,36 @@
         vertical-align: middle;
       }
 
-      .table-responsive {
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius);
-        max-height: 450px;
-        overflow-y: auto;
+      .table tbody tr:hover {
+        background-color: rgba(49, 130, 206, 0.05);
       }
 
+      /* Badges */
       .badge {
+        display: inline-block;
         font-size: 0.6rem;
         padding: 0.1rem 0.3rem;
         border-radius: 0.15rem;
         font-weight: 500;
+        color: white;
+        text-align: center;
       }
 
+      .bg-success {
+        background-color: var(--success-green);
+      }
+
+      .bg-warning {
+        background-color: var(--warning-orange);
+      }
+
+      .bg-danger {
+        background-color: var(--error-red);
+      }
+
+      /* Search Box */
       .search-box {
         max-width: 250px;
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius);
-      }
-
-      .action-buttons {
-        display: flex;
-        gap: 0.15rem;
-      }
-
-      .form-label {
-        font-weight: 600;
-        color: var(--dark-gray);
-        margin-bottom: 0.15rem;
-        font-size: 0.7rem;
-      }
-
-      .form-control, .form-select {
         font-size: 0.7rem;
         padding: 0.25rem 0.5rem;
         border: 1px solid var(--border-color);
@@ -161,9 +231,45 @@
         height: 26px;
       }
 
-      .form-control:focus, .form-select:focus {
+      .search-box:focus {
+        outline: none;
         border-color: var(--accent-blue);
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .search-label {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: var(--dark-gray);
+        white-space: nowrap;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 0.15rem;
+      }
+
+      /* Form Elements */
+      .form-label {
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 0.15rem;
+        font-size: 0.7rem;
+      }
+
+      /* Statistics Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 0.7rem;
       }
 
       .stats-card {
@@ -171,7 +277,6 @@
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
         padding: 0.5rem;
-        margin-bottom: 0.7rem;
       }
 
       .stats-value {
@@ -186,6 +291,7 @@
         font-weight: 500;
       }
 
+      /* Toolbar */
       .toolbar {
         display: flex;
         justify-content: space-between;
@@ -200,35 +306,105 @@
         font-weight: 500;
       }
 
-      .filter-box {
+      /* Filter Section */
+      .filter-section {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.7rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .filter-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+      }
+
+      .filter-select {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        height: 26px;
+        min-width: 120px;
+        background-color: white;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+      }
+
+      .filter-input {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        height: 26px;
+        width: 100px;
+      }
+
+      .filter-input:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+      }
+
+      .clear-filters {
+        font-size: 0.7rem;
+        color: var(--accent-blue);
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 0.25rem;
+      }
+
+      .clear-filters:hover {
+        color: var(--secondary-blue);
+      }
+
+      /* Active Filters */
+      .active-filters {
         background: var(--light-blue);
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
         padding: 0.5rem;
         margin-bottom: 0.7rem;
-        display: none;
-      }
-
-      .active-filters {
-        background: var(--light-gray);
-        border-radius: var(--border-radius);
-        padding: 0.5rem;
-        margin-bottom: 0.7rem;
-        display: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 32px;
       }
 
       .filter-badge {
         background: var(--accent-blue);
         color: white;
-        padding: 0.1rem 0.3rem;
+        padding: 0.1rem 0.5rem;
         border-radius: 0.15rem;
-        font-size: 0.6rem;
-        margin-right: 0.3rem;
+        font-size: 0.65rem;
         display: inline-flex;
         align-items: center;
-        gap: 0.2rem;
+        gap: 0.3rem;
       }
 
+      .filter-badge .remove-filter {
+        cursor: pointer;
+        font-size: 0.7rem;
+      }
+
+      .filter-badge .remove-filter:hover {
+        color: var(--light-gray);
+      }
+
+      /* Responsive */
       @media (max-width: 768px) {
         body {
           padding: 0.2rem;
@@ -243,16 +419,59 @@
           align-items: stretch;
         }
         
+        .search-container {
+          width: 100%;
+        }
+        
         .search-box {
-          max-width: 100%;
+          width: 100%;
+          max-width: none;
         }
         
         .action-buttons {
           justify-content: center;
         }
         
-        .table-responsive {
+        .table-container {
           max-height: 350px;
+        }
+        
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .filter-section {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .filter-group {
+          width: 100%;
+          justify-content: space-between;
+        }
+        
+        .filter-select, .filter-input {
+          flex: 1;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+        
+        .search-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .search-label {
+          text-align: center;
         }
       }
     </style>
@@ -262,61 +481,93 @@
       <!-- Page Header -->
       <div class="page-header">
         <h1>
-          <i class="bi bi-box"></i>
+          <i class="fas fa-box"></i>
           Product Management
         </h1>
         <button type="button" class="btn btn-light btn-sm" id="addNewProductBtn">
-          <i class="bi bi-plus-circle"></i> Add Product
+          <i class="fas fa-plus-circle"></i> Add Product
         </button>
       </div>
 
       <!-- Statistics Cards -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-3">
-          <div class="stats-card">
-            <div class="stats-value">45</div>
-            <div class="stats-label">Total Products</div>
-          </div>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-value">45</div>
+          <div class="stats-label">Total Products</div>
         </div>
-        <div class="col-md-3">
-          <div class="stats-card">
-            <div class="stats-value">32</div>
-            <div class="stats-label">In Stock</div>
-          </div>
+        <div class="stats-card">
+          <div class="stats-value">32</div>
+          <div class="stats-label">In Stock</div>
         </div>
-        <div class="col-md-3">
-          <div class="stats-card">
-            <div class="stats-value">8</div>
-            <div class="stats-label">Low Stock</div>
-          </div>
+        <div class="stats-card">
+          <div class="stats-value">8</div>
+          <div class="stats-label">Low Stock</div>
         </div>
-        <div class="col-md-3">
-          <div class="stats-card">
-            <div class="stats-value">5</div>
-            <div class="stats-label">Out of Stock</div>
-          </div>
+        <div class="stats-card">
+          <div class="stats-value">5</div>
+          <div class="stats-label">Out of Stock</div>
         </div>
       </div>
 
       <!-- Toolbar -->
       <div class="toolbar">
-        <input type="text" class="search-box" placeholder="Search products..." id="searchInput">
-        <div class="product-count">
-          Total Products: <strong>45</strong> | Showing: <strong>15</strong>
+        <div class="search-container">
+          <span class="search-label" id="searchLabel">Search all:</span>
+          <input type="text" class="search-box" placeholder="Type to search..." id="searchInput">
         </div>
+        <div class="product-count">
+          Total Products: <strong>45</strong> | Showing: <strong id="showingCount">15</strong>
+        </div>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <span class="filter-label">Category:</span>
+          <select class="filter-select" id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Home Appliances">Home Appliances</option>
+            <option value="Books">Books</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <span class="filter-label">Status:</span>
+          <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="success">In Stock</option>
+            <option value="warning">Low Stock</option>
+            <option value="danger">Out of Stock</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <span class="filter-label">Min Stock:</span>
+          <input type="number" class="filter-input" id="minStockFilter" placeholder="0" min="0">
+        </div>
+        
+        <div class="filter-group">
+          <span class="filter-label">Max Stock:</span>
+          <input type="number" class="filter-input" id="maxStockFilter" placeholder="999" min="0">
+        </div>
+        
+        <button class="clear-filters" id="clearAllFilters">Clear All Filters</button>
       </div>
 
       <!-- Active Filters -->
       <div class="active-filters" id="activeFilters">
-        <strong>Active Filters:</strong> <span id="filterBadges"></span>
-        <button class="btn btn-sm btn-outline-secondary ms-2" id="clearFiltersBtn">
-          <i class="bi bi-trash"></i> Clear All
-        </button>
+        <span class="filter-label">Active Filters:</span>
+        <div id="filterBadges"></div>
       </div>
 
       <!-- Products Table -->
-      <div class="table-responsive">
-        <table class="table table-hover">
+      <div class="table-container">
+        <table class="table">
           <thead>
             <tr>
               <th>#</th>
@@ -331,6 +582,7 @@
             </tr>
           </thead>
           <tbody id="productTableBody">
+            <!-- Hardcoded product rows -->
             <tr>
               <td>1</td>
               <td>Laptop Pro X</td>
@@ -343,13 +595,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -366,13 +618,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -389,13 +641,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -412,13 +664,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -435,13 +687,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -458,13 +710,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -481,13 +733,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -504,13 +756,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -527,13 +779,13 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -550,13 +802,129 @@
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i>
+                    <i class="fas fa-eye"></i>
                   </button>
                   <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-trash"></i>
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <!-- Additional hardcoded rows for more data -->
+            <tr>
+              <td>11</td>
+              <td>Office Chair</td>
+              <td>OFCH011</td>
+              <td>Furniture</td>
+              <td>$299.99</td>
+              <td>25</td>
+              <td><span class="badge bg-success">In Stock</span></td>
+              <td>Office Supplies Ltd</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>Running Shoes</td>
+              <td>SHOE012</td>
+              <td>Footwear</td>
+              <td>$89.99</td>
+              <td>45</td>
+              <td><span class="badge bg-success">In Stock</span></td>
+              <td>Sport Gear Inc</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>13</td>
+              <td>Smart Watch</td>
+              <td>WATCH013</td>
+              <td>Electronics</td>
+              <td>$249.99</td>
+              <td>3</td>
+              <td><span class="badge bg-warning">Low Stock</span></td>
+              <td>Tech Supply Inc.</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>14</td>
+              <td>Desk Lamp</td>
+              <td>LAMP014</td>
+              <td>Home Appliances</td>
+              <td>$34.99</td>
+              <td>0</td>
+              <td><span class="badge bg-danger">Out of Stock</span></td>
+              <td>Home Innovations</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>15</td>
+              <td>Backpack</td>
+              <td>BAG015</td>
+              <td>Accessories</td>
+              <td>$49.99</td>
+              <td>60</td>
+              <td><span class="badge bg-success">In Stock</span></td>
+              <td>Travel Gear Co</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -566,202 +934,347 @@
       </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Search functionality
+        // Get DOM elements
         const searchInput = document.getElementById('searchInput');
+        const searchLabel = document.getElementById('searchLabel');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const minStockFilter = document.getElementById('minStockFilter');
+        const maxStockFilter = document.getElementById('maxStockFilter');
+        const clearAllFiltersBtn = document.getElementById('clearAllFilters');
+        const activeFiltersDiv = document.getElementById('activeFilters');
+        const filterBadgesDiv = document.getElementById('filterBadges');
+        const showingCountSpan = document.getElementById('showingCount');
         const tableRows = document.querySelectorAll('tbody tr');
-        const activeFilters = document.getElementById('activeFilters');
-        const filterBadges = document.getElementById('filterBadges');
-        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-        const productCount = document.querySelector('.product-count');
-        const addNewProductBtn = document.getElementById('addNewProductBtn');
-
-        let currentFilters = [];
-
-        searchInput.addEventListener('input', function() {
-          const searchTerm = this.value.toLowerCase();
+        const tableHeaders = document.querySelectorAll('th[data-column]');
+        const totalProducts = tableRows.length;
+        
+        // State variables
+        let currentFilters = {
+          column: 'all', // Which column is being searched
+          search: '',    // Search text
+          category: '',  // Selected category
+          status: '',    // Selected status
+          minStock: '',  // Minimum stock
+          maxStock: ''   // Maximum stock
+        };
+        
+        // Column display names
+        const columnNames = {
+          'all': 'all columns',
+          'name': 'Product Name',
+          'sku': 'SKU',
+          'category': 'Category',
+          'price': 'Price',
+          'stock': 'Stock',
+          'status': 'Status',
+          'supplier': 'Supplier'
+        };
+        
+        // Initialize showing count
+        showingCountSpan.textContent = totalProducts;
+        searchLabel.textContent = `Search ${columnNames[currentFilters.column]}:`;
+        
+        // Function to update table visibility based on filters
+        function updateTable() {
           let visibleCount = 0;
           
           tableRows.forEach(row => {
+            let shouldShow = true;
             const cells = row.querySelectorAll('td');
-            let matchFound = false;
             
-            for (let i = 1; i < cells.length - 1; i++) { // Skip # and Actions columns
-              const cellText = cells[i].textContent.toLowerCase();
-              if (cellText.includes(searchTerm)) {
-                matchFound = true;
-                break;
+            // Get row data
+            const name = cells[1].textContent.toLowerCase();
+            const sku = cells[2].textContent.toLowerCase();
+            const category = cells[3].textContent;
+            const price = cells[4].textContent.toLowerCase();
+            const stock = parseInt(cells[5].textContent);
+            const statusBadge = cells[6].querySelector('.badge');
+            const statusClass = statusBadge ? statusBadge.className : '';
+            const status = statusClass.includes('success') ? 'success' : 
+                          statusClass.includes('warning') ? 'warning' : 
+                          statusClass.includes('danger') ? 'danger' : '';
+            const supplier = cells[7].textContent.toLowerCase();
+            
+            // Apply column-specific search filter
+            if (currentFilters.search) {
+              const searchTerm = currentFilters.search.toLowerCase();
+              let columnValue = '';
+              
+              switch(currentFilters.column) {
+                case 'all':
+                  // Search all text columns
+                  const rowText = name + ' ' + sku + ' ' + category.toLowerCase() + ' ' + price + ' ' + supplier;
+                  columnValue = rowText;
+                  break;
+                case 'name':
+                  columnValue = name;
+                  break;
+                case 'sku':
+                  columnValue = sku;
+                  break;
+                case 'category':
+                  columnValue = category.toLowerCase();
+                  break;
+                case 'price':
+                  columnValue = price;
+                  break;
+                case 'stock':
+                  columnValue = stock.toString();
+                  break;
+                case 'status':
+                  columnValue = status;
+                  break;
+                case 'supplier':
+                  columnValue = supplier;
+                  break;
+              }
+              
+              if (!columnValue.includes(searchTerm)) {
+                shouldShow = false;
               }
             }
             
-            if (matchFound) {
-              row.style.display = '';
-              visibleCount++;
-            } else {
-              row.style.display = 'none';
+            // Apply category filter
+            if (currentFilters.category && category !== currentFilters.category) {
+              shouldShow = false;
             }
+            
+            // Apply status filter
+            if (currentFilters.status && status !== currentFilters.status) {
+              shouldShow = false;
+            }
+            
+            // Apply min stock filter
+            if (currentFilters.minStock !== '' && stock < parseInt(currentFilters.minStock)) {
+              shouldShow = false;
+            }
+            
+            // Apply max stock filter
+            if (currentFilters.maxStock !== '' && stock > parseInt(currentFilters.maxStock)) {
+              shouldShow = false;
+            }
+            
+            // Show/hide row
+            row.style.display = shouldShow ? '' : 'none';
+            if (shouldShow) visibleCount++;
           });
           
-          // Update filter state
-          if (searchTerm) {
-            if (!currentFilters.includes('search')) {
-              currentFilters.push('search');
-            }
-          } else {
-            currentFilters = currentFilters.filter(f => f !== 'search');
+          // Update showing count
+          showingCountSpan.textContent = visibleCount;
+          
+          // Update active filters display
+          updateActiveFilters();
+          
+          // Update table header highlighting
+          updateHeaderHighlighting();
+        }
+        
+        // Function to update active filters display
+        function updateActiveFilters() {
+          const activeFiltersList = [];
+          
+          // Add column-specific search filter
+          if (currentFilters.search) {
+            const columnName = columnNames[currentFilters.column];
+            activeFiltersList.push({
+              type: 'search',
+              label: `${columnName}: "${currentFilters.search}"`,
+              value: currentFilters.search,
+              column: currentFilters.column
+            });
           }
           
-          updateFilterDisplay();
-          productCount.innerHTML = `Total Products: <strong>45</strong> | Showing: <strong>${visibleCount}</strong>`;
-        });
-
-        // Column filtering
-        document.querySelectorAll('th[data-column]').forEach(header => {
-          header.addEventListener('click', function() {
-            const column = this.dataset.column;
-            const columnName = this.textContent.trim();
-            
-            const filterValue = prompt(`Filter by ${columnName}:`);
-            if (filterValue) {
-              const filterKey = `${column}:${filterValue}`;
-              if (!currentFilters.includes(filterKey)) {
-                currentFilters.push(filterKey);
-              }
-              applyColumnFilter(column, filterValue);
-              updateFilterDisplay();
-            }
-          });
-        });
-
-        function applyColumnFilter(column, value) {
-          const valueLower = value.toLowerCase();
-          let visibleCount = 0;
+          // Add category filter
+          if (currentFilters.category) {
+            activeFiltersList.push({
+              type: 'category',
+              label: `Category: ${currentFilters.category}`,
+              value: currentFilters.category
+            });
+          }
           
-          tableRows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            let columnIndex = -1;
+          // Add status filter
+          if (currentFilters.status) {
+            const statusText = currentFilters.status === 'success' ? 'In Stock' :
+                              currentFilters.status === 'warning' ? 'Low Stock' : 'Out of Stock';
+            activeFiltersList.push({
+              type: 'status',
+              label: `Status: ${statusText}`,
+              value: currentFilters.status
+            });
+          }
+          
+          // Add min stock filter
+          if (currentFilters.minStock !== '') {
+            activeFiltersList.push({
+              type: 'minStock',
+              label: `Min Stock: ${currentFilters.minStock}`,
+              value: currentFilters.minStock
+            });
+          }
+          
+          // Add max stock filter
+          if (currentFilters.maxStock !== '') {
+            activeFiltersList.push({
+              type: 'maxStock',
+              label: `Max Stock: ${currentFilters.maxStock}`,
+              value: currentFilters.maxStock
+            });
+          }
+          
+          // Update active filters display
+          if (activeFiltersList.length > 0) {
+            activeFiltersDiv.style.display = 'flex';
             
-            // Find the column index
-            document.querySelectorAll('th[data-column]').forEach((th, index) => {
-              if (th.dataset.column === column) {
-                columnIndex = index + 1; // +1 because of the # column
-              }
+            let badgesHTML = '';
+            activeFiltersList.forEach(filter => {
+              badgesHTML += `
+                <span class="filter-badge">
+                  ${filter.label}
+                  <span class="remove-filter" data-filter-type="${filter.type}" data-column="${filter.column || ''}">&times;</span>
+                </span>
+              `;
             });
             
-            if (columnIndex !== -1 && cells[columnIndex]) {
-              const cellText = cells[columnIndex].textContent.toLowerCase();
-              if (cellText.includes(valueLower)) {
-                row.style.display = '';
-                visibleCount++;
-              } else {
-                row.style.display = 'none';
-              }
-            }
-          });
-          
-          productCount.innerHTML = `Total Products: <strong>45</strong> | Showing: <strong>${visibleCount}</strong>`;
-        }
-
-        function updateFilterDisplay() {
-          if (currentFilters.length > 0) {
-            activeFilters.style.display = 'block';
-            filterBadges.innerHTML = '';
+            filterBadgesDiv.innerHTML = badgesHTML;
             
-            currentFilters.forEach(filter => {
-              if (filter === 'search') {
-                const badge = document.createElement('span');
-                badge.className = 'filter-badge';
-                badge.innerHTML = `Search: "${searchInput.value}" <i class="bi bi-x" data-filter="search"></i>`;
-                filterBadges.appendChild(badge);
-              } else {
-                const [column, value] = filter.split(':');
-                const columnName = document.querySelector(`th[data-column="${column}"]`).textContent.trim();
-                const badge = document.createElement('span');
-                badge.className = 'filter-badge';
-                badge.innerHTML = `${columnName}: "${value}" <i class="bi bi-x" data-filter="${filter}"></i>`;
-                filterBadges.appendChild(badge);
-              }
-            });
-
-            // Add click listeners to remove filters
-            filterBadges.querySelectorAll('.bi-x').forEach(icon => {
-              icon.addEventListener('click', function() {
-                const filterToRemove = this.dataset.filter;
-                currentFilters = currentFilters.filter(f => f !== filterToRemove);
-                
-                if (filterToRemove === 'search') {
-                  searchInput.value = '';
-                }
-                
-                // Reset all rows to visible and reapply remaining filters
-                tableRows.forEach(row => row.style.display = '');
-                
-                currentFilters.forEach(filter => {
-                  if (filter !== 'search') {
-                    const [column, value] = filter.split(':');
-                    applyColumnFilter(column, value);
-                  }
-                });
-                
-                if (currentFilters.includes('search') && searchInput.value) {
-                  // Reapply search filter
-                  const searchEvent = new Event('input');
-                  searchInput.dispatchEvent(searchEvent);
-                }
-                
-                updateFilterDisplay();
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-filter').forEach(btn => {
+              btn.addEventListener('click', function() {
+                const filterType = this.getAttribute('data-filter-type');
+                const column = this.getAttribute('data-column');
+                removeFilter(filterType, column);
               });
             });
           } else {
-            activeFilters.style.display = 'none';
-            // Reset all rows to visible
-            tableRows.forEach(row => row.style.display = '');
-            productCount.innerHTML = `Total Products: <strong>45</strong> | Showing: <strong>${tableRows.length}</strong>`;
+            activeFiltersDiv.style.display = 'none';
+            filterBadgesDiv.innerHTML = '';
           }
         }
-
-        clearFiltersBtn.addEventListener('click', function() {
-          currentFilters = [];
-          searchInput.value = '';
-          updateFilterDisplay();
-        });
-
-        // Action button handlers
-        document.querySelectorAll('.btn-primary.btn-sm').forEach(btn => {
-          if (btn.innerHTML.includes('bi-eye')) {
-            btn.addEventListener('click', function() {
-              const productName = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-              alert(`Viewing details for: ${productName}`);
-            });
-          }
-        });
-
-        document.querySelectorAll('.btn-warning.btn-sm').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const productName = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-            alert(`Editing product: ${productName}`);
-          });
-        });
-
-        document.querySelectorAll('.btn-outline-danger.btn-sm').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const productName = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-            if (confirm(`Are you sure you want to delete "${productName}"?`)) {
-              alert(`Product "${productName}" deleted successfully!`);
+        
+        // Function to update table header highlighting
+        function updateHeaderHighlighting() {
+          tableHeaders.forEach(header => {
+            const column = header.getAttribute('data-column');
+            
+            // Remove all highlighting first
+            header.classList.remove('filter-active');
+            
+            // Highlight if this column has an active search filter
+            if (currentFilters.search && currentFilters.column === column) {
+              header.classList.add('filter-active');
             }
           });
+        }
+        
+        // Function to remove a specific filter
+        function removeFilter(filterType, column = '') {
+          switch(filterType) {
+            case 'search':
+              currentFilters.search = '';
+              currentFilters.column = column || 'all';
+              searchInput.value = '';
+              searchLabel.textContent = `Search ${columnNames[currentFilters.column]}:`;
+              break;
+            case 'category':
+              currentFilters.category = '';
+              categoryFilter.value = '';
+              break;
+            case 'status':
+              currentFilters.status = '';
+              statusFilter.value = '';
+              break;
+            case 'minStock':
+              currentFilters.minStock = '';
+              minStockFilter.value = '';
+              break;
+            case 'maxStock':
+              currentFilters.maxStock = '';
+              maxStockFilter.value = '';
+              break;
+          }
+          
+          updateTable();
+        }
+        
+        // Function to clear all filters
+        function clearAllFilters() {
+          currentFilters = {
+            column: 'all',
+            search: '',
+            category: '',
+            status: '',
+            minStock: '',
+            maxStock: ''
+          };
+          
+          searchInput.value = '';
+          searchLabel.textContent = `Search ${columnNames[currentFilters.column]}:`;
+          categoryFilter.value = '';
+          statusFilter.value = '';
+          minStockFilter.value = '';
+          maxStockFilter.value = '';
+          
+          updateTable();
+        }
+        
+        // Function to set column search
+        function setColumnSearch(column) {
+          currentFilters.column = column;
+          searchLabel.textContent = `Search ${columnNames[column]}:`;
+          searchInput.placeholder = `Search by ${columnNames[column].toLowerCase()}...`;
+          searchInput.focus();
+          
+          // Update table to reflect column change
+          updateHeaderHighlighting();
+          
+          // If there's already search text, apply it to the new column
+          if (currentFilters.search) {
+            updateTable();
+          }
+        }
+        
+        // Event listeners for filters
+        searchInput.addEventListener('input', function() {
+          currentFilters.search = this.value;
+          updateTable();
         });
-
-        addNewProductBtn.addEventListener('click', function() {
-          alert('Redirecting to add new product form...');
+        
+        categoryFilter.addEventListener('change', function() {
+          currentFilters.category = this.value;
+          updateTable();
         });
-
-        // Initialize product count
-        productCount.innerHTML = `Total Products: <strong>45</strong> | Showing: <strong>${tableRows.length}</strong>`;
+        
+        statusFilter.addEventListener('change', function() {
+          currentFilters.status = this.value;
+          updateTable();
+        });
+        
+        minStockFilter.addEventListener('input', function() {
+          currentFilters.minStock = this.value;
+          updateTable();
+        });
+        
+        maxStockFilter.addEventListener('input', function() {
+          currentFilters.maxStock = this.value;
+          updateTable();
+        });
+        
+        clearAllFiltersBtn.addEventListener('click', clearAllFilters);
+        
+        // Column header click events
+        tableHeaders.forEach(header => {
+          header.addEventListener('click', function() {
+            const column = this.getAttribute('data-column');
+            setColumnSearch(column);
+          });
+        });
+        
+        // Initialize the table
+        updateTable();
       });
     </script>
   </body>
